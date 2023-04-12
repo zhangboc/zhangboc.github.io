@@ -5,7 +5,7 @@
 <head>
   
   <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
-  <title>文章：2023/4 - Hexo</title>
+  <title>Ceph故障排查 - Hexo</title>
   <meta charset="UTF-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -16,13 +16,20 @@
     <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
 
   <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="https://github.com/zhangboc/zhangboc.github.io.git/archives/2023/04/index.html">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Ceph故障排查">
+<meta property="og:url" content="https://github.com/zhangboc/zhangboc.github.io.git/2023/04/10/Ceph/0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/1.jpg">
+<meta property="og:image" content="https://github.com/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/2.jpg">
+<meta property="article:published_time" content="2023-04-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-11T09:39:16.048Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="故障排查">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/1.jpg">
   <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
   <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
   <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
@@ -31,7 +38,7 @@
   
     <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1681268756401">
+  <link rel="stylesheet" href="/css/style.css?v=1681268756336">
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -237,255 +244,212 @@ setInterval("createtime()",250);
   </div>
   <div id="nexmoe-content">
     <div class="nexmoe-primary">
-        <section class="nexmoe-posts">
+        <div class="nexmoe-post">
     
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/3.Ceph%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/Ceph-%E5%AE%89%E8%A3%85/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph-安装" class="lazyload">
-                    <h1>Ceph-安装</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>3.8k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 22 分钟</a>
+        <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
+            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph故障排查" class="lazyload">
+            <h1>Ceph故障排查</h1>
         </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
     
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/">
+
+        <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月10日</a>
+    <a><i class="nexmoefont icon-areachart"></i>898 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
+</div>
+
+        <div class="nexmoe-post-right">
             
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD写入流程" class="lazyload">
-                    <h1>RBD写入流程</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>606 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
         </div>
-        
+
         <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD块创建及映射" class="lazyload">
-                    <h1>RBD块创建及映射</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>1.2k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 6 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD存储扩容/缩容" class="lazyload">
-                    <h1>RBD存储扩容/缩容</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>441 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/5.RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RGW对象存储" class="lazyload">
-                    <h1>RGW对象存储</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>5k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 27 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/6.Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph FS文件存储" class="lazyload">
-                    <h1>Ceph FS文件存储</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>1.5k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 7 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/10/Ceph/0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph故障排查" class="lazyload">
-                    <h1>Ceph故障排查</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月10日</a>
-            <a><i class="nexmoefont icon-areachart"></i>898 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/10/Ceph/2.Ceph%E5%AD%98%E5%82%A8%E6%9E%B6%E6%9E%84/Ceph-%E7%AE%80%E4%BB%8B/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph简介" class="lazyload">
-                    <h1>Ceph简介</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月10日</a>
-            <a><i class="nexmoefont icon-areachart"></i>5.7k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 24 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/08/chatjs/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Hexo博客中插入 Chart 动态图表" class="lazyload">
-                    <h1>Hexo博客中插入 Chart 动态图表</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月08日</a>
-            <a><i class="nexmoefont icon-areachart"></i>879 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
-        </div>
-        
-        <article>
-            
-                <p>该文基本(全部)来自于chatjs中文文档</p>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><!-- toc -->
+            <h1><span id></span></h1><span id="more"></span>
+
+<!-- toc -->
 
 <ul>
-<li><a href="#hexo-%E4%B8%AD%E7%9A%84-chartjs">Hexo 中的 Chartjs</a></li>
-<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a><ul>
-<li><a href="#%E6%8A%98%E7%BA%BF%E5%9B%BE">折线图</a></li>
-<li><a href="#%E7%9B%B8%E5%85%B3%E5%B1%9E%E6%80%A7">相关属性</a></li>
-</ul>
-</li>
+<li><a href="#%E4%B8%80-application-not-enabled-on-1-pools">一、application not enabled on 1 pool(s)</a></li>
+<li><a href="#%E4%BA%8C-%E6%B8%85%E7%90%86mgr%E5%91%8A%E8%AD%A6">二、清理MGR告警</a></li>
 </ul>
 <!-- tocstop -->
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/08/hello-world/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 24.305555555555554%;">
-                    <img data-src="/images/background/xiaomai.jpg" data-sizes="auto" alt="hello-world" class="lazyload">
-                    <h1>hello-world</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月08日</a>
-            <a><i class="nexmoefont icon-areachart"></i>75 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
-        </div>
-        
-        <article>
-            
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-            
-        </article>
-    </div>
-    
-</section>
 
-    <nav class="nexmoe-page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2023/04/page/2/">2</a><a class="extend next" rel="next" href="/archives/2023/04/page/2/"><i class="nexmoefont icon-right"></i></a>
-    </nav>
-  
+<h1><span id="一-application-not-enabled-on-1-pools">一、application not enabled on 1 pool(s)</span></h1><blockquote>
+<p>故障现象：</p>
+</blockquote>
+<pre><code>[root@node-1 data]# ceph -s 
+  cluster:
+    id:     e9a90625-4707-4b6b-b52f-661512ea831d
+    health: HEALTH_WARN
+            application not enabled on 1 pool(s) #提示有一个pool没有启用application ，是由于创建pool的时候没有使用rbd pool init &lt;pool-name&gt;进行初始化，使用此命令会默认指定成RBD格式的application
+ 
+  services:
+    mon: 3 daemons, quorum node-1,node-2,node-3 (age 71m)
+    mgr: node-1(active, since 14h), standbys: node-2, node-3
+    osd: 3 osds: 3 up (since 39m), 3 in (since 65m)
+ 
+  data:
+    pools:   1 pools, 64 pgs
+    objects: 281 objects, 1.0 GiB
+    usage:   6.2 GiB used, 24 GiB / 30 GiB avail
+    pgs:     64 active+clean
+</code></pre>
+<blockquote>
+<p> 查看当前集群的健康状态</p>
+</blockquote>
+<pre><code>[root@node-1 data]# ceph health detail
+HEALTH_WARN application not enabled on 1 pool(s)
+POOL_APP_NOT_ENABLED application not enabled on 1 pool(s)
+    application not enabled on pool &#39;ceph-demo&#39;
+    use &#39;ceph osd pool application enable &lt;pool-name&gt; &lt;app-name&gt;&#39;, where &lt;app-name&gt; is &#39;cephfs&#39;, &#39;rbd&#39;, &#39;rgw&#39;, or freeform for custom applications
+</code></pre>
+<blockquote>
+<p>启用ceph-demo的资源池的application，并设置成RBD格式</p>
+</blockquote>
+<pre><code>[root@node-1 data]# ceph osd pool application enable ceph-demo rbd  
+enabled application &#39;rbd&#39; on pool &#39;ceph-demo&#39;
+</code></pre>
+<blockquote>
+<p>通过get命令可查看资源池的application设置</p>
+</blockquote>
+<pre><code>[root@node-1 data]#  ceph -h |grep application 
+osd pool application disable &lt;poolname&gt; &lt;app&gt; &#123;--yes-i-really-mean-   disables use of an application &lt;app&gt; on pool &lt;poolname&gt;
+osd pool application enable &lt;poolname&gt; &lt;app&gt; &#123;--yes-i-really-mean-it&#125; enable use of an application &lt;app&gt; [cephfs,rbd,rgw] on pool 
+osd pool application get &#123;&lt;poolname&gt;&#125; &#123;&lt;app&gt;&#125; &#123;&lt;key&gt;&#125;                 get value of key &lt;key&gt; of application &lt;app&gt; on pool &lt;poolname&gt;
+osd pool application rm &lt;poolname&gt; &lt;app&gt; &lt;key&gt;                        removes application &lt;app&gt; metadata key &lt;key&gt; on pool &lt;poolname&gt;
+osd pool application set &lt;poolname&gt; &lt;app&gt; &lt;key&gt; &lt;value&gt;               sets application &lt;app&gt; metadata key &lt;key&gt; to &lt;value&gt; on pool 
+[root@node-1 data]# ceph osd pool application get ceph-demo #默认为空
+&#123;
+    &quot;rbd&quot;: &#123;&#125;
+&#125;
+</code></pre>
+<blockquote>
+<p>查看集群已经恢复</p>
+</blockquote>
+<pre><code>[root@node-1 data]# ceph -s
+  cluster:
+    id:     e9a90625-4707-4b6b-b52f-661512ea831d
+    health: HEALTH_OK
+
+  services:
+    mon: 3 daemons, quorum node-1,node-2,node-3 (age 80m)
+    mgr: node-1(active, since 14h), standbys: node-2, node-3
+    osd: 3 osds: 3 up (since 48m), 3 in (since 73m)
+ 
+  data:
+    pools:   1 pools, 64 pgs
+    objects: 281 objects, 1.0 GiB
+    usage:   6.2 GiB used, 24 GiB / 30 GiB avail
+    pgs:     64 active+clean
+</code></pre>
+<h1><span id="二-清理mgr告警">二、清理MGR告警</span></h1><blockquote>
+<p>故障现象：</p>
+</blockquote>
+<pre><code>[root@node-1 data]# ceph -s  
+  cluster:
+    id:     e9a90625-4707-4b6b-b52f-661512ea831d
+    health: HEALTH_WARN
+            2 daemons have recently crashed #有两个告警信息，可能是由于某个服务出现异常导致
+ 
+  services:
+    mon: 3 daemons, quorum node-1,node-2,node-3 (age 80m)
+    mgr: node-1(active, since 14h), standbys: node-2, node-3
+    osd: 3 osds: 3 up (since 48m), 3 in (since 73m)
+ 
+  data:
+    pools:   1 pools, 64 pgs
+    objects: 281 objects, 1.0 GiB
+    usage:   6.2 GiB used, 24 GiB / 30 GiB avail
+    pgs:     64 active+clean
+[root@node-1 data]#  ceph health detail
+HEALTH_WARN 2 daemons have recently crashed
+RECETN_CRASH 2 daemons have recently crashed
+    mgr.node-1 crashed on host node-1 at 2023-03-04 15:42:01.891238Z
+    mgr.node-1 crashed on host node-1 at 2023-03-04 15:45:31.891238Z
+</code></pre>
+<blockquote>
+<p>查看crash用法</p>
+</blockquote>
+<pre><code>[root@node-1 data]# ceph -h | grep crash
+crash archive &lt;id&gt;                                                    Acknowledge a crash and silence health warning(s)
+crash archive-all                                                     Acknowledge all new crashes and silence health warning(s)
+crash info &lt;id&gt;                                                       show crash dump metadata
+crash json_report &lt;hours&gt;                                             Crashes in the last &lt;hours&gt; hours
+crash ls                                                              Show new and archived crash dumps
+crash ls-new                                                          Show new crash dumps
+crash post                                                            Add a crash dump (use -i &lt;jsonfile&gt;)
+crash prune &lt;keep&gt;                                                    Remove crashes older than &lt;keep&gt; days
+crash rm &lt;id&gt;                                                         Remove a saved crash &lt;id&gt;
+crash stat                                                            Summarize recorded crashes
+</code></pre>
+<blockquote>
+<p>查看当前状态</p>
+</blockquote>
+<pre><code>[root@node-1 data]# ceph crash ls
+</code></pre>
+<p><img src="/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/1.jpg"></p>
+<blockquote>
+<p>查看该ID的具体信息</p>
+</blockquote>
+<pre><code>[root@node-1 data]# ceph crash info &lt;id&gt;
+</code></pre>
+<blockquote>
+<p>使用ceph crash archive <id>进行标记，视为已读，或者重启所有OSD也能解决告警问题</id></p>
+</blockquote>
+<p><img src="/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/2.jpg"></p>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+        </article>
+
+        
+            
+  <div class="nexmoe-post-copyright">
+    <strong>Author：</strong>张博丞<br>
+    
+      <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
+    
+    <strong>Link：</strong><a href="https://github.com/zhangboc/zhangboc.github.io.git/2023/04/10/Ceph/0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/" title="https:&#x2F;&#x2F;github.com&#x2F;zhangboc&#x2F;zhangboc.github.io.git&#x2F;2023&#x2F;04&#x2F;10&#x2F;Ceph&#x2F;0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5&#x2F;Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;github.com&#x2F;zhangboc&#x2F;zhangboc.github.io.git&#x2F;2023&#x2F;04&#x2F;10&#x2F;Ceph&#x2F;0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5&#x2F;Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5&#x2F;</a><br>
+
+    
+      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+    
+  </div>
+
+
+        
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/">Ceph</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" rel="tag">故障排查</a>
+    
+</div>
+
+    <div class="nexmoe-post-footer">
+        <section class="nexmoe-comment">
+    <div class="valine"></div>
+<script src='https://lib.baomitu.com/valine/1.3.9/Valine.min.js'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'r5zxC0st0DDjPA9auXzMV7HY-gzGzoHsz',
+        appKey: '3bqCsovpyfTPHUzTHovd3V3V'
+    })
+</script>
+</section>
+    </div>
+</div>
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
 
         <div class="nexmoe-post-right">
           
@@ -1199,7 +1163,7 @@ setInterval("createtime()",250);
 <script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
 
 
-<script src="/js/app.js?v=1681268756405"></script>
+<script src="/js/app.js?v=1681268756341"></script>
 
 <script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
 <script>

@@ -5,7 +5,7 @@
 <head>
   
   <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
-  <title>文章：2023/4 - Hexo</title>
+  <title>RBD块创建及映射 - Hexo</title>
   <meta charset="UTF-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -16,12 +16,16 @@
     <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
 
   <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="https://github.com/zhangboc/zhangboc.github.io.git/archives/2023/04/index.html">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="RBD块创建及映射">
+<meta property="og:url" content="https://github.com/zhangboc/zhangboc.github.io.git/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-04-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-11T09:39:55.009Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="RBD">
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
   <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
@@ -31,7 +35,7 @@
   
     <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1681268756401">
+  <link rel="stylesheet" href="/css/style.css?v=1681268756307">
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -237,255 +241,222 @@ setInterval("createtime()",250);
   </div>
   <div id="nexmoe-content">
     <div class="nexmoe-primary">
-        <section class="nexmoe-posts">
+        <div class="nexmoe-post">
     
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/3.Ceph%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/Ceph-%E5%AE%89%E8%A3%85/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph-安装" class="lazyload">
-                    <h1>Ceph-安装</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>3.8k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 22 分钟</a>
+        <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
+            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD块创建及映射" class="lazyload">
+            <h1>RBD块创建及映射</h1>
         </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
     
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/">
+
+        <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.2k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 6 分钟</a>
+</div>
+
+        <div class="nexmoe-post-right">
             
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD写入流程" class="lazyload">
-                    <h1>RBD写入流程</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>606 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
         </div>
-        
+
         <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD块创建及映射" class="lazyload">
-                    <h1>RBD块创建及映射</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>1.2k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 6 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD存储扩容/缩容" class="lazyload">
-                    <h1>RBD存储扩容/缩容</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>441 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/5.RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RGW对象存储" class="lazyload">
-                    <h1>RGW对象存储</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>5k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 27 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/11/Ceph/6.Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph FS文件存储" class="lazyload">
-                    <h1>Ceph FS文件存储</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-            <a><i class="nexmoefont icon-areachart"></i>1.5k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 7 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/10/Ceph/0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph故障排查" class="lazyload">
-                    <h1>Ceph故障排查</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月10日</a>
-            <a><i class="nexmoefont icon-areachart"></i>898 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/10/Ceph/2.Ceph%E5%AD%98%E5%82%A8%E6%9E%B6%E6%9E%84/Ceph-%E7%AE%80%E4%BB%8B/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph简介" class="lazyload">
-                    <h1>Ceph简介</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月10日</a>
-            <a><i class="nexmoefont icon-areachart"></i>5.7k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 24 分钟</a>
-        </div>
-        
-        <article>
-            
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/08/chatjs/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
-                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Hexo博客中插入 Chart 动态图表" class="lazyload">
-                    <h1>Hexo博客中插入 Chart 动态图表</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月08日</a>
-            <a><i class="nexmoefont icon-areachart"></i>879 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
-        </div>
-        
-        <article>
-            
-                <p>该文基本(全部)来自于chatjs中文文档</p>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><!-- toc -->
+            <h1><span id></span></h1><span id="more"></span>
+
+<!-- toc -->
 
 <ul>
-<li><a href="#hexo-%E4%B8%AD%E7%9A%84-chartjs">Hexo 中的 Chartjs</a></li>
-<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a><ul>
-<li><a href="#%E6%8A%98%E7%BA%BF%E5%9B%BE">折线图</a></li>
-<li><a href="#%E7%9B%B8%E5%85%B3%E5%B1%9E%E6%80%A7">相关属性</a></li>
+<li><a href="#rbd%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84">RBD块创建及映射</a><ul>
+<li><a href="#%E4%B8%80-%E5%88%9B%E5%BB%BA%E5%9D%97%E8%AE%BE%E5%A4%87">一、创建块设备</a></li>
+<li><a href="#%E4%BA%8C-%E4%BD%BF%E7%94%A8%E5%9D%97%E8%AE%BE%E5%A4%87">二、使用块设备</a></li>
 </ul>
 </li>
 </ul>
 <!-- tocstop -->
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2023/04/08/hello-world/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 24.305555555555554%;">
-                    <img data-src="/images/background/xiaomai.jpg" data-sizes="auto" alt="hello-world" class="lazyload">
-                    <h1>hello-world</h1>
-                </div>
-            
-        </a>
-        
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月08日</a>
-            <a><i class="nexmoefont icon-areachart"></i>75 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
-        </div>
-        
-        <article>
-            
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-            
-        </article>
-    </div>
-    
-</section>
 
-    <nav class="nexmoe-page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2023/04/page/2/">2</a><a class="extend next" rel="next" href="/archives/2023/04/page/2/"><i class="nexmoefont icon-right"></i></a>
-    </nav>
-  
+<h1><span id="rbd块创建及映射">RBD块创建及映射</span></h1><h2><span id="一-创建块设备">一、创建块设备</span></h2><p><strong>任意节点执行即可：</strong></p>
+<pre><code>[root@node-1 my-cluster]#  rbd help create #查看create的帮助文档
+[root@node-1 my-cluster]#  rbd create -p ceph-demo --image rbd-demo.img --size 10G #在ceph-demo的pool中创建一个叫做rbd-demo.img的块设备，大小为10G
+[root@node-1 my-cluster]# rbd ls ceph-demo #查看创建结果
+rbd-demo.img
+[root@node-1 my-cluster]#  rbd create  ceph-demo/rbd-demo-1.img --size 10G #在ceph-demo的pool中创建一个叫做rbd-demo.img的块设备，大小为10G
+[root@node-1 my-cluster]# rbd ls ceph-demo  #查看创建结果
+rbd-demo-1.img
+rbd-demo.img
+
+[root@node-1 my-cluster]# rbd -p ceph-demo ls  #与rbd ls ceph-demo 作用一致
+rbd-demo-1.img
+rbd-demo.img
+[root@node-1 my-cluster]#  rbd info ceph-demo/rbd-demo.img #查看块设备的具体信息，与rbd info-p ceph-demo --image rbd-demo.img 一致
+rbd image &#39;rbd-demo.img&#39;:
+    size 10 GiB in 2560 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 11e24b04cf01
+    block_name_prefix: rbd_data.11e24b04cf01
+    format: 2
+    features: layering, exclusive-lock, object-map, fast-diff, deep-flatten
+    op_features: 
+    flags: 
+    create_timestamp: Fri Mar  3 13:03:28 2023
+    access_timestamp: Fri Mar  3 13:03:28 2023
+    modify_timestamp: Fri Mar  3 13:03:28 2023
+[root@node-1 my-cluster]# rbd rm  ceph-demo/rbd-demo-1.img #删除块设备，与rbd rm -p ceph-demo --image rbd-demo-1.img用法一致
+Removing image: 100% complete...done.
+</code></pre>
+<h2><span id="二-使用块设备">二、使用块设备</span></h2><pre><code>[root@node-1 my-cluster]#  rbd map ceph-demo/rbd-demo.img #映射块设备到本地
+rbd: sysfs write failed
+RBD image feature set mismatch. You can disable features unsupported by the kernel with &quot;rbd feature disable ceph-demo/rbd-demo.img object-map fast-diff deep-flatten&quot;.
+In some cases useful info is found in syslog - try &quot;dmesg | tail&quot;.
+rbd: map failed: (6) No such device or address
+</code></pre>
+<blockquote>
+<p>上述报错主要是由于Centos 7 不支持某些特性，需要手动禁用，具体可使用rbd info ceph-demo&#x2F;rbd-demo.img 进行查看，特性主要记录在features中</p>
+</blockquote>
+<p><strong>禁用相关特性：</strong></p>
+<pre><code>[root@node-1 my-cluster]#  rbd info ceph-demo/rbd-demo.img #查看当前特性
+rbd image &#39;rbd-demo.img&#39;:
+    size 10 GiB in 2560 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 11e24b04cf01
+    block_name_prefix: rbd_data.11e24b04cf01
+    format: 2
+    features: layering, exclusive-lock, object-map, fast-diff, deep-flatten
+    op_features: 
+    flags: 
+    create_timestamp: Fri Mar  3 13:03:28 2023
+    access_timestamp: Fri Mar  3 13:03:28 2023
+    modify_timestamp: Fri Mar  3 13:03:28 2023
+[root@node-1 my-cluster]# rbd help feature disable #查看使用文档
+usage: rbd feature disable [--pool &lt;pool&gt;] [--namespace &lt;namespace&gt;] 
+                           [--image &lt;image&gt;] 
+                           &lt;image-spec&gt; &lt;features&gt; [&lt;features&gt; ...]
+
+Disable the specified image feature.
+
+Positional arguments
+  &lt;image-spec&gt;         image specification
+                       (example: [&lt;pool-name&gt;/[&lt;namespace&gt;/]]&lt;image-name&gt;)
+  &lt;features&gt;           image features
+                       [exclusive-lock, object-map, journaling]
+
+Optional arguments
+  -p [ --pool ] arg    pool name
+  --namespace arg      namespace name
+  --image arg          image name
+[root@node-1 my-cluster]# rbd feature disable ceph-demo/rbd-demo.img deep-flatten #禁用rbd-demo.img块设备的deep-flatten特性
+[root@node-1 my-cluster]# rbd feature disable ceph-demo/rbd-demo.img fast-diff #禁用rbd-demo.img块设备的fast-diff特性
+[root@node-1 my-cluster]# rbd feature disable ceph-demo/rbd-demo.img exclusive-lock #禁用rbd-demo.img块设备的exclusive-lock特性
+[root@node-1 my-cluster]# rbd info ceph-demo/rbd-demo.img #查看相关特性已经被禁用
+rbd image &#39;rbd-demo.img&#39;:
+    size 10 GiB in 2560 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 11e24b04cf01
+    block_name_prefix: rbd_data.11e24b04cf01
+    format: 2
+    features: layering #layering不影响使用，可不禁用
+    op_features: 
+    flags: 
+    create_timestamp: Fri Mar  3 13:03:28 2023
+    access_timestamp: Fri Mar  3 13:03:28 2023
+    modify_timestamp: Fri Mar  3 13:03:28 2023
+ [root@node-1 my-cluster]#  rbd map ceph-demo/rbd-demo.img #挂载到本地
+/dev/rbd0
+[root@node-1 my-cluster]# lsblk
+NAME                                                                                                  MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                                                                                                     8:0    0   20G  0 disk 
+├─sda1                                                                                                  8:1    0    1G  0 part /boot
+└─sda2                                                                                                  8:2    0   19G  0 part 
+  ├─centos-root                                                                                       253:0    0   17G  0 lvm  /
+  └─centos-swap                                                                                       253:1    0    2G  0 lvm  [SWAP]
+sdb                                                                                                     8:16   0   10G  0 disk 
+└─ceph--53398982--af97--4b05--9a0b--bf91741b7f6a-osd--block--68c09ae0--7d72--4984--b5c0--6f1476698c2b 253:2    0   10G  0 lvm  
+sdc                                                                                                     8:32   0   10G  0 disk 
+sr0                                                                                                    11:0    1 1024M  0 rom  
+rbd0                                                                                                  252:0    0   10G  0 disk 
+[root@node-1 my-cluster]# rbd device list #使用此命令进行查看
+id pool      namespace image        snap device    
+0  ceph-demo           rbd-demo.img -    /dev/rbd0
+[root@node-1 my-cluster]#  mkfs.xfs /dev/rbd0 #格式化为xfs格式
+Discarding blocks...Done.
+meta-data=/dev/rbd0              isize=512    agcount=16, agsize=163840 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=2621440, imaxpct=25
+         =                       sunit=1024   swidth=1024 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=8 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@node-1 my-cluster]# mkdir /data
+[root@node-1 my-cluster]# mount /dev/rbd0 /data #进行挂载
+[root@node-1 my-cluster]# df -HT #查看挂载情况
+Filesystem              Type      Size  Used Avail Use% Mounted on
+devtmpfs                devtmpfs  942M     0  942M   0% /dev
+tmpfs                   tmpfs     954M     0  954M   0% /dev/shm
+tmpfs                   tmpfs     954M   11M  944M   2% /run
+tmpfs                   tmpfs     954M     0  954M   0% /sys/fs/cgroup
+/dev/mapper/centos-root xfs        19G  2.6G   16G  15% /
+/dev/sda1               xfs       1.1G  190M  874M  18% /boot
+tmpfs                   tmpfs     191M     0  191M   0% /run/user/0
+tmpfs                   tmpfs     954M   54k  954M   1% /var/lib/ceph/osd/ceph-0
+/dev/rbd0               xfs        11G   35M   11G   1% /data
+</code></pre>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+        </article>
+
+        
+            
+  <div class="nexmoe-post-copyright">
+    <strong>Author：</strong>张博丞<br>
+    
+      <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
+    
+    <strong>Link：</strong><a href="https://github.com/zhangboc/zhangboc.github.io.git/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84/" title="https:&#x2F;&#x2F;github.com&#x2F;zhangboc&#x2F;zhangboc.github.io.git&#x2F;2023&#x2F;04&#x2F;11&#x2F;Ceph&#x2F;4.RBD%E5%9D%97%E5%AD%98%E5%82%A8&#x2F;RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;github.com&#x2F;zhangboc&#x2F;zhangboc.github.io.git&#x2F;2023&#x2F;04&#x2F;11&#x2F;Ceph&#x2F;4.RBD%E5%9D%97%E5%AD%98%E5%82%A8&#x2F;RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84&#x2F;</a><br>
+
+    
+      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+    
+  </div>
+
+
+        
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/">Ceph</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/RBD/" rel="tag">RBD</a>
+    
+</div>
+
+    <div class="nexmoe-post-footer">
+        <section class="nexmoe-comment">
+    <div class="valine"></div>
+<script src='https://lib.baomitu.com/valine/1.3.9/Valine.min.js'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'r5zxC0st0DDjPA9auXzMV7HY-gzGzoHsz',
+        appKey: '3bqCsovpyfTPHUzTHovd3V3V'
+    })
+</script>
+</section>
+    </div>
+</div>
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
 
         <div class="nexmoe-post-right">
           
@@ -1199,7 +1170,7 @@ setInterval("createtime()",250);
 <script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
 
 
-<script src="/js/app.js?v=1681268756405"></script>
+<script src="/js/app.js?v=1681268756311"></script>
 
 <script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
 <script>

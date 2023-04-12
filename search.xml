@@ -4,43 +4,12 @@
   
     
     <entry>
-      <title>Hexo博客中插入 Chart 动态图表</title>
-      <link href="/2023/04/08/chatjs/"/>
-      <url>/2023/04/08/chatjs/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>该文基本(全部)来自于chatjs中文文档</p><h1><span id="背景">背景</span></h1><!-- toc --><ul><li><a href="#hexo-%E4%B8%AD%E7%9A%84-chartjs">Hexo 中的 Chartjs</a></li><li><a href="#%E7%A4%BA%E4%BE%8B">示例</a><ul><li><a href="#%E6%8A%98%E7%BA%BF%E5%9B%BE">折线图</a></li><li><a href="#%E7%9B%B8%E5%85%B3%E5%B1%9E%E6%80%A7">相关属性</a></li></ul></li></ul><!-- tocstop --><span id="more"></span><p>Chartjs是一款简单优雅的数据可视化工具，对比其他图表库如echarts、highcharts、c3、flot、amchart等，它的画面效果、动态效果都更精致，它的 文档首页 就透出一股小清新，基于 HTML5 Canvas，它拥有更好的性能且响应式，基本满足了一般数据展示的需要，包括折线图，条形图，饼图，散点图，雷达图，极地图，甜甜圈图等</p><h1><span id="hexo-中的-chartjs">Hexo 中的 Chartjs</span></h1><p>为了方便在 Hexo 中使用这么漂亮的图表库，我自己写了一个 Hexo 的 Chartjs 插件。插件的安装和使用非常的简单，只需要进入博客目录，然后打开命令行，用npm安装一下：</p><pre><code>npm install hexo-tag-chart --save</code></pre><p>之后在文章内使用 chart 的 tag 就可以了</p><pre><code>&#123;% chart 90% 300 %&#125;\\TODO option goes here&#123;% endchart %&#125;</code></pre><p>其中 chart 是标签名，endchart 是结束标签，不需要更改，90% 是图表容器的相对宽度，默认是100%，300 是图表容器的高度，默认是按正常比例缩放的，你可以通过设置 options 里面的 aspectRatio 属性来调整宽高比例，另外还有许多属性可以自定义，你可以查看 官方文档。在标签之间的部分，都是需要自己填充的图表数据和属性。</p><p>我们来看一个样例，你可以把鼠标移上去看看动态效果。</p><div style="width: 90%;margin: 0 auto">    <canvas id="chart1340" style="height: 300px"></canvas></div><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script><script type="text/javascript">    var ctx = document.getElementById('chart1340').getContext('2d');    var options =     {    type: 'line',    data: {    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],    datasets: [{        label: 'My First dataset',        backgroundColor: 'rgb(255, 99, 132)',        borderColor: 'rgb(255, 99, 132)',        data: [0, 10, 5, 2, 20, 30, 45]        }]    },    options: {        responsive: true,        title: {        display: true,        text: 'Chart.js Line Chart'        }    }};    new Chart(ctx, options);</script><p>上面这个样例可以通过以下代码来实现：</p><pre><code>&#123;% chart 90% 300 %&#125;    &#123;    type: 'line',    data: &#123;    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],    datasets: [&#123;        label: 'My First dataset',        backgroundColor: 'rgb(255, 99, 132)',        borderColor: 'rgb(255, 99, 132)',        data: [0, 10, 5, 2, 20, 30, 45]        &#125;]    &#125;,    options: &#123;        responsive: true,        title: &#123;        display: true,        text: 'Chart.js Line Chart'        &#125;    &#125;&#125;&#123;% endchart %&#125;</code></pre><h1><span id="示例">示例</span></h1><p>现在你已经基本学会了在Hexo中插入图表了，我再展示一些更炫酷的图表吧，你可以自己去尝试一下。</p><h2><span id="折线图">折线图</span></h2><p>效果</p><div style="width: 90%;margin: 0 auto">    <canvas id="chart6747" style="height: 300px"></canvas></div><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script><script type="text/javascript">    var ctx = document.getElementById('chart6747').getContext('2d');    var options =   //其中 chart 是标签名，endchart 是结束标签，不需要更改，可以通过设置 options 里面的  aspectRatio 属性来调整图表的宽高比例，默认 width 为 100%，height 为 300px。 {    type: 'line',    data: { //  折线图数据    labels: ['8.4', '8.5', '8.6', '8.7', '8.8', '8.9', '8.10'], //  横坐标    datasets: [{ //  纵坐标变量名称        label: 'My First dataset',        lineTension: 0,        borderColor: 'rgb(255, 99, 132)', //  线条颜色        data: [0, 10, 5, 2, 20, 30, 45] //  纵坐标        }]    },    options: {        responsive: true,        title: {        display: true,        text: 'Chart.js 折线图' //  图表名称        }    }};    new Chart(ctx, options);</script><pre><code>&#123;% chart 90% 300 %&#125;  //其中 chart 是标签名，endchart 是结束标签，不需要更改，可以通过设置 options 里面的               aspectRatio 属性来调整图表的宽高比例，默认 width 为 100%，height 为 300px。 &#123;    type: 'line',    data: &#123; //  折线图数据    labels: ['8.4', '8.5', '8.6', '8.7', '8.8', '8.9', '8.10'], //  横坐标    datasets: [&#123; //  纵坐标变量名称        label: 'My First dataset',        lineTension: 0,        borderColor: 'rgb(255, 99, 132)', //  线条颜色        data: [0, 10, 5, 2, 20, 30, 45] //  纵坐标        &#125;]    &#125;,    options: &#123;        responsive: true,        title: &#123;        display: true,        text: 'Chart.js 折线图' //  图表名称        &#125;    &#125;&#125;&#123;% endchart %&#125;</code></pre><h2><span id="相关属性">相关属性</span></h2><table><thead><tr><th>名称</th><th>类型</th><th>描述</th></tr></thead><tbody><tr><td>backgroundColor</td><td>Color&#x2F;Color[]</td><td>线条背景色</td></tr><tr><td></td><td></td><td></td></tr><tr><td>borderColor</td><td>Color&#x2F;Color[]</td><td>线条颜色</td></tr></tbody></table><script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">]]></content>
-      
-      
-      <categories>
-          
-          <category> hexo </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> chatjs </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>hello-world</title>
       <link href="/2023/04/08/hello-world/"/>
       <url>/2023/04/08/hello-world/</url>
       
         <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><span id="more"></span><h2><span id="quick-start">Quick Start</span></h2><h3><span id="create-a-new-post">Create a new post</span></h3><pre><code class="bash">$ hexo new &quot;My New Post&quot;</code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3><span id="run-server">Run server</span></h3><pre><code class="bash">$ hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3><span id="generate-static-files">Generate static files</span></h3><pre><code class="bash">$ hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3><span id="deploy-to-remote-sites">Deploy to remote sites</span></h3><pre><code class="bash">$ hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p><script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">]]></content>
       
-      
-      <categories>
-          
-          <category> hexo </category>
-          
-      </categories>
       
       
     </entry>

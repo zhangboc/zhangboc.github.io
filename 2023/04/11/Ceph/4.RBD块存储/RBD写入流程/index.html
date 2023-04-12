@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>RBD写入流程 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="RBD写入流程">
+<meta property="og:url" content="https://github.com/zhangboc/zhangboc.github.io.git/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/images/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/1.jpg">
+<meta property="article:published_time" content="2023-04-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-11T09:39:44.105Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="RBD">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/images/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/1.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://github.com/zhangboc/zhangboc.github.io.git"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Ceph/4.RBD块存储/RBD写入流程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/" class="article-date">
+  <time class="dt-published" datetime="2023-04-10T16:00:00.000Z" itemprop="datePublished">2023-04-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      RBD写入流程
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1><span id></span></h1><span id="more"></span>
+
+<!-- toc -->
+
+
+
+<!-- tocstop -->
+
+<p><img src="/images/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/1.jpg"></p>
+<blockquote>
+<p>块设备都是瘦分配的，意味着使用的越多，分配的空间越多</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# rbd -p ceph-demo info rbd-demo.img #查看镜像信息
+rbd image &#39;rbd-demo.img&#39;:
+    size 10 GiB in 2560 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 11e24b04cf01
+    block_name_prefix: rbd_data.11e24b04cf01
+    format: 2
+    features: layering
+    op_features: 
+    flags: 
+    create_timestamp: Sat Mar  4 02:03:28 2023
+    access_timestamp: Sat Mar  4 02:03:28 2023
+    modify_timestamp: Sat Mar  4 02:03:28 2023
+[root@node-1 ~]# rados  -p ceph-demo ls | grep rbd_data.11e24b04cf01 #查看object
+rbd_data.11e24b04cf01.0000000000000960
+rbd_data.11e24b04cf01.0000000000000500
+rbd_data.11e24b04cf01.0000000000000780
+rbd_data.11e24b04cf01.0000000000000320
+rbd_data.11e24b04cf01.00000000000008c0
+rbd_data.11e24b04cf01.00000000000006e0
+rbd_data.11e24b04cf01.00000000000009ff
+rbd_data.11e24b04cf01.0000000000000640
+rbd_data.11e24b04cf01.0000000000000000
+rbd_data.11e24b04cf01.0000000000000280
+rbd_data.11e24b04cf01.0000000000000501
+rbd_data.11e24b04cf01.0000000000000001
+rbd_data.11e24b04cf01.00000000000003c0
+rbd_data.11e24b04cf01.0000000000000502
+rbd_data.11e24b04cf01.00000000000005a0
+rbd_data.11e24b04cf01.0000000000000460
+rbd_data.11e24b04cf01.0000000000000140
+rbd_data.11e24b04cf01.00000000000001e0
+rbd_data.11e24b04cf01.0000000000000820
+rbd_data.11e24b04cf01.00000000000000a0
+[root@node-1 data]# rados -p ceph-demo stat rbd_data.11e24b04cf01.000000000000007a#查看object 大小 size=比特，需要除以两次1024得出M
+ceph-demo/rbd_data.11e24b04cf01.000000000000007a mtime 2023-03-04 15:08:07.000000, size 4194304
+[root@node-1 ~]#  ceph osd map ceph-demo rbd_data.11e24b04cf01.000000000000007a #查看object 落到那个OSD和PG上 PG=1.20 最终落在0，1，2三个OSD上
+osdmap e339 pool &#39;ceph-demo&#39; (1) object &#39;rbd_data.11e24b04cf01.0000000000000960&#39; -&gt; pg 1.85b57b60 (1.20) -&gt; up ([2,1,0], p2) acting ([2,1,0], p2)
+[root@node-1 ~]# rados  -p ceph-demo ls |wc -l 查看当前ceph-demo的pool中一共存在25个object 每个object等于4 M，一共有25个，所以总共分配空间为100M
+，随着数据增加，会动态扩容分配空间。
+25
+[root@node-1 data]# dd if=/dev/zero of=test.img bs=1M count=1024  #尝试写入1G的文件到集群中
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 5.97513 s, 180 MB/s
+You have new mail in /var/spool/mail/root
+[root@node-1 data]# ls -lha 
+total 1.1G
+drwxr-xr-x.  2 root root   34 Mar  4 15:08 .
+dr-xr-xr-x. 18 root root  236 Mar  4 02:27 ..
+-rw-r--r--.  1 root root    5 Mar  4 02:30 test
+-rw-r--r--.  1 root root 1.0G Mar  4 15:08 test.img
+[root@node-1 data]# rados  -p ceph-demo ls | grep rbd_data.11e24b04cf01 |wc -l  #可以看到object的数量由25个增加到了276个 每个object等于4 M，所以总计分配1,104M
+276
+[root@node-1 data]# df -HT #查看实际使用情况发现基本相当
+Filesystem              Type      Size  Used Avail Use% Mounted on
+devtmpfs                devtmpfs  942M     0  942M   0% /dev
+tmpfs                   tmpfs     954M     0  954M   0% /dev/shm
+tmpfs                   tmpfs     954M   14M  941M   2% /run
+tmpfs                   tmpfs     954M     0  954M   0% /sys/fs/cgroup
+/dev/mapper/centos-root xfs        19G  2.7G   16G  15% /
+/dev/sda1               xfs       1.1G  190M  874M  18% /boot
+tmpfs                   tmpfs     191M     0  191M   0% /run/user/0
+tmpfs                   tmpfs     954M   54k  954M   1% /var/lib/ceph/osd/ceph-0
+/dev/rbd0               xfs        11G  1.2G  9.7G  11% /data
+</code></pre>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://github.com/zhangboc/zhangboc.github.io.git/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/" data-id="clgd2kqbq000fso5f4gmv9lwe" data-title="RBD写入流程" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ceph/" rel="tag">Ceph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RBD/" rel="tag">RBD</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/04/11/Ceph/3.Ceph%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/Ceph-%E5%AE%89%E8%A3%85/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Ceph-安装
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">RBD块创建及映射</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ceph/" rel="tag">Ceph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ceph-FS/" rel="tag">Ceph FS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ceph%E7%AE%80%E4%BB%8B/" rel="tag">Ceph简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBD/" rel="tag">RBD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RGW/" rel="tag">RGW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chatjs/" rel="tag">chatjs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" rel="tag">故障排查</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/Ceph-FS/" style="font-size: 10px;">Ceph FS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/RBD/" style="font-size: 15px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/3.Ceph%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/Ceph-%E5%AE%89%E8%A3%85/">Ceph-安装</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/">RBD写入流程</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84/">RBD块创建及映射</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9/">RBD存储扩容/缩容</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/5.RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">RGW对象存储</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+<script src="/live2D/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2D/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":true,"model":{"jsonPath":"/live2D/assets/xiaomai.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>

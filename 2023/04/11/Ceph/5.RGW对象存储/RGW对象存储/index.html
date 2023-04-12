@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>RGW对象存储 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="RGW对象存储">
+<meta property="og:url" content="https://github.com/zhangboc/zhangboc.github.io.git/2023/04/11/Ceph/5.RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/images/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg">
+<meta property="article:published_time" content="2023-04-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-11T09:40:13.730Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="RGW">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/images/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://github.com/zhangboc/zhangboc.github.io.git"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Ceph/5.RGW对象存储/RGW对象存储" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/04/11/Ceph/5.RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/" class="article-date">
+  <time class="dt-published" datetime="2023-04-10T16:00:00.000Z" itemprop="datePublished">2023-04-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      RGW对象存储
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1><span id></span></h1><span id="more"></span>
+
+<!-- toc -->
+
+<ul>
+<li><a href="#ceph-%E5%AF%B9%E8%B1%A1%E7%BD%91%E5%85%B3%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D">CEPH 对象网关架构介绍</a></li>
+<li><a href="#%E9%83%A8%E7%BD%B2rgw">部署RGW</a><ul>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3">查看帮助文档</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8node-1%E4%BD%9C%E4%B8%BA%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3">使用node-1作为对象存储网关</a></li>
+<li><a href="#%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E6%B7%BB%E5%8A%A0%E6%88%90%E5%8A%9F">检查是否添加成功</a></li>
+<li><a href="#%E6%A3%80%E6%9F%A5%E6%9C%8D%E5%8A%A1%E8%BF%90%E8%A1%8C%E6%83%85%E5%86%B5">检查服务运行情况</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BF%AE%E6%94%B9rgw%E9%BB%98%E8%AE%A4%E7%AB%AF%E5%8F%A3">修改RGW默认端口</a><ul>
+<li><a href="#%E4%BF%AE%E6%94%B9%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">修改节点配置文件</a></li>
+<li><a href="#%E5%B0%86%E9%85%8D%E7%BD%AE%E5%A5%BD%E7%9A%84cephconf-%E6%8E%A8%E9%80%81%E5%88%B0%E6%89%80%E6%9C%89%E8%8A%82%E7%82%B9%E4%B8%AD">将配置好的ceph.conf 推送到所有节点中</a></li>
+<li><a href="#%E9%87%8D%E5%90%AFrgw%E6%9C%8D%E5%8A%A1">重启rgw服务</a></li>
+<li><a href="#%E6%A0%A1%E9%AA%8C%E9%85%8D%E7%BD%AE%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88-%E5%8F%AF%E4%BF%AE%E6%94%B9%E6%88%90443%E7%AB%AF%E5%8F%A3%E6%B7%BB%E5%8A%A0%E8%AF%81%E4%B9%A6%E5%8F%AF%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E8%BF%9B%E8%A1%8C%E6%9F%A5%E8%AF%A2%E5%85%B7%E4%BD%93%E9%85%8D%E7%BD%AE">校验配置是否生效 可修改成443端口，添加证书可使用百度进行查询具体配置</a></li>
+</ul>
+</li>
+<li><a href="#rgw%E4%B9%8Bs3%E6%8E%A5%E5%8F%A3%E4%BD%BF%E7%94%A8">RGW之s3接口使用</a><ul>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3%E4%BD%BF%E7%94%A8user-create%E8%BF%9B%E8%A1%8C%E5%88%9B%E5%BB%BA">查看帮助文档，使用user create进行创建</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%98%BE%E7%A4%BA%E5%90%8D%E4%B8%BAceph-s3-user-demo%E7%9A%84%E7%94%A8%E6%88%B7%E5%B9%B6%E6%8C%87%E5%AE%9Auid%E4%B8%BAceph-s3-user">创建一个显示名为Ceph S3 User Demo的用户，并指定uid为ceph-s3-user</a></li>
+<li><a href="#%E4%BF%9D%E5%AD%98%E7%94%A8%E6%88%B7%E5%92%8C%E5%AF%86%E7%A0%81%E4%BF%A1%E6%81%AF">保存用户和密码信息</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8Dradosgw%E5%88%9B%E5%BB%BA%E7%9A%84%E7%94%A8%E6%88%B7">查看当前radosgw创建的用户</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E7%94%A8%E6%88%B7%E7%9A%84%E5%85%B7%E4%BD%93%E4%BF%A1%E6%81%AF">查看用户的具体信息</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85python-boto%E7%9A%84%E8%BD%AF%E4%BB%B6%E5%8C%85">安装python-boto的软件包</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAs3-clientpy%E7%9A%84python%E8%84%9A%E6%9C%AC">创建一个s3-client.py的python脚本</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E7%9A%84pool">查看自动生成的pool</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BAceph-s3-bucket%E7%9A%84bucket">创建ceph-s3-bucket的bucket</a></li>
+<li><a href="#%E5%86%8D%E6%AC%A1%E6%9F%A5%E7%9C%8B%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E7%9A%84pool">再次查看自动生成的pool</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85s3cmd%E7%9A%84%E5%B7%A5%E5%85%B7%E5%AE%9E%E7%8E%B0%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD%E5%8A%9F%E8%83%BD">安装s3cmd的工具实现上传下载功能</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AEs3cmd%E7%9A%84%E5%B7%A5%E5%85%B7">配置s3cmd的工具</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E7%94%9F%E6%88%90%E7%9A%84%E6%96%87%E4%BB%B6">查看生成的文件</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8Dbuck%E6%83%85%E5%86%B5">查看当前buck情况</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BAbucket">创建bucket</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8Bbucket">查看bucket</a></li>
+<li><a href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6">上传文件</a></li>
+<li><a href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E5%A4%B9">上传文件夹</a></li>
+<li><a href="#%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6">下载文件</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6">删除文件</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E7%9B%AE%E5%BD%95">删除目录</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%AD%98%E5%82%A8%E6%B1%A0%E5%8F%98%E5%8C%96">查看存储池变化</a></li>
+</ul>
+</li>
+<li><a href="#rgw%E4%B9%8Bswift%E6%8E%A5%E5%8F%A3%E4%BD%BF%E7%94%A8">RGW之Swift接口使用</a><ul>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7">查看当前用户</a></li>
+<li><a href="#%E6%A0%B9%E6%8D%AE%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E5%88%9B%E5%BB%BAswift%E7%94%A8%E6%88%B7">根据当前用户创建swift用户</a></li>
+<li><a href="#%E7%94%9F%E6%88%90swift%E7%9A%84key">生成Swift的key</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85swift%E5%AE%A2%E6%88%B7%E7%AB%AF">安装Swift客户端</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8Bbucket-1">查看bucket</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BAswift%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%96%87%E4%BB%B6">创建Swift环境变量文件</a></li>
+<li><a href="#%E9%AA%8C%E8%AF%81%E5%8F%98%E9%87%8F%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88">验证变量是否生效</a></li>
+<li><a href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6-1">上传文件</a></li>
+<li><a href="#%E4%B8%8A%E4%BC%A0%E7%9B%AE%E5%BD%95">上传目录</a></li>
+<li><a href="#%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6-1">下载文件</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6-1">删除文件</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+<h1><span id="ceph-对象网关架构介绍">CEPH 对象网关架构介绍</span></h1><p>Ceph 对象网关是建立在 librados. 它在应用程序和 Ceph 存储集群之间提供了一个 RESTful 网关。Ceph 对象存储支持两种接口：</p>
+<ol>
+<li>S3 兼容：通过与 Amazon S3 RESTful API 的大部分子集兼容的接口提供对象存储功能。</li>
+<li>Swift 兼容：通过与 OpenStack Swift API 的大部分子集兼容的接口提供对象存储功能。</li>
+</ol>
+<p>Ceph 对象存储使用 Ceph 对象网关守护进程 ( radosgw)，这是一个设计用于与 Ceph 存储集群交互的 HTTP 服务器。</p>
+<p>Ceph 对象网关提供与 Amazon S3 和 OpenStack Swift 兼容的接口，并且有自己的用户管理。Ceph 对象网关可以将数据存储在同一个 Ceph 存储集群中，其中存储了来自 Ceph 文件系统客户端和 Ceph 块设备客户端的数据。S3 API 和 Swift API 共享一个公共命名空间，这使得可以使用一个 API 将数据写入 Ceph 存储集群，然后使用另一个 API 检索该数据。</p>
+<p><img src="/images/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg"></p>
+<blockquote>
+<p>Ceph 对象存储不使用Ceph 元数据服务器。</p>
+</blockquote>
+<h1><span id="部署rgw">部署RGW</span></h1><h2><span id="查看帮助文档">查看帮助文档</span></h2><pre><code>[root@node-1 my-cluster]# ceph-deploy rgw -h 
+ usage: ceph-deploy rgw [-h] &#123;create&#125; ...
+
+Ceph RGW daemon management
+
+positional arguments:
+  &#123;create&#125;
+    create    Create an RGW instance
+
+optional arguments:
+  -h, --help  show this help message and exit
+</code></pre>
+<h2><span id="使用node-1作为对象存储网关">使用node-1作为对象存储网关</span></h2><pre><code>[root@node-1 my-cluster]# ceph-deploy rgw create [HOST[:NAME] ...]
+usage: ceph-deploy rgw create [-h] HOST[:NAME] [HOST[:NAME] ...]
+
+[root@node-1 my-cluster]# ceph-deploy rgw create node-1
+</code></pre>
+<h2><span id="检查是否添加成功">检查是否添加成功</span></h2><pre><code>[root@node-1 my-cluster]# ceph -s  #查看集群多了一个rgw的对象网关
+  cluster:
+    id:     e9a90625-4707-4b6b-b52f-661512ea831d
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum node-1,node-2,node-3 (age 32s)
+    mgr: node-1(active, since 18h), standbys: node-2, node-3
+    osd: 3 osds: 3 up (since 2h), 3 in (since 5h)
+    rgw: 1 daemon active (node-1)
+ 
+  task status:
+ 
+  data:
+    pools:   5 pools, 192 pgs
+    objects: 468 objects, 1.0 GiB
+    usage:   6.2 GiB used, 24 GiB / 30 GiB avail
+    pgs:     192 active+clean
+[root@node-1 my-cluster]# netstat -antupl | grep 7480 #查看监听端口
+tcp        0      0 0.0.0.0:7480            0.0.0.0:*               LISTEN      66157/radosgw       
+tcp6       0      0 :::7480                 :::*                    LISTEN      66157/radosgw 
+[root@node-1 my-cluster]#  yum whatprovides &quot;*bin/netstat&quot; #如果netstat执行失败可查看是否没有安装net-tools
+Loaded plugins: fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * extras: mirrors.aliyun.com
+ * updates: mirrors.aliyun.com
+net-tools-2.0-0.25.20131004git.el7.x86_64 : Basic networking tools
+Repo        : base
+Matched from:
+Filename    : /bin/netstat
+
+
+
+net-tools-2.0-0.25.20131004git.el7.x86_64 : Basic networking tools
+Repo        : @base
+Matched from:
+Filename    : /bin/netsta
+[root@node-1 my-cluster]#  yum install -y net-tools
+</code></pre>
+<h2><span id="检查服务运行情况">检查服务运行情况</span></h2><pre><code>[root@node-1 my-cluster]# curl http://node-1:7480 
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;ListAllMyBucketsResult xmlns=&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;&gt;&lt;Owner&gt;&lt;ID&gt;anonymous&lt;/ID&gt;&lt;DisplayName&gt;&lt;/DisplayName&gt;&lt;/Owner&gt;&lt;Buckets&gt;&lt;/Buckets&gt;&lt;/ListAllMyBucketsResult&gt;
+</code></pre>
+<h1><span id="修改rgw默认端口">修改RGW默认端口</span></h1><h2><span id="修改节点配置文件">修改节点配置文件</span></h2><p><strong>node-1节点执行：</strong></p>
+<pre><code>[root@node-1 my-cluster]# cat ceph.conf 
+[global]
+fsid = e9a90625-4707-4b6b-b52f-661512ea831d
+public_network = 192.168.187.0/24
+cluster_network = 192.168.199.0/24
+mon_initial_members = node-1
+mon_host = 192.168.187.201
+auth_cluster_required = cephx
+auth_service_required = cephx
+auth_client_required = cephx
+
+[client.rgw.node-1] #新增如下配置
+</code></pre>
+<h2><span id="将配置好的cephconf-推送到所有节点中">将配置好的ceph.conf 推送到所有节点中</span></h2><blockquote>
+<p>–overwrite-conf 由于其他节点已经有ceph.conf 文件，所以需要加此参数进行覆盖</p>
+</blockquote>
+<p>[root@node-1 my-cluster]# ceph-deploy –overwrite-conf config push node-1 node-2 node-3 </p>
+<h2><span id="重启rgw服务">重启rgw服务</span></h2><pre><code>[root@node-1 my-cluster]#  systemctl restart ceph-radosgw.target
+</code></pre>
+<h2><span id="校验配置是否生效-可修改成443端口添加证书可使用百度进行查询具体配置">校验配置是否生效 可修改成443端口，添加证书可使用百度进行查询具体配置</span></h2><pre><code>[root@node-1 my-cluster]# netstat -antupl | grep 80 
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      67161/radosgw
+</code></pre>
+<h1><span id="rgw之s3接口使用">RGW之s3接口使用</span></h1><blockquote>
+<p> <strong>使用对象存储的前提是需要创建用户，一种是S3风格的，一种是swift风格的</strong></p>
+</blockquote>
+<h2><span id="查看帮助文档使用user-create进行创建">查看帮助文档，使用user create进行创建</span></h2><pre><code>[root@node-1 my-cluster]# radosgw-admin -h | grep user 
+  user create                create a new user
+  user modify                modify user
+  user info                  get user info
+  user rm                    remove user
+  user suspend               suspend a user
+  user enable                re-enable user after suspension
+  user check                 check user info
+  user stats                 show user stats as accounted by quota subsystem
+  user list                  list users
+  caps add                   add user capabilities
+  caps rm                    remove user capabilities
+  subuser create             create a new subuser
+  subuser modify             modify subuser
+  subuser rm                 remove subuser
+  bucket link                link bucket to specified user
+  bucket unlink              unlink bucket from specified user
+  usage show                 show usage (by user, by bucket, date range)
+  usage trim                 trim usage (by user, by bucket, date range)
+   --uid=&lt;id&gt;                user id
+   --subuser=&lt;name&gt;          subuser name
+   --email=&lt;email&gt;           user&#39;s email address
+   --access=&lt;access&gt;         Set access permissions for sub-user, should be one
+   --display-name=&lt;name&gt;     user&#39;s display name
+   --max-buckets             max number of buckets for a user
+   --admin                   set the admin flag on the user
+   --system                  set the system flag on the user
+   --op-mask                 set the op mask on the user
+   --purge-data              when specified, user removal will also purge all the
+                             user data
+   --purge-keys              when specified, subuser removal will also purge all the
+                             subuser keys
+   --sync-stats              option to &#39;user stats&#39;, update user stats with current
+                             stats reported by user&#39;s buckets indexes
+   --reset-stats             option to &#39;user stats&#39;, reset stats in accordance with user buckets
+   --caps=&lt;caps&gt;             list of caps (e.g., &quot;usage=read, write; user=read&quot;)
+   --quota-scope             scope of quota (bucket, user)
+  --setuser USER    set uid to user or uid (and gid to user&#39;s gid)
+</code></pre>
+<h2><span id="创建一个显示名为ceph-s3-user-demo的用户并指定uid为ceph-s3-user">创建一个显示名为Ceph S3 User Demo的用户，并指定uid为ceph-s3-user</span></h2><pre><code>[root@node-1 my-cluster]# radosgw-admin user create --uid ceph-s3-user --display-name &quot;Ceph S3 User Demo&quot; 
+&#123;
+    &quot;user_id&quot;: &quot;ceph-s3-user&quot;,
+    &quot;display_name&quot;: &quot;Ceph S3 User Demo&quot;,
+    &quot;email&quot;: &quot;&quot;,
+    &quot;suspended&quot;: 0,
+    &quot;max_buckets&quot;: 1000, #最大只允许创建1000个buckets
+    &quot;subusers&quot;: [],
+    &quot;keys&quot;: [
+        &#123;
+            &quot;user&quot;: &quot;ceph-s3-user&quot;, #用户ID
+            &quot;access_key&quot;: &quot;5SCX55201QUQ0FOPCPD6&quot;, #SSH的key
+            &quot;secret_key&quot;: &quot;k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm&quot; #  secret的key
+        &#125;
+    ],
+    &quot;swift_keys&quot;: [],
+    &quot;caps&quot;: [],
+    &quot;op_mask&quot;: &quot;read, write, delete&quot;,
+    &quot;default_placement&quot;: &quot;&quot;,
+    &quot;default_storage_class&quot;: &quot;&quot;,
+    &quot;placement_tags&quot;: [],
+    &quot;bucket_quota&quot;: &#123; #bucket配额信息
+        &quot;enabled&quot;: false,
+        &quot;check_on_raw&quot;: false,
+        &quot;max_size&quot;: -1,
+        &quot;max_size_kb&quot;: 0,
+        &quot;max_objects&quot;: -1
+    &#125;,
+    &quot;user_quota&quot;: &#123; #用户的配额信息
+        &quot;enabled&quot;: false,
+        &quot;check_on_raw&quot;: false,
+        &quot;max_size&quot;: -1,
+        &quot;max_size_kb&quot;: 0,
+        &quot;max_objects&quot;: -1
+    &#125;,
+    &quot;temp_url_keys&quot;: [],
+    &quot;type&quot;: &quot;rgw&quot;,
+    &quot;mfa_ids&quot;: []
+&#125;
+</code></pre>
+<h2><span id="保存用户和密码信息">保存用户和密码信息</span></h2><pre><code>[root@node-1 my-cluster]# cat key.txt  
+    &quot;keys&quot;: [
+        &#123;
+            &quot;user&quot;: &quot;ceph-s3-user&quot;,
+            &quot;access_key&quot;: &quot;5SCX55201QUQ0FOPCPD6&quot;,
+            &quot;secret_key&quot;: &quot;k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm&quot;
+        &#125;
+    ],
+</code></pre>
+<h2><span id="查看当前radosgw创建的用户">查看当前radosgw创建的用户</span></h2><pre><code>[root@node-1 my-cluster]#  radosgw-admin user list 
+[
+    &quot;ceph-s3-user&quot;
+]
+</code></pre>
+<h2><span id="查看用户的具体信息">查看用户的具体信息</span></h2><pre><code>[root@node-1 my-cluster]# radosgw-admin user info --uid ceph-s3-user 
+&#123;
+    &quot;user_id&quot;: &quot;ceph-s3-user&quot;,
+    &quot;display_name&quot;: &quot;Ceph S3 User Demo&quot;,
+    &quot;email&quot;: &quot;&quot;,
+    &quot;suspended&quot;: 0,
+    &quot;max_buckets&quot;: 1000,
+    &quot;subusers&quot;: [],
+    &quot;keys&quot;: [
+        &#123;
+            &quot;user&quot;: &quot;ceph-s3-user&quot;,
+            &quot;access_key&quot;: &quot;5SCX55201QUQ0FOPCPD6&quot;,
+            &quot;secret_key&quot;: &quot;k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm&quot;
+        &#125;
+    ],
+    &quot;swift_keys&quot;: [],
+    &quot;caps&quot;: [],
+    &quot;op_mask&quot;: &quot;read, write, delete&quot;,
+    &quot;default_placement&quot;: &quot;&quot;,
+    &quot;default_storage_class&quot;: &quot;&quot;,
+    &quot;placement_tags&quot;: [],
+    &quot;bucket_quota&quot;: &#123;
+        &quot;enabled&quot;: false,
+        &quot;check_on_raw&quot;: false,
+        &quot;max_size&quot;: -1,
+        &quot;max_size_kb&quot;: 0,
+        &quot;max_objects&quot;: -1
+    &#125;,
+    &quot;user_quota&quot;: &#123;
+        &quot;enabled&quot;: false,
+        &quot;check_on_raw&quot;: false,
+        &quot;max_size&quot;: -1,
+        &quot;max_size_kb&quot;: 0,
+        &quot;max_objects&quot;: -1
+    &#125;,
+    &quot;temp_url_keys&quot;: [],
+    &quot;type&quot;: &quot;rgw&quot;,
+    &quot;mfa_ids&quot;: []
+&#125;
+</code></pre>
+<h2><span id="安装python-boto的软件包">安装python-boto的软件包</span></h2><pre><code>[root@node-1 my-cluster]# yum install python-boto
+</code></pre>
+<h2><span id="创建一个s3-clientpy的python脚本">创建一个s3-client.py的python脚本</span></h2><pre><code>[root@node-1 my-cluster]# cat s3-client.py
+
+import boto
+import boto.s3.connection
+access_key = &#39;5SCX55201QUQ0FOPCPD6&#39; #上述保存的key
+secret_key = &#39;k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm&#39; #上述保存的key
+
+conn = boto.connect_s3(
+        aws_access_key_id = access_key,
+        aws_secret_access_key = secret_key,
+        host = &#39;192.168.187.201&#39;, port=80, #服务器的IP及端口
+        is_secure=False,calling_format=boto.s3.connection.OrdinaryCallingFormat(),
+        )
+
+bucket = conn.create_bucket(&#39;ceph-s3-bucket&#39;)
+for bucket in conn.get_all_buckets():
+        print(&quot;&#123;name&#125;\t&#123;created&#125;&quot;.format(
+                name = bucket.name,
+                created = bucket.creation_date,
+        ))
+</code></pre>
+<h2><span id="查看自动生成的pool">查看自动生成的pool</span></h2><pre><code>[root@node-1 my-cluster]# ceph osd lspools
+1 ceph-demo
+2 .rgw.root
+3 default.rgw.control
+4 default.rgw.meta
+5 default.rgw.log
+</code></pre>
+<h2><span id="创建ceph-s3-bucket的bucket">创建ceph-s3-bucket的bucket</span></h2><pre><code>[root@node-1 my-cluster]#  python  s3-client.py 
+ceph-s3-bucket    2023-03-04T12:52:01.787Z
+</code></pre>
+<h2><span id="再次查看自动生成的pool">再次查看自动生成的pool</span></h2><blockquote>
+<p>执行后可以看到多了一个6 default.rgw.buckets.index的pool，写入数据后还会增加一个data的pool</p>
+</blockquote>
+<pre><code>[root@node-1 my-cluster]# ceph osd lspools
+1 ceph-demo
+2 .rgw.root #rgw的根pool
+3 default.rgw.control #rgw的配置pool
+4 default.rgw.meta #rgw的元数据pool
+5 default.rgw.log #rgw的日志pool 
+6 default.rgw.buckets.index #rgw的索引pool
+</code></pre>
+<h2><span id="安装s3cmd的工具实现上传下载功能">安装s3cmd的工具实现上传下载功能</span></h2><p><code>[root@node-1 my-cluster]#  yum install s3cmd</code></p>
+<h2><span id="配置s3cmd的工具">配置s3cmd的工具</span></h2><pre><code>[root@node-1 my-cluster]# s3cmd --configure
+
+Enter new values or accept defaults in brackets with Enter.
+Refer to user manual for detailed description of all options.
+
+Access key and Secret key are your identifiers for Amazon S3. Leave them empty for using the env variables.
+Access Key: 5SCX55201QUQ0FOPCPD6 #输入
+Secret Key: k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm #输入
+Default Region [US]: 
+
+Use &quot;s3.amazonaws.com&quot; for S3 Endpoint and not modify it to the 回车target Amazon S3.
+S3 Endpoint [s3.amazonaws.com]: 192.168.187.201:80 #输入回车
+
+Use &quot;%(bucket)s.s3.amazonaws.com&quot; to the target Amazon S3. &quot;%(bucket)s&quot; and &quot;%(location)s&quot; vars can be used
+if the target S3 system supports dns based buckets.
+DNS-style bucket+hostname:port template for accessing a bucket [%(bucket)s.s3.amazonaws.com]: 192.168.187.201:80/%(bucket)s #输入回车
+
+Encryption password is used to protect your files from reading
+by unauthorized persons while in transfer to S3
+Encryption password: 
+Path to GPG program [/usr/bin/gpg]: 
+
+When using secure HTTPS protocol all communication with Amazon S3
+servers is protected from 3rd party eavesdropping. This method is
+slower than plain HTTP, and can only be proxied with Python 2.7 or newer
+Use HTTPS protocol [Yes]: no #输入回车
+
+On some networks all internet access must go through a HTTP proxy.
+Try setting it here if you can&#39;t connect to S3 directly
+HTTP Proxy server name: 
+
+New settings:
+  Access Key: 5SCX55201QUQ0FOPCPD6
+  Secret Key: k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm
+  Default Region: US
+  S3 Endpoint: 192.168.187.201:80
+  DNS-style bucket+hostname:port template for accessing a bucket: 192.168.187.201:80/%(bucket)s
+  Encryption password: 
+  Path to GPG program: /usr/bin/gpg
+  Use HTTPS protocol: False
+  HTTP Proxy server name: 
+  HTTP Proxy server port: 0
+
+Test access with supplied credentials? [Y/n] y #输入
+Please wait, attempting to list all buckets...
+Success. Your access key and secret key worked fine :-)
+
+Now verifying that encryption works...
+Not configured. Never mind.
+
+Save settings? [y/N] y #输入
+Configuration saved to &#39;/root/.s3cfg&#39;
+You have new mail in /var/spool/mail/root
+</code></pre>
+<h2><span id="查看生成的文件">查看生成的文件</span></h2><pre><code>[root@node-1 my-cluster]# cat /root/.s3cfg
+[default]
+access_key = 5SCX55201QUQ0FOPCPD6
+access_token = 
+add_encoding_exts = 
+add_headers = 
+bucket_location = US
+ca_certs_file = 
+cache_file = 
+check_ssl_certificate = True
+check_ssl_hostname = True
+cloudfront_host = cloudfront.amazonaws.com
+connection_max_age = 5
+connection_pooling = True
+content_disposition = 
+content_type = 
+default_mime_type = binary/octet-stream
+delay_updates = False
+delete_after = False
+delete_after_fetch = False
+delete_removed = False
+dry_run = False
+enable_multipart = True
+encrypt = False
+expiry_date = 
+expiry_days = 
+expiry_prefix = 
+follow_symlinks = False
+force = False
+get_continue = False
+gpg_command = /usr/bin/gpg
+gpg_decrypt = %(gpg_command)s -d --verbose --no-use-agent --batch --yes --passphrase-fd %(passphrase_fd)s -o %(output_file)s %(input_file)s
+gpg_encrypt = %(gpg_command)s -c --verbose --no-use-agent --batch --yes --passphrase-fd %(passphrase_fd)s -o %(output_file)s %(input_file)s
+gpg_passphrase = 
+guess_mime_type = True
+host_base = 192.168.187.201:80
+host_bucket = 192.168.187.201:80/%(bucket)s
+human_readable_sizes = False
+invalidate_default_index_on_cf = False
+invalidate_default_index_root_on_cf = True
+invalidate_on_cf = False
+kms_key = 
+limit = -1
+limitrate = 0
+list_allow_unordered = False
+list_md5 = False
+log_target_prefix = 
+long_listing = False
+max_delete = -1
+mime_type = 
+multipart_chunk_size_mb = 15
+multipart_copy_chunk_size_mb = 1024
+multipart_max_chunks = 10000
+preserve_attrs = True
+progress_meter = True
+proxy_host = 
+proxy_port = 0
+public_url_use_https = False
+put_continue = False
+recursive = False
+recv_chunk = 65536
+reduced_redundancy = False
+requester_pays = False
+restore_days = 1
+restore_priority = Standard
+secret_key = k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm
+send_chunk = 65536
+server_side_encryption = False
+signature_v2 = False
+signurl_use_https = False
+simpledb_host = sdb.amazonaws.com
+skip_existing = False
+socket_timeout = 300
+ssl_client_cert_file = 
+ssl_client_key_file = 
+stats = False
+stop_on_error = False
+storage_class = 
+throttle_max = 100
+upload_id = 
+urlencoding_mode = normal
+use_http_expect = False
+use_https = False
+use_mime_magic = True
+verbosity = WARNING
+website_endpoint = http://%(bucket)s.s3-website-%(location)s.amazonaws.com/
+website_error = 
+website_index = index.html
+</code></pre>
+<h2><span id="查看当前buck情况">查看当前buck情况</span></h2><pre><code>[root@node-1 ~]# s3cmd ls 
+2023-03-04 12:52  s3://ceph-s3-bucket
+</code></pre>
+<h2><span id="创建bucket">创建bucket</span></h2><blockquote>
+<p>使用cmd创建一个叫做s3cmd-demo的bucket</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# s3cmd mb s3://s3cmd-demo 
+ERROR: S3 error: 403 (SignatureDoesNotMatch) #由于当前设置的版本不一致导致
+</code></pre>
+<blockquote>
+<p>修改版本</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# vi /root/.s3cfg 
+signature_v2 = True
+</code></pre>
+<blockquote>
+<p>重新创建</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# s3cmd mb s3://s3cmd-demo 
+Bucket &#39;s3://s3cmd-demo/&#39; created
+</code></pre>
+<h2><span id="查看bucket">查看bucket</span></h2><pre><code>[root@node-1 ~]# s3cmd ls 
+2023-03-04 12:52  s3://ceph-s3-bucket
+2023-03-04 17:38  s3://s3cmd-demo
+</code></pre>
+<h2><span id="上传文件">上传文件</span></h2><pre><code>[root@node-1 ~]#  s3cmd put /etc/fstab s3://s3cmd-demo/fastab-demo #报错，经查询最简单的解决办法是添加OSD或者修改ceph.conf 文件
+upload: &#39;/etc/fstab&#39; -&gt; &#39;s3://s3cmd-demo/fastab-demo&#39;  [1 of 1]
+ 465 of 465   100% in    0s   866.93 B/s  done
+ERROR: S3 error: 416 (InvalidRange)
+</code></pre>
+<blockquote>
+<p>报错，经查询最简单的解决办法是添加OSD或者修改ceph.conf 文件,原因是当前OSD数量太少；</p>
+</blockquote>
+<blockquote>
+<p>添加OSD</p>
+</blockquote>
+<pre><code>[root@node-1 my-cluster]# ceph-deploy osd create node-1 --data /dev/sdc --journal /dev/sdc
+[root@node-1 my-cluster]# ceph-deploy osd create node-2 --data /dev/sdc --journal /dev/sdc
+[root@node-1 my-cluster]# ceph-deploy osd create node-3 --data /dev/sdc --journal /dev/sdc
+</code></pre>
+<blockquote>
+<p>尝试重新上传</p>
+</blockquote>
+<pre><code>[root@node-1 my-cluster]#  s3cmd put /etc/fstab s3://s3cmd-demo/fastab-demo
+upload: &#39;/etc/fstab&#39; -&gt; &#39;s3://s3cmd-demo/fastab-demo&#39;  [1 of 1]
+ 465 of 465   100% in    1s   317.00 B/s  done
+</code></pre>
+<blockquote>
+<p>查看上传的文件</p>
+</blockquote>
+<pre><code>[root@node-1 my-cluster]# s3cmd ls s3://s3cmd-demo 
+2023-03-04 17:47          465  s3://s3cmd-demo/fastab-demo
+</code></pre>
+<h2><span id="上传文件夹">上传文件夹</span></h2><blockquote>
+<p>–recursive 上传目录需要使用递归的方式</p>
+</blockquote>
+<p><code>[root@node-1 my-cluster]# s3cmd put /etc s3://s3cmd-demo/etc/ --recursive </code></p>
+<blockquote>
+<p>查看上传结果</p>
+</blockquote>
+<pre><code>[root@node-1 my-cluster]# s3cmd ls s3://s3cmd-demo/etc/etc/
+                          DIR  s3://s3cmd-demo/etc/etc/NetworkManager/
+                          DIR  s3://s3cmd-demo/etc/etc/X11/
+                          DIR  s3://s3cmd-demo/etc/etc/audisp/
+                          DIR  s3://s3cmd-demo/etc/etc/audit/
+                          DIR  s3://s3cmd-demo/etc/etc/bash_completion.d/
+                          DIR  s3://s3cmd-demo/etc/etc/ceph/
+                          DIR  s3://s3cmd-demo/etc/etc/cron.d/
+</code></pre>
+<h2><span id="下载文件">下载文件</span></h2><blockquote>
+<p>#下载文件并重命名为yum.conf-download</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# s3cmd get s3://s3cmd-demo/etc/etc/yum.conf yum.conf-download 
+download: &#39;s3://s3cmd-demo/etc/etc/yum.conf&#39; -&gt; &#39;yum.conf-download&#39;  [1 of 1]
+ 970 of 970   100% in    0s    22.27 KB/s  done
+</code></pre>
+<h2><span id="删除文件">删除文件</span></h2><pre><code>[root@node-1 ~]#  s3cmd rm s3://s3cmd-demo/fastab-demo #删除操作
+delete: &#39;s3://s3cmd-demo/fstab-demo&#39;
+</code></pre>
+<h2><span id="删除目录">删除目录</span></h2><p><code>s3cmd rm s3://s3cmd-demo/etc --recursive</code></p>
+<h2><span id="查看存储池变化">查看存储池变化</span></h2><blockquote>
+<p>完成上述操作后ceph会多出一个default.rgw.buckets.data的pool</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# ceph osd lspools
+1 ceph-demo
+2 .rgw.root
+3 default.rgw.control
+4 default.rgw.meta
+5 default.rgw.log
+6 default.rgw.buckets.index
+7 default.rgw.buckets.data #rgw的数据pool
+</code></pre>
+<blockquote>
+<p>查看内容</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# rados -p default.rgw.buckets.data ls 
+3db4c650-9c23-4843-8015-97b79566b3b0.5970.2__shadow_.qHY1cLeCzRSWHFoEoAqc9Nmg5S2K4qJ_2
+3db4c650-9c23-4843-8015-97b79566b3b0.5970.2__shadow_.qHY1cLeCzRSWHFoEoAqc9Nmg5S2K4qJ_1
+</code></pre>
+<blockquote>
+<p>#重新上传文件</p>
+</blockquote>
+<p><code>root@node-1 ~]#  s3cmd put /etc/fstab s3://s3cmd-demo/fastab-demo</code></p>
+<blockquote>
+<p>再次查看内容</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# rados -p default.rgw.buckets.data ls  #可以看到多了一个3db4c650-9c23-4843-8015-97b79566b3b0.5970.2_fastab-demo的对象
+3db4c650-9c23-4843-8015-97b79566b3b0.5970.2__shadow_.qHY1cLeCzRSWHFoEoAqc9Nmg5S2K4qJ_2
+3db4c650-9c23-4843-8015-97b79566b3b0.5970.2__shadow_.qHY1cLeCzRSWHFoEoAqc9Nmg5S2K4qJ_1
+3db4c650-9c23-4843-8015-97b79566b3b0.5970.2_fastab-demo #可以看到这个文件多了写前缀，前缀是存放在default.rgw.buckets.index的pool中的
+</code></pre>
+<blockquote>
+<p>查看索引</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# rados -p default.rgw.buckets.index ls 
+.dir.3db4c650-9c23-4843-8015-97b79566b3b0.5970.2
+</code></pre>
+<h1><span id="rgw之swift接口使用">RGW之Swift接口使用</span></h1><blockquote>
+<p><strong>需要在原有用户的基础上进行添加</strong></p>
+</blockquote>
+<h2><span id="查看当前用户">查看当前用户</span></h2><pre><code>[root@node-1 ~]# radosgw-admin user list 
+[
+    &quot;ceph-s3-user&quot;
+]
+</code></pre>
+<h2><span id="根据当前用户创建swift用户">根据当前用户创建swift用户</span></h2><pre><code>[root@node-1 ~]# radosgw-admin subuser create --uid ceph-s3-user --subuser=ceph-s3-user:swift --access=full
+&#123;
+    &quot;user_id&quot;: &quot;ceph-s3-user&quot;,
+    &quot;display_name&quot;: &quot;Ceph S3 User Demo&quot;,
+    &quot;email&quot;: &quot;&quot;,
+    &quot;suspended&quot;: 0,
+    &quot;max_buckets&quot;: 1000,
+    &quot;subusers&quot;: [
+        &#123;
+            &quot;id&quot;: &quot;ceph-s3-user:swift&quot;,
+            &quot;permissions&quot;: &quot;full-control&quot;
+        &#125;
+    ],
+    &quot;keys&quot;: [
+        &#123;
+            &quot;user&quot;: &quot;ceph-s3-user&quot;,
+            &quot;access_key&quot;: &quot;5SCX55201QUQ0FOPCPD6&quot;,
+            &quot;secret_key&quot;: &quot;k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm&quot;
+        &#125;
+    ],
+    &quot;swift_keys&quot;: [
+        &#123;
+            &quot;user&quot;: &quot;ceph-s3-user:swift&quot;,
+            &quot;secret_key&quot;: &quot;9sWyeIFQphNButuZp2zNs2t7xU9qEkgW27yHxqBL&quot;
+        &#125;
+    ],
+    &quot;caps&quot;: [],
+    &quot;op_mask&quot;: &quot;read, write, delete&quot;,
+    &quot;default_placement&quot;: &quot;&quot;,
+    &quot;default_storage_class&quot;: &quot;&quot;,
+    &quot;placement_tags&quot;: [],
+    &quot;bucket_quota&quot;: &#123;
+        &quot;enabled&quot;: false,
+        &quot;check_on_raw&quot;: false,
+        &quot;max_size&quot;: -1,
+        &quot;max_size_kb&quot;: 0,
+        &quot;max_objects&quot;: -1
+    &#125;,
+    &quot;user_quota&quot;: &#123;
+        &quot;enabled&quot;: false,
+        &quot;check_on_raw&quot;: false,
+        &quot;max_size&quot;: -1,
+        &quot;max_size_kb&quot;: 0,
+        &quot;max_objects&quot;: -1
+    &#125;,
+    &quot;temp_url_keys&quot;: [],
+    &quot;type&quot;: &quot;rgw&quot;,
+    &quot;mfa_ids&quot;: []
+&#125;
+</code></pre>
+<h2><span id="生成swift的key">生成Swift的key</span></h2><pre><code>[root@node-1 ~]# radosgw-admin key create --subuser=ceph-s3-user:swift --key-type=swift --gen-secret 
+&#123;
+    &quot;user_id&quot;: &quot;ceph-s3-user&quot;,
+    &quot;display_name&quot;: &quot;Ceph S3 User Demo&quot;,
+    &quot;email&quot;: &quot;&quot;,
+    &quot;suspended&quot;: 0,
+    &quot;max_buckets&quot;: 1000,
+    &quot;subusers&quot;: [
+        &#123;
+            &quot;id&quot;: &quot;ceph-s3-user:swift&quot;,
+            &quot;permissions&quot;: &quot;full-control&quot;
+        &#125;
+    ],
+    &quot;keys&quot;: [
+        &#123;
+            &quot;user&quot;: &quot;ceph-s3-user&quot;,
+            &quot;access_key&quot;: &quot;5SCX55201QUQ0FOPCPD6&quot;,
+            &quot;secret_key&quot;: &quot;k3zKfKPRCYCDSuDMoMYJZx9Lk6mLaFD9YZXs8ldm&quot;
+        &#125;
+    ],
+    &quot;swift_keys&quot;: [
+        &#123;
+            &quot;user&quot;: &quot;ceph-s3-user:swift&quot;,
+            &quot;secret_key&quot;: &quot;mqMdD6H5efLKDET8N7SmF1PfI6vXQE59i0EEoLjh&quot; #提前保存
+        &#125;
+    ],
+    &quot;caps&quot;: [],
+    &quot;op_mask&quot;: &quot;read, write, delete&quot;,
+    &quot;default_placement&quot;: &quot;&quot;,
+    &quot;default_storage_class&quot;: &quot;&quot;,
+    &quot;placement_tags&quot;: [],
+    &quot;bucket_quota&quot;: &#123;
+        &quot;enabled&quot;: false,
+        &quot;check_on_raw&quot;: false,
+        &quot;max_size&quot;: -1,
+        &quot;max_size_kb&quot;: 0,
+        &quot;max_objects&quot;: -1
+    &#125;,
+    &quot;user_quota&quot;: &#123;
+        &quot;enabled&quot;: false,
+        &quot;check_on_raw&quot;: false,
+        &quot;max_size&quot;: -1,
+        &quot;max_size_kb&quot;: 0,
+        &quot;max_objects&quot;: -1
+    &#125;,
+    &quot;temp_url_keys&quot;: [],
+    &quot;type&quot;: &quot;rgw&quot;,
+    &quot;mfa_ids&quot;: []
+&#125;
+</code></pre>
+<h2><span id="安装swift客户端">安装Swift客户端</span></h2><blockquote>
+<p>安装Swift客户端需要先安装pip</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# yum install python-pip #安装pip 由于当前pip版本较老（8.1），无法通过pip install -U pip 进行升级，只能手动进行升级
+[root@node-1 ~]wget https://files.pythonhosted.org/packages/0b/f5/be8e741434a4bf4ce5dbc235aa28ed0666178ea8986ddc10d035023744e6/pip-20.2.4.tar.gz  #下载安装包
+[root@node-1 ~]tar -zxvf pip-20.2.4.tar.gz  # 解压
+[root@node-1 ~]cd pip-20.2.4/
+[root@node-1 ~]sudo python setup.py install #给予权限不然可能安装失败
+[root@node-1 ~]pip install -U pip #再次更新
+DEPRECATION: Python 2.7 reached the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 is no longer maintained. pip 21.0 will drop support for Python 2.7 in January 2021. More details about Python 2 support in pip can be found at https://pip.pypa.io/en/latest/development/release-process/#python-2-support pip 21.0 will remove support for this functionality.
+Collecting pip
+  Downloading pip-20.3.4-py2.py3-none-any.whl (1.5 MB)
+     |████████████████████████████████| 1.5 MB 1.0 MB/s 
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 20.2.4
+    Uninstalling pip-20.2.4:
+      Successfully uninstalled pip-20.2.4
+Successfully installed pip-20.3.4
+</code></pre>
+<blockquote>
+<p>再次安装Swift客户端</p>
+</blockquote>
+<pre><code>[root@node-1 pip-20.2.4]# pip install  python-swiftclient #安装成功
+DEPRECATION: Python 2.7 reached the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 is no longer maintained. pip 21.0 will drop support for Python 2.7 in January 2021. More details about Python 2 support in pip can be found at https://pip.pypa.io/en/latest/development/release-process/#python-2-support pip 21.0 will remove support for this functionality.
+Collecting python-swiftclient
+  Downloading python_swiftclient-3.13.1-py2.py3-none-any.whl (87 kB)
+     |████████████████████████████████| 87 kB 6.4 kB/s 
+Collecting futures&gt;=3.0.0; python_version == &quot;2.7&quot;
+  Downloading futures-3.4.0-py2-none-any.whl (16 kB)
+Requirement already satisfied: requests&gt;=1.1.0 in /usr/lib/python2.7/site-packages (from python-swiftclient) (2.6.0)
+Requirement already satisfied: six&gt;=1.9.0 in /usr/lib/python2.7/site-packages (from python-swiftclient) (1.9.0)
+Installing collected packages: futures, python-swiftclient
+Successfully installed futures-3.4.0 python-swiftclient-3.13.1
+</code></pre>
+<h2><span id="查看bucket">查看bucket</span></h2><blockquote>
+<p>查看，list可换成upload或download实现上传下载</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# swift -A http://192.168.187.201:80/auth -U ceph-s3-user:swift -K mqMdD6H5efLKDET8N7SmF1PfI6vXQE59i0EEoLjh list 
+ceph-s3-bucket
+s3cmd-demo
+</code></pre>
+<h2><span id="创建swift环境变量文件">创建Swift环境变量文件</span></h2><pre><code>[root@node-1 ~]# cat swift-openrc.sh
+export ST_AUTH=http://192.168.187.201:80/auth
+export ST_USER=ceph-s3-user:swift
+export ST_KEY=mqMdD6H5efLKDET8N7SmF1PfI6vXQE59i0EEoLjh
+</code></pre>
+<h2><span id="验证变量是否生效">验证变量是否生效</span></h2><pre><code>[root@node-1 ~]# set |grep ST #查看环境变量是否生效
+DIRSTACK=()
+HISTCONTROL=ignoredups
+HISTFILE=/root/.bash_history
+HISTFILESIZE=1000
+HISTSIZE=1000
+HOSTNAME=node-1
+HOSTTYPE=x86_64
+OSTYPE=linux-gnu
+PIPESTATUS=([0]=&quot;0&quot;)
+SELINUX_LEVEL_REQUESTED=
+SELINUX_ROLE_REQUESTED=
+ST_AUTH=http://192.168.187.201:80/auth
+ST_KEY=mqMdD6H5efLKDET8N7SmF1PfI6vXQE59i0EEoLjhexport
+[root@node-1 ~]# swift list  #验证变量成功
+ceph-s3-bucket
+s3cmd-demo
+</code></pre>
+<h2><span id="上传文件">上传文件</span></h2><p><code>[root@node-1 ~]# swift upload swift-demo /etc/shadow </code></p>
+<h2><span id="上传目录">上传目录</span></h2><p><code>[root@node-1 ~]# swift upload swift-demo /etc/ </code></p>
+<h2><span id="下载文件">下载文件</span></h2><pre><code>[root@node-1 ~]# swift download swift-demo etc/passwd
+etc/passwd [auth 0.008s, headers 0.011s, total 0.012s, 0.278 MB/s]
+</code></pre>
+<p>##查看详细信息</p>
+<pre><code>[root@node-1 ~]# swift stat swift-demo
+                      Account: v1
+                    Container: swift-demo
+                      Objects: 1694
+                        Bytes: 35940093
+                     Read ACL:
+                    Write ACL:
+                      Sync To:
+                     Sync Key:
+X-Container-Bytes-Used-Actual: 40927232
+                Accept-Ranges: bytes
+             X-Storage-Policy: default-placement
+              X-Storage-Class: STANDARD
+                Last-Modified: Sat, 04 Mar 2023 19:14:33 GMT
+                  X-Timestamp: 1677957085.09881
+                   X-Trans-Id: tx0000000000000000000d1-0064043339-85b3-default
+                 Content-Type: text/plain; charset=utf-8
+       X-Openstack-Request-Id: tx0000000000000000000d1-0064043339-85b3-default
+</code></pre>
+<h2><span id="删除文件">删除文件</span></h2><blockquote>
+<p>#删除文件，不要使用 swift delete -a 会删除所有bucket</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# swift delete swift-demo etc/shadow #删除文件，不要使用 swift delete -a 会删除所有bucket
+etc/shadow
+[root@node-1 ~]# swift list swift-demo
+</code></pre>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://github.com/zhangboc/zhangboc.github.io.git/2023/04/11/Ceph/5.RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/" data-id="clgd2kqcb000pso5f4j1wbf8i" data-title="RGW对象存储" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ceph/" rel="tag">Ceph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RGW/" rel="tag">RGW</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          RBD存储扩容/缩容
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/04/11/Ceph/6.Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Ceph FS文件存储</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ceph/" rel="tag">Ceph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ceph-FS/" rel="tag">Ceph FS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ceph%E7%AE%80%E4%BB%8B/" rel="tag">Ceph简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBD/" rel="tag">RBD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RGW/" rel="tag">RGW</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chatjs/" rel="tag">chatjs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" rel="tag">故障排查</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/Ceph-FS/" style="font-size: 10px;">Ceph FS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/RBD/" style="font-size: 15px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/3.Ceph%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/Ceph-%E5%AE%89%E8%A3%85/">Ceph-安装</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/">RBD写入流程</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84/">RBD块创建及映射</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9/">RBD存储扩容/缩容</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/11/Ceph/5.RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">RGW对象存储</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+<script src="/live2D/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2D/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":true,"model":{"jsonPath":"/live2D/assets/xiaomai.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>

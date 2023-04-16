@@ -5,7 +5,7 @@
 <head>
   
   <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
-  <title>Ceph FS文件存储 - Hexo</title>
+  <title>标签：Linux HA - Hexo</title>
   <meta charset="UTF-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -16,19 +16,13 @@
     <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
 
   <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
-  <meta property="og:type" content="article">
-<meta property="og:title" content="Ceph FS文件存储">
-<meta property="og:url" content="https://zhangboc.github.io/2023/04/11/Ceph/6.Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="https://zhangboc.github.io/tags/Linux-HA/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://zhangboc.github.io/images/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg">
-<meta property="article:published_time" content="2023-04-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-11T09:40:18.618Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="Ceph">
-<meta property="article:tag" content="Ceph FS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg">
   <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
   <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
   <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
@@ -37,7 +31,7 @@
   
     <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1681536611199">
+  <link rel="stylesheet" href="/css/style.css?v=1681647440750">
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -62,9 +56,9 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div class="nexmoe-count-item"><span>文章</span>14 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
-        <div class="nexmoe-count-item"><span>标签</span>9<div class="item-radius"></div><div class="item-radius item-right"></div></div>
-        <div class="nexmoe-count-item"><span>分类</span>4<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+        <div class="nexmoe-count-item"><span>文章</span>15 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>标签</span>12<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+        <div class="nexmoe-count-item"><span>分类</span>3<div class="item-radius"></div><div class="item-radius item-right"></div></div>
     </div>
     <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
         
@@ -164,14 +158,7 @@
 
         <li class="category-list-item">
           <a class="category-list-link" href="/categories/KVM/">KVM</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Test/">Test</a>
-          <span class="category-list-count">1</span>
+          <span class="category-list-count">5</span>
         </li>
 
         
@@ -192,7 +179,7 @@
   
   <div class="nexmoe-widget-wrap">
     <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/Ceph-FS/" style="font-size: 10px;">Ceph FS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 10px;">KVM</a> <a href="/tags/RBD/" style="font-size: 15px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/Test/" style="font-size: 10px;">Test</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 16.67px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 13.33px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/RBD/" style="font-size: 13.33px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
     </div>
     
   </div>
@@ -202,7 +189,7 @@
   <div class="nexmoe-widget-wrap">
     <h3 class="nexmoe-widget-title">文章</h3>
     <div class="nexmoe-widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">14</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">15</span></li></ul>
     </div>
   </div>
 
@@ -257,222 +244,79 @@ setInterval("createtime()",250);
   </div>
   <div id="nexmoe-content">
     <div class="nexmoe-primary">
-        <div class="nexmoe-post">
+        <section class="nexmoe-posts">
     
-        <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
-            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph FS文件存储" class="lazyload">
-            <h1>Ceph FS文件存储</h1>
-        </div>
-    
-
-        <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-    <a><i class="nexmoefont icon-areachart"></i>1.5k 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 7 分钟</a>
-</div>
-
-        <div class="nexmoe-post-right">
+    <div class="nexmoe-post">
+        <a href="/2023/04/12/KVM/3.KVM%E8%99%9A%E6%8B%9F%E5%8C%96%E8%BF%9B%E9%98%B6%E4%B8%8E%E6%8F%90%E9%AB%98%E8%A7%86%E9%A2%91%E8%AF%BE%E7%A8%8B%E4%B9%8BLinux_HA%E7%BE%A4%E9%9B%86%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84/">
             
-        </div>
-
-        <article>
-            <h1><span id></span></h1><span id="more"></span>
-
-<!-- toc -->
-
-<ul>
-<li><a href="#%E5%AE%89%E8%A3%85mds%E6%9C%8D%E5%8A%A1">安装MDS服务</a></li>
-<li><a href="#%E5%88%9B%E5%BB%BAceph-fs%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F">创建Ceph FS文件系统</a></li>
-<li><a href="#%E6%9F%A5%E7%9C%8Bfs%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F">查看fs文件系统</a></li>
-<li><a href="#%E5%86%85%E6%A0%B8%E6%8C%82%E8%BD%BD">内核挂载</a></li>
-<li><a href="#%E7%94%A8%E6%88%B7%E6%80%81%E6%8C%82%E8%BD%BD">用户态挂载</a></li>
-</ul>
-<!-- tocstop -->
-
-<p>Ceph FS文件存储时由NAS衍生过来的。</p>
-<p>Ceph 文件系统或CephFS是一个 POSIX 兼容的文件系统，构建在 Ceph 的分布式对象存储RADOS之上。CephFS致力于为各种应用程序提供最先进、多用途、高可用性和高性能的文件存储，包括共享主目录、HPC 暂存空间和分布式工作流共享存储等传统用例。</p>
-<p>CephFS 通过使用一些新颖的架构选择来实现这些目标。值得注意的是，文件元数据存储在与文件数据不同的 RADOS 池中，并通过可调整大小的元数据服务器集群或MDS提供服务，它可以扩展以支持更高吞吐量的元数据工作负载。文件系统的客户端可以直接访问 RADOS 来读写文件数据块。因此，工作负载可能会随着底层 RADOS 对象存储的大小线性扩展；也就是说，没有网关或代理为客户端调解数据 I&#x2F;O。</p>
-<p>对数据的访问通过 MDS 集群进行协调，MDS 集群充当由客户端和 MDS 共同维护的分布式元数据缓存状态的权威。每个 MDS 将元数据的变化聚合成一系列高效写入 RADOS 上的日志；MDS 没有在本地存储任何元数据状态。该模型允许在 POSIX 文件系统的上下文中在客户端之间进行连贯和快速的协作。</p>
-<p><img src="/images/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg"></p>
-<p>CephFS 因其新颖的设计和对文件系统研究的贡献而成为众多学术论文的主题。它是 Ceph 中最古老的存储接口，曾经是 RADOS的主要用例。现在它与另外两个存储接口一起组成了一个现代统一存储系统：RBD（Ceph 块设备）和 RGW（Ceph 对象存储网关）。</p>
-<h1><span id="安装mds服务">安装MDS服务</span></h1><p>在三个节点上同时部署MDS</p>
-<pre><code>[root@node-1 my-cluster]# ceph-deploy mds create node-1 node-2 node-3
-</code></pre>
-<p>查看当前MDS状态，因为当前没有文件系统，所以3台主机都是备状态</p>
-<pre><code>[root@node-1 my-cluster]# 
- 3 up:standby 
-</code></pre>
-<h1><span id="创建ceph-fs文件系统">创建Ceph FS文件系统</span></h1><p>创建pool</p>
-<pre><code>[root@node-1 my-cluster]# ceph osd pool create cephfs_data 16 16
-[root@node-1 my-cluster]# ceph osd pool create cephfs_metadata 16 16
-</code></pre>
-<p>查看使用帮助</p>
-<pre><code>[root@node-1 my-cluster]# ceph -h|grep fs |grep new 
-fs new &lt;fs_name&gt; &lt;metadata&gt; &lt;data&gt; &#123;--force&#125; &#123;--allow-dangerous-make new filesystem using named pools &lt;metadata&gt; and &lt;data&gt;
-</code></pre>
-<p>创建一个fs文件系统</p>
-<pre><code>[root@node-1 my-cluster]# ceph fs new cephfs-demo cephfs_metadata cephfs_data  
-new fs with metadata pool 9 and data pool 8
-</code></pre>
-<h1><span id="查看fs文件系统">查看fs文件系统</span></h1><pre><code>[root@node-1 my-cluster]# ceph fs ls 
-name: cephfs-demo, metadata pool: cephfs_metadata, data pools: [cephfs_data ]
-</code></pre>
-<p>查看集群状态</p>
-<pre><code>[root@node-1 my-cluster]#  ceph -s  #可以看到MDS状态已经又一个active了
-  cluster:
-    id:     e9a90625-4707-4b6b-b52f-661512ea831d
-    health: HEALTH_WARN
-            1 pools have too many placement groups
-            too many PGs per OSD (368 &gt; max 250)
- 
-  services:
-    mon: 3 daemons, quorum node-1,node-2,node-3 (age 4m)
-    mgr: node-2(active, since 10m), standbys: node-3, node-1
-    mds: cephfs-demo:1 &#123;0=node-2=up:active&#125; 2 up:standby
-    osd: 6 osds: 6 up (since 4m), 6 in (since 14h)
-    rgw: 1 daemon active (node-1)
- 
-  task status:
- 
-  data:
-    pools:   9 pools, 736 pgs
-    objects: 534 objects, 1.0 GiB
-    usage:   9.6 GiB used, 50 GiB / 60 GiB avail
-    pgs:     736 active+clean
-</code></pre>
-<h1><span id="内核挂载">内核挂载</span></h1><p>创建一个挂载点</p>
-<pre><code>[root@node-1 my-cluster]# mkdir /mnt/cephfs #创建一个挂载点
-</code></pre>
-<p>使用命令进行挂载</p>
-<pre><code>[root@node-1 my-cluster]# which mount.ceph #使用这个命令进行挂载
-/usr/sbin/mount.ceph 
-[root@node-1 my-cluster]# rpm -qf /usr/sbin/mount.ceph #安装ceph-common的时候添加的命令
-ceph-common-14.2.22-0.el7.x86_64
-[root@node-1 my-cluster]# mount -t ceph 192.168.187.201:6789:/ /mnt/cephfs/ -o name=admin #挂载
-</code></pre>
-<p>查看挂载</p>
-<pre><code>[root@node-1 my-cluster]# df -HT # 查看挂载
-Filesystem              Type      Size  Used Avail Use% Mounted on
-devtmpfs                devtmpfs  942M     0  942M   0% /dev
-tmpfs                   tmpfs     954M     0  954M   0% /dev/shm
-tmpfs                   tmpfs     954M   11M  944M   2% /run
-tmpfs                   tmpfs     954M     0  954M   0% /sys/fs/cgroup
-/dev/mapper/centos-root xfs        19G  2.6G   16G  14% /
-/dev/sda1               xfs       1.1G  204M  860M  20% /boot
-tmpfs                   tmpfs     954M   25k  954M   1% /var/lib/ceph/osd/ceph-0
-tmpfs                   tmpfs     954M   25k  954M   1% /var/lib/ceph/osd/ceph-3
-tmpfs                   tmpfs     191M     0  191M   0% /run/user/0
-/dev/rbd0               xfs        11G  1.2G  9.7G  11% /data
-192.168.187.201:6789:/  ceph       17G     0   17G   0% /mnt/cephfs 
-[root@node-1 my-cluster]# lsmod | grep ceph #会自动添加ceph的模块，此方法性能比较高
-ceph                  363016  1 
-libceph               314775  2 rbd,ceph
-dns_resolver           13140  1 libceph
-libcrc32c              12644  2 xfs,libceph
-</code></pre>
-<h1><span id="用户态挂载">用户态挂载</span></h1><p>安装软件包</p>
-<pre><code>[root@node-1 my-cluster]#  yum install ceph-fuse -y
-</code></pre>
-<p>查看帮助文档</p>
-<pre><code>[root@node-1 my-cluster]# ceph-fuse -h #查看使用帮助
-usage: ceph-fuse [-n client.username] [-m mon-ip-addr:mon-port] &lt;mount point&gt; [OPTIONS]
-  --client_mountpoint/-r &lt;sub_directory&gt;
-                    use sub_directory as the mounted root, rather than the full Ceph tree.
-
-usage: ceph-fuse mountpoint [options]
-
-general options:
-    -o opt,[opt...]        mount options
-    -h   --help            print help
-    -V   --version         print version
-
-FUSE options:
-    -d   -o debug          enable debug output (implies -f)
-    -f                     foreground operation
-    -s                     disable multi-threaded operation
-
-  --conf/-c FILE    read configuration from the given configuration file
-  --id ID           set ID portion of my name
-  --name/-n TYPE.ID set name
-  --cluster NAME    set cluster name (default: ceph)
-  --setuser USER    set uid to user or uid (and gid to user&#39;s gid)
-  --setgroup GROUP  set gid to group or gid
-  --version         show version and quit
-</code></pre>
-<p>挂载</p>
-<p>可以看到与内核态挂载的地点文件是共享的 </p>
-<pre><code>[root@node-1 my-cluster]# ceph-fuse -n client.admin -m 192.168.187.201:6789,192.168.187.202:6789,192.168.187.203:6789 /mnt/ceph-fuse/ #使用ceph-fuse进行挂载，-n 指定用户名 -m 指定mon节点，可指定1个或者多个，或者不指定，最后写上挂载地点
-ceph-fuse[205722023-03-05 17:10:28.202 7f6b40549f80 -1 init, newargv = 0x5623b0d084e0 newargc=9
-]: starting ceph client
-ceph-fuse[20572]: starting fuse
-</code></pre>
-<p>确定挂载情况</p>
-<pre><code>[root@node-1 my-cluster]# cd /mnt/ceph-fuse/ 
-[root@node-1 ceph-fuse]# ls
-[root@node-1 ceph-fuse]# ll
-total 0
-[root@node-1 ceph-fuse]# 
-[root@node-1 ceph-fuse]# ls
-[root@node-1 ceph-fuse]# echo aaa &gt; test
-[root@node-1 ceph-fuse]# ls
-test
-[root@node-1 ceph-fuse]# ls /mnt/cephfs
-test
-</code></pre>
-<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
-        </article>
-
-        
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
+                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="KVM虚拟化进阶之Linux HA群集体系架构" class="lazyload">
+                    <h1>KVM虚拟化进阶之Linux HA群集体系架构</h1>
+                </div>
             
-  <div class="nexmoe-post-copyright">
-    <strong>Author：</strong>张博丞<br>
-    
-      <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
-    
-    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/11/Ceph/6.Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;11&#x2F;Ceph&#x2F;6.Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8&#x2F;Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;11&#x2F;Ceph&#x2F;6.Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8&#x2F;Ceph_%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8&#x2F;</a><br>
-
-    
-      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
-    
-  </div>
-
-
+        </a>
         
-
         <div class="nexmoe-post-meta nexmoe-rainbow">
-    
-        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/">Ceph</a>
-    
-    
-        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph-FS/" rel="tag">Ceph FS</a>
-    
-</div>
-
-    <div class="nexmoe-post-footer">
-        <section class="nexmoe-comment">
-    <div class="valine"></div>
-<script src='https://lib.baomitu.com/valine/1.3.9/Valine.min.js'></script>
-<script>
-    // 使用方法 https://valine.js.org/quickstart.html
-    new Valine({
-        el: '.valine',
-        appId: 'r5zxC0st0DDjPA9auXzMV7HY-gzGzoHsz',
-        appKey: '3bqCsovpyfTPHUzTHovd3V3V'
-    })
-</script>
-</section>
+            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月12日</a>
+            <a><i class="nexmoefont icon-areachart"></i>18 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+        </div>
+        
+        <article>
+            
+                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+            
+        </article>
     </div>
-</div>
-<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
-<!-- 代码语言 -->
-<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
-<!-- 代码块复制 -->
-<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
-<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
-<!-- 代码块收缩 -->
-<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
-<!-- 代码块折行 -->
-<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+    
+    <div class="nexmoe-post">
+        <a href="/2023/04/12/KVM/4.KVM%E8%99%9A%E6%8B%9F%E5%8C%96%E8%BF%9B%E9%98%B6%E4%B8%8E%E6%8F%90%E9%AB%98%E8%A7%86%E9%A2%91%E8%AF%BE%E7%A8%8B%E4%B9%8BLinux%E7%BE%A4%E9%9B%86%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
+                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="KVM虚拟化进阶之Linux群集安装与配置" class="lazyload">
+                    <h1>KVM虚拟化进阶之Linux群集安装与配置</h1>
+                </div>
+            
+        </a>
+        
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月12日</a>
+            <a><i class="nexmoefont icon-areachart"></i>5.5k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 32 分钟</a>
+        </div>
+        
+        <article>
+            
+                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+            
+        </article>
+    </div>
+    
+    <div class="nexmoe-post">
+        <a href="/2023/04/12/KVM/5.KVM%E8%99%9A%E6%8B%9F%E5%8C%96%E8%BF%9B%E9%98%B6%E4%B8%8E%E6%8F%90%E9%AB%98%E8%A7%86%E9%A2%91%E8%AF%BE%E7%A8%8B%E4%B9%8B%E5%9F%BA%E4%BA%8ENFS%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%B6%E6%9E%84/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;">
+                    <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="KVM虚拟化进阶之基于NFS的KVM群集构建" class="lazyload">
+                    <h1>KVM虚拟化进阶之基于NFS的KVM群集构建</h1>
+                </div>
+            
+        </a>
+        
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月12日</a>
+            <a><i class="nexmoefont icon-areachart"></i>5.2k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 30 分钟</a>
+        </div>
+        
+        <article>
+            
+                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+            
+        </article>
+    </div>
+    
+</section>
+
 
         <div class="nexmoe-post-right">
           
@@ -1186,7 +1030,7 @@ test
 <script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
 
 
-<script src="/js/app.js?v=1681536611203"></script>
+<script src="/js/app.js?v=1681647440755"></script>
 
 <script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
 <script>

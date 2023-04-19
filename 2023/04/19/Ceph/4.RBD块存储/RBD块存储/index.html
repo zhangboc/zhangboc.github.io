@@ -5,7 +5,7 @@
 <head>
   
   <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
-  <title>RBD存储扩容/缩容 - Hexo</title>
+  <title>RBD块存储 - Hexo</title>
   <meta charset="UTF-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -17,16 +17,18 @@
 
   <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
   <meta property="og:type" content="article">
-<meta property="og:title" content="RBD存储扩容&#x2F;缩容">
-<meta property="og:url" content="https://zhangboc.github.io/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9/index.html">
+<meta property="og:title" content="RBD块存储">
+<meta property="og:url" content="https://zhangboc.github.io/2023/04/19/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-04-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-11T09:40:08.640Z">
+<meta property="og:image" content="https://zhangboc.github.io/images/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/1.jpg">
+<meta property="article:published_time" content="2023-04-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-19T04:56:25.733Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Ceph">
 <meta property="article:tag" content="RBD">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangboc.github.io/images/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/1.jpg">
   <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
   <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
   <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
@@ -35,7 +37,7 @@
   
     <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1681876082834">
+  <link rel="stylesheet" href="/css/style.css?v=1681880267693">
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -60,7 +62,7 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div class="nexmoe-count-item"><span>文章</span>16 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>文章</span>14 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
         <div class="nexmoe-count-item"><span>标签</span>13<div class="item-radius"></div><div class="item-radius item-right"></div></div>
         <div class="nexmoe-count-item"><span>分类</span>3<div class="item-radius"></div><div class="item-radius item-right"></div></div>
     </div>
@@ -155,7 +157,7 @@
 
         <li class="category-list-item">
           <a class="category-list-link" href="/categories/Ceph/">Ceph</a>
-          <span class="category-list-count">9</span>
+          <span class="category-list-count">7</span>
         </li>
 
         
@@ -183,7 +185,7 @@
   
   <div class="nexmoe-widget-wrap">
     <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 16.67px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 13.33px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/RBD/" style="font-size: 13.33px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 20px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/RBD/" style="font-size: 10px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
     </div>
     
   </div>
@@ -193,7 +195,7 @@
   <div class="nexmoe-widget-wrap">
     <h3 class="nexmoe-widget-title">文章</h3>
     <div class="nexmoe-widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">16</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">14</span></li></ul>
     </div>
   </div>
 
@@ -251,15 +253,15 @@ setInterval("createtime()",250);
         <div class="nexmoe-post">
     
         <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
-            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD存储扩容/缩容" class="lazyload">
-            <h1>RBD存储扩容/缩容</h1>
+            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="RBD块存储" class="lazyload">
+            <h1>RBD块存储</h1>
         </div>
     
 
         <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月11日</a>
-    <a><i class="nexmoefont icon-areachart"></i>441 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月19日</a>
+    <a><i class="nexmoefont icon-areachart"></i>2.2k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 12 分钟</a>
 </div>
 
         <div class="nexmoe-post-right">
@@ -272,11 +274,218 @@ setInterval("createtime()",250);
 <!-- toc -->
 
 <ul>
-<li><a href="#rbd%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9">RBD存储扩容</a></li>
+<li><a href="#%E4%B8%80-rbd%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B">一、RBD写入流程</a></li>
+<li><a href="#rbd%E5%9D%97%E5%88%9B%E5%BB%BA%E5%8F%8A%E6%98%A0%E5%B0%84">RBD块创建及映射</a><ul>
+<li><a href="#%E4%B8%80-%E5%88%9B%E5%BB%BA%E5%9D%97%E8%AE%BE%E5%A4%87">一、创建块设备</a></li>
+<li><a href="#%E4%BA%8C-%E4%BD%BF%E7%94%A8%E5%9D%97%E8%AE%BE%E5%A4%87">二、使用块设备</a></li>
+</ul>
+</li>
 </ul>
 <!-- tocstop -->
 
-<h1><span id="rbd存储扩容">RBD存储扩容</span></h1><p><strong>查看需要扩容的镜像</strong></p>
+<h1><span id="一-rbd写入流程">一、RBD写入流程</span></h1><p><img src="/images/RBD%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B/1.jpg"></p>
+<blockquote>
+<p>块设备都是瘦分配的，意味着使用的越多，分配的空间越多</p>
+</blockquote>
+<pre><code>[root@node-1 ~]# rbd -p ceph-demo info rbd-demo.img #查看镜像信息
+rbd image &#39;rbd-demo.img&#39;:
+    size 10 GiB in 2560 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 11e24b04cf01
+    block_name_prefix: rbd_data.11e24b04cf01
+    format: 2
+    features: layering
+    op_features: 
+    flags: 
+    create_timestamp: Sat Mar  4 02:03:28 2023
+    access_timestamp: Sat Mar  4 02:03:28 2023
+    modify_timestamp: Sat Mar  4 02:03:28 2023
+[root@node-1 ~]# rados  -p ceph-demo ls | grep rbd_data.11e24b04cf01 #查看object
+rbd_data.11e24b04cf01.0000000000000960
+rbd_data.11e24b04cf01.0000000000000500
+rbd_data.11e24b04cf01.0000000000000780
+rbd_data.11e24b04cf01.0000000000000320
+rbd_data.11e24b04cf01.00000000000008c0
+rbd_data.11e24b04cf01.00000000000006e0
+rbd_data.11e24b04cf01.00000000000009ff
+rbd_data.11e24b04cf01.0000000000000640
+rbd_data.11e24b04cf01.0000000000000000
+rbd_data.11e24b04cf01.0000000000000280
+rbd_data.11e24b04cf01.0000000000000501
+rbd_data.11e24b04cf01.0000000000000001
+rbd_data.11e24b04cf01.00000000000003c0
+rbd_data.11e24b04cf01.0000000000000502
+rbd_data.11e24b04cf01.00000000000005a0
+rbd_data.11e24b04cf01.0000000000000460
+rbd_data.11e24b04cf01.0000000000000140
+rbd_data.11e24b04cf01.00000000000001e0
+rbd_data.11e24b04cf01.0000000000000820
+rbd_data.11e24b04cf01.00000000000000a0
+[root@node-1 data]# rados -p ceph-demo stat rbd_data.11e24b04cf01.000000000000007a#查看object 大小 size=比特，需要除以两次1024得出M
+ceph-demo/rbd_data.11e24b04cf01.000000000000007a mtime 2023-03-04 15:08:07.000000, size 4194304
+[root@node-1 ~]#  ceph osd map ceph-demo rbd_data.11e24b04cf01.000000000000007a #查看object 落到那个OSD和PG上 PG=1.20 最终落在0，1，2三个OSD上
+osdmap e339 pool &#39;ceph-demo&#39; (1) object &#39;rbd_data.11e24b04cf01.0000000000000960&#39; -&gt; pg 1.85b57b60 (1.20) -&gt; up ([2,1,0], p2) acting ([2,1,0], p2)
+[root@node-1 ~]# rados  -p ceph-demo ls |wc -l 查看当前ceph-demo的pool中一共存在25个object 每个object等于4 M，一共有25个，所以总共分配空间为100M
+，随着数据增加，会动态扩容分配空间。
+25
+[root@node-1 data]# dd if=/dev/zero of=test.img bs=1M count=1024  #尝试写入1G的文件到集群中
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 5.97513 s, 180 MB/s
+You have new mail in /var/spool/mail/root
+[root@node-1 data]# ls -lha 
+total 1.1G
+drwxr-xr-x.  2 root root   34 Mar  4 15:08 .
+dr-xr-xr-x. 18 root root  236 Mar  4 02:27 ..
+-rw-r--r--.  1 root root    5 Mar  4 02:30 test
+-rw-r--r--.  1 root root 1.0G Mar  4 15:08 test.img
+[root@node-1 data]# rados  -p ceph-demo ls | grep rbd_data.11e24b04cf01 |wc -l  #可以看到object的数量由25个增加到了276个 每个object等于4 M，所以总计分配1,104M
+276
+[root@node-1 data]# df -HT #查看实际使用情况发现基本相当
+Filesystem              Type      Size  Used Avail Use% Mounted on
+devtmpfs                devtmpfs  942M     0  942M   0% /dev
+tmpfs                   tmpfs     954M     0  954M   0% /dev/shm
+tmpfs                   tmpfs     954M   14M  941M   2% /run
+tmpfs                   tmpfs     954M     0  954M   0% /sys/fs/cgroup
+/dev/mapper/centos-root xfs        19G  2.7G   16G  15% /
+/dev/sda1               xfs       1.1G  190M  874M  18% /boot
+tmpfs                   tmpfs     191M     0  191M   0% /run/user/0
+tmpfs                   tmpfs     954M   54k  954M   1% /var/lib/ceph/osd/ceph-0
+/dev/rbd0               xfs        11G  1.2G  9.7G  11% /data
+</code></pre>
+<h1><span id="rbd块创建及映射">RBD块创建及映射</span></h1><h2><span id="一-创建块设备">一、创建块设备</span></h2><p><strong>任意节点执行即可：</strong></p>
+<pre><code>[root@node-1 my-cluster]#  rbd help create #查看create的帮助文档
+[root@node-1 my-cluster]#  rbd create -p ceph-demo --image rbd-demo.img --size 10G #在ceph-demo的pool中创建一个叫做rbd-demo.img的块设备，大小为10G
+[root@node-1 my-cluster]# rbd ls ceph-demo #查看创建结果
+rbd-demo.img
+[root@node-1 my-cluster]#  rbd create  ceph-demo/rbd-demo-1.img --size 10G #在ceph-demo的pool中创建一个叫做rbd-demo.img的块设备，大小为10G
+[root@node-1 my-cluster]# rbd ls ceph-demo  #查看创建结果
+rbd-demo-1.img
+rbd-demo.img
+
+[root@node-1 my-cluster]# rbd -p ceph-demo ls  #与rbd ls ceph-demo 作用一致
+rbd-demo-1.img
+rbd-demo.img
+[root@node-1 my-cluster]#  rbd info ceph-demo/rbd-demo.img #查看块设备的具体信息，与rbd info-p ceph-demo --image rbd-demo.img 一致
+rbd image &#39;rbd-demo.img&#39;:
+    size 10 GiB in 2560 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 11e24b04cf01
+    block_name_prefix: rbd_data.11e24b04cf01
+    format: 2
+    features: layering, exclusive-lock, object-map, fast-diff, deep-flatten
+    op_features: 
+    flags: 
+    create_timestamp: Fri Mar  3 13:03:28 2023
+    access_timestamp: Fri Mar  3 13:03:28 2023
+    modify_timestamp: Fri Mar  3 13:03:28 2023
+[root@node-1 my-cluster]# rbd rm  ceph-demo/rbd-demo-1.img #删除块设备，与rbd rm -p ceph-demo --image rbd-demo-1.img用法一致
+Removing image: 100% complete...done.
+</code></pre>
+<h2><span id="二-使用块设备">二、使用块设备</span></h2><pre><code>[root@node-1 my-cluster]#  rbd map ceph-demo/rbd-demo.img #映射块设备到本地
+rbd: sysfs write failed
+RBD image feature set mismatch. You can disable features unsupported by the kernel with &quot;rbd feature disable ceph-demo/rbd-demo.img object-map fast-diff deep-flatten&quot;.
+In some cases useful info is found in syslog - try &quot;dmesg | tail&quot;.
+rbd: map failed: (6) No such device or address
+</code></pre>
+<blockquote>
+<p>上述报错主要是由于Centos 7 不支持某些特性，需要手动禁用，具体可使用rbd info ceph-demo&#x2F;rbd-demo.img 进行查看，特性主要记录在features中</p>
+</blockquote>
+<p><strong>禁用相关特性：</strong></p>
+<pre><code>[root@node-1 my-cluster]#  rbd info ceph-demo/rbd-demo.img #查看当前特性
+rbd image &#39;rbd-demo.img&#39;:
+    size 10 GiB in 2560 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 11e24b04cf01
+    block_name_prefix: rbd_data.11e24b04cf01
+    format: 2
+    features: layering, exclusive-lock, object-map, fast-diff, deep-flatten
+    op_features: 
+    flags: 
+    create_timestamp: Fri Mar  3 13:03:28 2023
+    access_timestamp: Fri Mar  3 13:03:28 2023
+    modify_timestamp: Fri Mar  3 13:03:28 2023
+[root@node-1 my-cluster]# rbd help feature disable #查看使用文档
+usage: rbd feature disable [--pool &lt;pool&gt;] [--namespace &lt;namespace&gt;] 
+                           [--image &lt;image&gt;] 
+                           &lt;image-spec&gt; &lt;features&gt; [&lt;features&gt; ...]
+
+Disable the specified image feature.
+
+Positional arguments
+  &lt;image-spec&gt;         image specification
+                       (example: [&lt;pool-name&gt;/[&lt;namespace&gt;/]]&lt;image-name&gt;)
+  &lt;features&gt;           image features
+                       [exclusive-lock, object-map, journaling]
+
+Optional arguments
+  -p [ --pool ] arg    pool name
+  --namespace arg      namespace name
+  --image arg          image name
+[root@node-1 my-cluster]# rbd feature disable ceph-demo/rbd-demo.img deep-flatten #禁用rbd-demo.img块设备的deep-flatten特性
+[root@node-1 my-cluster]# rbd feature disable ceph-demo/rbd-demo.img fast-diff #禁用rbd-demo.img块设备的fast-diff特性
+[root@node-1 my-cluster]# rbd feature disable ceph-demo/rbd-demo.img exclusive-lock #禁用rbd-demo.img块设备的exclusive-lock特性
+[root@node-1 my-cluster]# rbd info ceph-demo/rbd-demo.img #查看相关特性已经被禁用
+rbd image &#39;rbd-demo.img&#39;:
+    size 10 GiB in 2560 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 11e24b04cf01
+    block_name_prefix: rbd_data.11e24b04cf01
+    format: 2
+    features: layering #layering不影响使用，可不禁用
+    op_features: 
+    flags: 
+    create_timestamp: Fri Mar  3 13:03:28 2023
+    access_timestamp: Fri Mar  3 13:03:28 2023
+    modify_timestamp: Fri Mar  3 13:03:28 2023
+ [root@node-1 my-cluster]#  rbd map ceph-demo/rbd-demo.img #挂载到本地
+/dev/rbd0
+[root@node-1 my-cluster]# lsblk
+NAME                                                                                                  MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                                                                                                     8:0    0   20G  0 disk 
+├─sda1                                                                                                  8:1    0    1G  0 part /boot
+└─sda2                                                                                                  8:2    0   19G  0 part 
+  ├─centos-root                                                                                       253:0    0   17G  0 lvm  /
+  └─centos-swap                                                                                       253:1    0    2G  0 lvm  [SWAP]
+sdb                                                                                                     8:16   0   10G  0 disk 
+└─ceph--53398982--af97--4b05--9a0b--bf91741b7f6a-osd--block--68c09ae0--7d72--4984--b5c0--6f1476698c2b 253:2    0   10G  0 lvm  
+sdc                                                                                                     8:32   0   10G  0 disk 
+sr0                                                                                                    11:0    1 1024M  0 rom  
+rbd0                                                                                                  252:0    0   10G  0 disk 
+[root@node-1 my-cluster]# rbd device list #使用此命令进行查看
+id pool      namespace image        snap device    
+0  ceph-demo           rbd-demo.img -    /dev/rbd0
+[root@node-1 my-cluster]#  mkfs.xfs /dev/rbd0 #格式化为xfs格式
+Discarding blocks...Done.
+meta-data=/dev/rbd0              isize=512    agcount=16, agsize=163840 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=2621440, imaxpct=25
+         =                       sunit=1024   swidth=1024 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=8 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@node-1 my-cluster]# mkdir /data
+[root@node-1 my-cluster]# mount /dev/rbd0 /data #进行挂载
+[root@node-1 my-cluster]# df -HT #查看挂载情况
+Filesystem              Type      Size  Used Avail Use% Mounted on
+devtmpfs                devtmpfs  942M     0  942M   0% /dev
+tmpfs                   tmpfs     954M     0  954M   0% /dev/shm
+tmpfs                   tmpfs     954M   11M  944M   2% /run
+tmpfs                   tmpfs     954M     0  954M   0% /sys/fs/cgroup
+/dev/mapper/centos-root xfs        19G  2.6G   16G  15% /
+/dev/sda1               xfs       1.1G  190M  874M  18% /boot
+tmpfs                   tmpfs     191M     0  191M   0% /run/user/0
+tmpfs                   tmpfs     954M   54k  954M   1% /var/lib/ceph/osd/ceph-0
+/dev/rbd0               xfs        11G   35M   11G   1% /data
+</code></pre>
+<p>BD存储扩容</p>
+<p><strong>查看需要扩容的镜像</strong></p>
 <pre><code>[root@node-1 data]# rbd ls ceph-demo 
 rbd-demo.img
 </code></pre>
@@ -363,7 +572,7 @@ rbd image &#39;rbd-demo.img&#39;:
     
       <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
     
-    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/11/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;11&#x2F;Ceph&#x2F;4.RBD%E5%9D%97%E5%AD%98%E5%82%A8&#x2F;RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;11&#x2F;Ceph&#x2F;4.RBD%E5%9D%97%E5%AD%98%E5%82%A8&#x2F;RBD%E5%9D%97%E5%AD%98%E5%82%A8%E6%89%A9%E5%AE%B9%E5%8F%8A%E7%BC%A9%E5%AE%B9&#x2F;</a><br>
+    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/19/Ceph/4.RBD%E5%9D%97%E5%AD%98%E5%82%A8/RBD%E5%9D%97%E5%AD%98%E5%82%A8/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;19&#x2F;Ceph&#x2F;4.RBD%E5%9D%97%E5%AD%98%E5%82%A8&#x2F;RBD%E5%9D%97%E5%AD%98%E5%82%A8&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;19&#x2F;Ceph&#x2F;4.RBD%E5%9D%97%E5%AD%98%E5%82%A8&#x2F;RBD%E5%9D%97%E5%AD%98%E5%82%A8&#x2F;</a><br>
 
     
       <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
@@ -1120,7 +1329,7 @@ rbd image &#39;rbd-demo.img&#39;:
 <script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
 
 
-<script src="/js/app.js?v=1681876082839"></script>
+<script src="/js/app.js?v=1681880267701"></script>
 
 <script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
 <script>

@@ -21,14 +21,14 @@
 <meta property="og:url" content="https://zhangboc.github.io/2023/04/11/Ceph/5.RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://zhangboc.github.io/images/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg">
 <meta property="article:published_time" content="2023-04-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-16T12:15:57.373Z">
+<meta property="article:modified_time" content="2023-04-19T05:22:52.256Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Ceph">
 <meta property="article:tag" content="RGW">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zhangboc.github.io/images/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg">
+<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg">
   <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
   <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
   <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
@@ -37,7 +37,7 @@
   
     <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1681880267774">
+  <link rel="stylesheet" href="/css/style.css?v=1681881853677">
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -62,7 +62,7 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div class="nexmoe-count-item"><span>文章</span>14 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>文章</span>15 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
         <div class="nexmoe-count-item"><span>标签</span>13<div class="item-radius"></div><div class="item-radius item-right"></div></div>
         <div class="nexmoe-count-item"><span>分类</span>3<div class="item-radius"></div><div class="item-radius item-right"></div></div>
     </div>
@@ -185,7 +185,7 @@
   
   <div class="nexmoe-widget-wrap">
     <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 20px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/RBD/" style="font-size: 10px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 20px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/OSD/" style="font-size: 10px;">OSD</a> <a href="/tags/RBD/" style="font-size: 10px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a>
     </div>
     
   </div>
@@ -195,7 +195,7 @@
   <div class="nexmoe-widget-wrap">
     <h3 class="nexmoe-widget-title">文章</h3>
     <div class="nexmoe-widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">14</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">15</span></li></ul>
     </div>
   </div>
 
@@ -338,7 +338,7 @@ setInterval("createtime()",250);
 </ol>
 <p>Ceph 对象存储使用 Ceph 对象网关守护进程 ( radosgw)，这是一个设计用于与 Ceph 存储集群交互的 HTTP 服务器。</p>
 <p>Ceph 对象网关提供与 Amazon S3 和 OpenStack Swift 兼容的接口，并且有自己的用户管理。Ceph 对象网关可以将数据存储在同一个 Ceph 存储集群中，其中存储了来自 Ceph 文件系统客户端和 Ceph 块设备客户端的数据。S3 API 和 Swift API 共享一个公共命名空间，这使得可以使用一个 API 将数据写入 Ceph 存储集群，然后使用另一个 API 检索该数据。</p>
-<p><img src="/images/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg"></p>
+<p><img src="/images/Ceph/RGW%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%BD%91%E5%85%B3/1.jpg"></p>
 <blockquote>
 <p>Ceph 对象存储不使用Ceph 元数据服务器。</p>
 </blockquote>
@@ -1838,7 +1838,7 @@ etc/shadow
 <script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
 
 
-<script src="/js/app.js?v=1681880267780"></script>
+<script src="/js/app.js?v=1681881853681"></script>
 
 <script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
 <script>

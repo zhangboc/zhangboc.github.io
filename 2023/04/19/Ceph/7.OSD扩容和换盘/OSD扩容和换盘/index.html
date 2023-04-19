@@ -5,7 +5,7 @@
 <head>
   
   <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
-  <title>Ceph故障排查 - Hexo</title>
+  <title>OSD扩容和换盘 - Hexo</title>
   <meta charset="UTF-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -17,19 +17,19 @@
 
   <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
   <meta property="og:type" content="article">
-<meta property="og:title" content="Ceph故障排查">
-<meta property="og:url" content="https://zhangboc.github.io/2023/04/10/Ceph/0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/index.html">
+<meta property="og:title" content="OSD扩容和换盘">
+<meta property="og:url" content="https://zhangboc.github.io/2023/04/19/Ceph/7.OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://zhangboc.github.io/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/1.jpg">
-<meta property="og:image" content="https://zhangboc.github.io/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/2.jpg">
-<meta property="article:published_time" content="2023-04-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-11T09:39:16.048Z">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/1.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/2.jpg">
+<meta property="article:published_time" content="2023-04-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-19T05:16:36.605Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Ceph">
-<meta property="article:tag" content="故障排查">
+<meta property="article:tag" content="OSD">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/1.jpg">
+<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph/OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/1.jpg">
   <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
   <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
   <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
@@ -38,7 +38,7 @@
   
     <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1681880267791">
+  <link rel="stylesheet" href="/css/style.css?v=1681881853604">
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -63,7 +63,7 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div class="nexmoe-count-item"><span>文章</span>14 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>文章</span>15 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
         <div class="nexmoe-count-item"><span>标签</span>13<div class="item-radius"></div><div class="item-radius item-right"></div></div>
         <div class="nexmoe-count-item"><span>分类</span>3<div class="item-radius"></div><div class="item-radius item-right"></div></div>
     </div>
@@ -186,7 +186,7 @@
   
   <div class="nexmoe-widget-wrap">
     <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 20px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/RBD/" style="font-size: 10px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 20px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/OSD/" style="font-size: 10px;">OSD</a> <a href="/tags/RBD/" style="font-size: 10px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a>
     </div>
     
   </div>
@@ -196,7 +196,7 @@
   <div class="nexmoe-widget-wrap">
     <h3 class="nexmoe-widget-title">文章</h3>
     <div class="nexmoe-widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">14</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">15</span></li></ul>
     </div>
   </div>
 
@@ -254,15 +254,15 @@ setInterval("createtime()",250);
         <div class="nexmoe-post">
     
         <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
-            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph故障排查" class="lazyload">
-            <h1>Ceph故障排查</h1>
+            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="OSD扩容和换盘" class="lazyload">
+            <h1>OSD扩容和换盘</h1>
         </div>
     
 
         <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月10日</a>
-    <a><i class="nexmoefont icon-areachart"></i>898 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月19日</a>
+    <a><i class="nexmoefont icon-areachart"></i>3.7k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 20 分钟</a>
 </div>
 
         <div class="nexmoe-post-right">
@@ -275,134 +275,416 @@ setInterval("createtime()",250);
 <!-- toc -->
 
 <ul>
-<li><a href="#%E4%B8%80-application-not-enabled-on-1-pools">一、application not enabled on 1 pool(s)</a></li>
-<li><a href="#%E4%BA%8C-%E6%B8%85%E7%90%86mgr%E5%91%8A%E8%AD%A6">二、清理MGR告警</a></li>
+<li><a href="#%E4%B8%80-osd%E6%89%A9%E5%AE%B9">一、OSD扩容</a><ul>
+<li><a href="#1-%E7%BA%B5%E5%90%91%E6%A8%AA%E5%90%91%E6%89%A9%E5%AE%B9">1、纵向&amp;横向扩容</a><ul>
+<li><a href="#11-%E7%BA%B5%E5%90%91%E6%89%A9%E5%AE%B9">1.1、纵向扩容</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E6%95%B0%E6%8D%AE%E9%87%8D%E5%88%86%E5%B8%83">二、数据重分布</a></li>
+<li><a href="#%E4%B8%89-%E5%9D%8F%E7%9B%98%E6%9B%B4%E6%8D%A2">三、坏盘更换</a><ul>
+<li><a href="#%E6%A8%A1%E6%8B%9F%E5%88%A0%E9%99%A4osd">模拟删除OSD</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7">四、数据一致性</a></li>
 </ul>
 <!-- tocstop -->
 
-<h1><span id="一-application-not-enabled-on-1-pools">一、application not enabled on 1 pool(s)</span></h1><blockquote>
-<p>故障现象：</p>
-</blockquote>
-<pre><code>[root@node-1 data]# ceph -s 
-  cluster:
-    id:     e9a90625-4707-4b6b-b52f-661512ea831d
-    health: HEALTH_WARN
-            application not enabled on 1 pool(s) #提示有一个pool没有启用application ，是由于创建pool的时候没有使用rbd pool init &lt;pool-name&gt;进行初始化，使用此命令会默认指定成RBD格式的application
+<h1><span id="一-osd扩容">一、OSD扩容</span></h1><p>OSD扩容大体上可分为两种：</p>
+<ol>
+<li>横向扩容: scale out 通过增加节点来完成扩容。</li>
+<li>纵向扩容: csale up 通过在现有节点下增加硬盘来完成扩容。</li>
+</ol>
+<p>详情查看<a target="_blank" rel="noopener" href="https://docs.ceph.com/en/nautilus/rados/deployment/ceph-deploy-osd/#zap-disks">官方文档</a>。</p>
+<h2><span id="1-纵向amp横向扩容">1、纵向&amp;横向扩容</span></h2><p><strong>横向扩容时请先安装ceph的软件包，ntp，防火墙等基础功能</strong></p>
+<h3><span id="11-纵向扩容">1.1、纵向扩容</span></h3><pre><code>ceph-deploy osd create --data &#123;data-disk&#125; &#123;node-name&#125; 
+ceph-deploy disk zap &lt;node-name&gt; &lt;data-disk&gt; #清除要增加硬盘的分区    
+</code></pre>
+<h1><span id="二-数据重分布">二、数据重分布</span></h1><p>当您将 Ceph OSD 守护进程添加到 Ceph 存储集群时，集群映射会使用新的 OSD 进行更新。回头参考 <a target="_blank" rel="noopener" href="https://docs.ceph.com/en/nautilus/architecture/#calculating-pg-ids">计算PG ID</a>，这会更改集群映射。因此，它会更改对象放置，因为它会更改计算的输入。下图描述了重新平衡过程（虽然相当粗略，因为它对大型集群的影响要小得多），其中一些但不是所有 PG 从现有 OSD（OSD 1 和 OSD 2）迁移到新的 OSD（OSD 3） ). 即使在重新平衡时，CR​​USH 也很稳定。许多归置组仍保留其原始配置，并且每个 OSD 都获得了一些额外的容量，因此在重新平衡完成后新 OSD 上不会出现负载峰值。</p>
+<p><img src="/images/Ceph/OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/1.jpg"></p>
+<p><strong>写入一个2G的文件</strong></p>
+<p><code>[root@node-1 /]#dd if=/dev/zero of=rebalancing-file.img bs=1M count=2048</code></p>
+<p><strong>上传到data中</strong></p>
+<p><code>[root@node-1 /]# mv rebalancing-file.img /data</code></p>
+<p><strong>data是ceph中的块设备</strong></p>
+<pre><code>[root@node-1 /]# df -HT
+Filesystem              Type      Size  Used Avail Use% Mounted on
+devtmpfs                devtmpfs  942M     0  942M   0% /dev
+tmpfs                   tmpfs     954M     0  954M   0% /dev/shm
+tmpfs                   tmpfs     954M   11M  944M   2% /run
+tmpfs                   tmpfs     954M     0  954M   0% /sys/fs/cgroup
+/dev/mapper/centos-root xfs        19G  4.8G   14G  26% /
+/dev/sda1               xfs       1.1G  204M  860M  20% /boot
+tmpfs                   tmpfs     954M   25k  954M   1% /var/lib/ceph/osd/ceph-0
+tmpfs                   tmpfs     954M   25k  954M   1% /var/lib/ceph/osd/ceph-3
+tmpfs                   tmpfs     191M     0  191M   0% /run/user/0
+/dev/rbd0               xfs        11G  2.2G  8.6G  21% /data
+</code></pre>
+<p><strong>可以看到ceph-demo中有6G的数据，一共写入了2G的数据，3副本，所以共使用6G</strong></p>
+<pre><code>[root@node-1 /]# ceph df 
+RAW STORAGE:
+    CLASS     SIZE       AVAIL      USED       RAW USED     %RAW USED 
+    hdd       60 GiB     24 GiB     30 GiB       36 GiB         60.75 
+    TOTAL     60 GiB     24 GiB     30 GiB       36 GiB         60.75 
  
-  services:
-    mon: 3 daemons, quorum node-1,node-2,node-3 (age 71m)
-    mgr: node-1(active, since 14h), standbys: node-2, node-3
-    osd: 3 osds: 3 up (since 39m), 3 in (since 65m)
- 
-  data:
-    pools:   1 pools, 64 pgs
-    objects: 281 objects, 1.0 GiB
-    usage:   6.2 GiB used, 24 GiB / 30 GiB avail
-    pgs:     64 active+clean
+POOLS:
+    POOL                          ID     PGS     STORED      OBJECTS     USED        %USED     MAX AVAIL 
+    ceph-demo                      1     512     2.0 GiB         537     6.0 GiB     25.56       5.9 GiB 
+    .rgw.root                      2      32     1.2 KiB           4     768 KiB         0       5.9 GiB 
+    default.rgw.control            3      32         0 B           8         0 B         0       5.9 GiB 
+    default.rgw.meta               4      32     1.5 KiB           8     1.3 MiB         0       5.9 GiB 
+    default.rgw.log                5      32         0 B         207         0 B         0       5.9 GiB 
+    default.rgw.buckets.index      6      32         0 B           2         0 B         0       5.9 GiB 
+    default.rgw.buckets.data       7      32         0 B           0         0 B         0       5.9 GiB 
+    cephfs_data                    8      16       8 GiB       2.05k      24 GiB     57.73       5.9 GiB 
+    cephfs_metadata                9      16     361 KiB          23     2.6 MiB      0.01       5.9 GiB 
 </code></pre>
-<blockquote>
-<p> 查看当前集群的健康状态</p>
-</blockquote>
-<pre><code>[root@node-1 data]# ceph health detail
-HEALTH_WARN application not enabled on 1 pool(s)
-POOL_APP_NOT_ENABLED application not enabled on 1 pool(s)
-    application not enabled on pool &#39;ceph-demo&#39;
-    use &#39;ceph osd pool application enable &lt;pool-name&gt; &lt;app-name&gt;&#39;, where &lt;app-name&gt; is &#39;cephfs&#39;, &#39;rbd&#39;, &#39;rgw&#39;, or freeform for custom applications
+<p><strong>PG数据重分布状态</strong></p>
+<p><img src="/images/Ceph/OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/2.jpg"></p>
+<p><strong>查看OSD线程</strong></p>
+<pre><code>[root@node-1 /]# ceph --admin-daemon /var/run/ceph/ceph-mon.node-1.asok config show | grep max_b
+    &quot;bluestore_compression_max_blob_size&quot;: &quot;0&quot;,
+    &quot;bluestore_compression_max_blob_size_hdd&quot;: &quot;524288&quot;,
+    &quot;bluestore_compression_max_blob_size_ssd&quot;: &quot;65536&quot;,
+    &quot;bluestore_max_blob_size&quot;: &quot;0&quot;,
+    &quot;bluestore_max_blob_size_hdd&quot;: &quot;524288&quot;,
+    &quot;bluestore_max_blob_size_ssd&quot;: &quot;65536&quot;,
+    &quot;bluestore_rocksdb_options&quot;: &quot;compression=kNoCompression,max_write_buffer_number=4,min_write_buffer_number_to_merge=1,recycle_log_file_num=4,write_buffer_size=268435456,writable_file_max_buffer_size=0,compaction_readahead_size=2097152,max_background_compactions=2&quot;,
+    &quot;client_readahead_max_bytes&quot;: &quot;0&quot;,
+    &quot;filestore_queue_max_bytes&quot;: &quot;104857600&quot;,
+    &quot;filestore_rocksdb_options&quot;: &quot;max_background_jobs=10,compaction_readahead_size=2097152,compression=kNoCompression&quot;,
+    &quot;kstore_max_bytes&quot;: &quot;67108864&quot;,
+    &quot;ms_max_backoff&quot;: &quot;15.000000&quot;,
+    &quot;osd_bench_max_block_size&quot;: &quot;67108864&quot;,
+    &quot;osd_map_message_max_bytes&quot;: &quot;10485760&quot;,
+    &quot;osd_max_backfills&quot;: &quot;1&quot;, #每个OSD最多有一个线程
+    &quot;osd_tier_promote_max_bytes_sec&quot;: &quot;5242880&quot;,
+    &quot;rbd_readahead_max_bytes&quot;: &quot;524288&quot;,
+    &quot;rgw_sync_log_trim_max_buckets&quot;: &quot;16&quot;,
+    &quot;rgw_user_max_buckets&quot;: &quot;1000&quot;,
 </code></pre>
-<blockquote>
-<p>启用ceph-demo的资源池的application，并设置成RBD格式</p>
-</blockquote>
-<pre><code>[root@node-1 data]# ceph osd pool application enable ceph-demo rbd  
-enabled application &#39;rbd&#39; on pool &#39;ceph-demo&#39;
-</code></pre>
-<blockquote>
-<p>通过get命令可查看资源池的application设置</p>
-</blockquote>
-<pre><code>[root@node-1 data]#  ceph -h |grep application 
-osd pool application disable &lt;poolname&gt; &lt;app&gt; &#123;--yes-i-really-mean-   disables use of an application &lt;app&gt; on pool &lt;poolname&gt;
-osd pool application enable &lt;poolname&gt; &lt;app&gt; &#123;--yes-i-really-mean-it&#125; enable use of an application &lt;app&gt; [cephfs,rbd,rgw] on pool 
-osd pool application get &#123;&lt;poolname&gt;&#125; &#123;&lt;app&gt;&#125; &#123;&lt;key&gt;&#125;                 get value of key &lt;key&gt; of application &lt;app&gt; on pool &lt;poolname&gt;
-osd pool application rm &lt;poolname&gt; &lt;app&gt; &lt;key&gt;                        removes application &lt;app&gt; metadata key &lt;key&gt; on pool &lt;poolname&gt;
-osd pool application set &lt;poolname&gt; &lt;app&gt; &lt;key&gt; &lt;value&gt;               sets application &lt;app&gt; metadata key &lt;key&gt; to &lt;value&gt; on pool 
-[root@node-1 data]# ceph osd pool application get ceph-demo #默认为空
-&#123;
-    &quot;rbd&quot;: &#123;&#125;
-&#125;
-</code></pre>
-<blockquote>
-<p>查看集群已经恢复</p>
-</blockquote>
-<pre><code>[root@node-1 data]# ceph -s
-  cluster:
-    id:     e9a90625-4707-4b6b-b52f-661512ea831d
-    health: HEALTH_OK
+<p><strong>数据同步的时候使用cluster_network网络，客户端连接的时候使用pubic_network网络 生产环境中最好分开</strong></p>
+<pre><code>[root@node-1 /]# cat /etc/ceph/ceph.conf #数据同步的时候使用cluster_network网络，客户端连接的时候使用pubic_network网络 生产环境中最好分开
+[global]
+fsid = e9a90625-4707-4b6b-b52f-661512ea831d
+public_network = 192.168.187.0/24
+cluster_network = 192.168.199.0/24
+mon_initial_members = node-1
+mon_host = 192.168.187.201
+auth_cluster_required = cephx
+auth_service_required = cephx
+auth_client_required = cephx
 
-  services:
-    mon: 3 daemons, quorum node-1,node-2,node-3 (age 80m)
-    mgr: node-1(active, since 14h), standbys: node-2, node-3
-    osd: 3 osds: 3 up (since 48m), 3 in (since 73m)
- 
-  data:
-    pools:   1 pools, 64 pgs
-    objects: 281 objects, 1.0 GiB
-    usage:   6.2 GiB used, 24 GiB / 30 GiB avail
-    pgs:     64 active+clean
+osd pool default pg num = 32
+osd pool default pgp num = 32
+mon_pg_warn_max_per_osd = 512
+mon_max_pg_per_osd=3000
+
+[client.rgw.node-1]
+rgw_frontends = &quot;civetweb port=80&quot;
 </code></pre>
-<h1><span id="二-清理mgr告警">二、清理MGR告警</span></h1><blockquote>
-<p>故障现象：</p>
-</blockquote>
-<pre><code>[root@node-1 data]# ceph -s  
+<p><strong>如果是生产环境中需要扩容OSD，但是业务收到影响后可以使用 norebalance 停止</strong><br><strong>查看帮助</strong></p>
+<pre><code>[root@node-1 /]# ceph --help |grep reba 
+osd set full|pause|noup|nodown|noout|noin|nobackfill|norebalance|     set &lt;key&gt;
+osd unset full|pause|noup|nodown|noout|noin|nobackfill|norebalance|   unset &lt;key&gt;
+</code></pre>
+<p><strong>暂停同步</strong></p>
+<pre><code>[root@node-1 /]# ceph osd set norebalance  #暂停同步
+norebalance is set
+[root@node-1 /]# ceph osd set nobackfill #同时需要暂停这个，这个也会进行数据填充的
+nobackfill is set
+</code></pre>
+<p><strong>查看集群状态</strong></p>
+<pre><code>[root@node-1 /]# ceph -s 
   cluster:
     id:     e9a90625-4707-4b6b-b52f-661512ea831d
     health: HEALTH_WARN
-            2 daemons have recently crashed #有两个告警信息，可能是由于某个服务出现异常导致
+            norebalance flag(s) set #可以看到已经暂停同步了
+            1 pools have too few placement groups
+            1 pools have too many placement groups
+            clock skew detected on mon.node-2, mon.node-3
  
   services:
-    mon: 3 daemons, quorum node-1,node-2,node-3 (age 80m)
-    mgr: node-1(active, since 14h), standbys: node-2, node-3
-    osd: 3 osds: 3 up (since 48m), 3 in (since 73m)
+    mon: 3 daemons, quorum node-1,node-2,node-3 (age 2m)
+    mgr: node-3(active, since 56m), standbys: node-2, node-1
+    mds: cephfs-demo:1 &#123;0=node-3=up:active&#125; 2 up:standby
+    osd: 6 osds: 6 up (since 20m), 6 in (since 19h)
+         flags norebalance
+    rgw: 1 daemon active (node-1)
+ 
+  task status:
  
   data:
-    pools:   1 pools, 64 pgs
-    objects: 281 objects, 1.0 GiB
-    usage:   6.2 GiB used, 24 GiB / 30 GiB avail
-    pgs:     64 active+clean
-[root@node-1 data]#  ceph health detail
-HEALTH_WARN 2 daemons have recently crashed
-RECETN_CRASH 2 daemons have recently crashed
-    mgr.node-1 crashed on host node-1 at 2023-03-04 15:42:01.891238Z
-    mgr.node-1 crashed on host node-1 at 2023-03-04 15:45:31.891238Z
+    pools:   9 pools, 736 pgs
+    objects: 2.84k objects, 10 GiB
+    usage:   36 GiB used, 24 GiB / 60 GiB avail
+    pgs:     736 active+clean
 </code></pre>
-<blockquote>
-<p>查看crash用法</p>
-</blockquote>
-<pre><code>[root@node-1 data]# ceph -h | grep crash
-crash archive &lt;id&gt;                                                    Acknowledge a crash and silence health warning(s)
-crash archive-all                                                     Acknowledge all new crashes and silence health warning(s)
-crash info &lt;id&gt;                                                       show crash dump metadata
-crash json_report &lt;hours&gt;                                             Crashes in the last &lt;hours&gt; hours
-crash ls                                                              Show new and archived crash dumps
-crash ls-new                                                          Show new crash dumps
-crash post                                                            Add a crash dump (use -i &lt;jsonfile&gt;)
-crash prune &lt;keep&gt;                                                    Remove crashes older than &lt;keep&gt; days
-crash rm &lt;id&gt;                                                         Remove a saved crash &lt;id&gt;
-crash stat                                                            Summarize recorded crashes
+<p><strong>启动同步</strong></p>
+<pre><code>[root@node-1 /]# ceph osd unset norebalance  #启动同步
+norebalance is unset
+[root@node-1 /]# ceph osd unset nobackfill #启动同步
 </code></pre>
-<blockquote>
-<p>查看当前状态</p>
-</blockquote>
-<pre><code>[root@node-1 data]# ceph crash ls
+<h1><span id="三-坏盘更换">三、坏盘更换</span></h1><p>当你想减少集群的大小或更换硬件时，你可以在运行时删除一个 OSD。对于 Ceph，一个 OSD 通常是ceph-osd 主机中一个存储驱动器的一个 Ceph 守护进程。如果您的主机有多个存储驱动器，您可能需要ceph-osd为每个驱动器删除一个守护进程。通常，最好检查集群的容量以查看是否已达到其容量的上限。确保当您删除 OSD 时，您的集群未达到其比率。near full</p>
+<p><strong>可通过这个命令查看到坏盘的信息</strong></p>
+<p><code>[root@node-3 ~]# dmesg</code></p>
+<p><strong>可以通过这个命令看到那个OSD的延迟比较大， 来判断是否存在坏道情况</strong></p>
+<pre><code>[root@node-1 /]# ceph osd perf #可以通过这个命令看到那个OSD的延迟比较大， 来判断是否存在坏道情况
+osd commit_latency(ms) apply_latency(ms) 
+  5                  0                 0 
+  4                  0                 0 
+  0                  0                 0 
+  1                  0                 0 
+  2                  0                 0 
+  3                  0                 0 
 </code></pre>
-<p><img src="/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/1.jpg"></p>
-<blockquote>
-<p>查看该ID的具体信息</p>
-</blockquote>
-<pre><code>[root@node-1 data]# ceph crash info &lt;id&gt;
+<h2><span id="模拟删除osd">模拟删除OSD</span></h2><pre><code>[root@node-1 /]# ceph osd tree  #模拟删除osd.5
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-1       0.05878 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+-7       0.01959     host node-3                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+ 5   hdd 0.00980         osd.5       up  1.00000 1.00000 
+ [root@node-1 /]# ssh node-3 #远程到node-3服务器
+Last login: Sun Mar  5 19:50:53 2023 from 192.168.187.1
+[root@node-3 ~]# systemctl stop ceph-osd@5 #停止osd5服务
+[root@node-3 ~]# systemctl status ceph-osd@5 #查看状态
+● ceph-osd@5.service - Ceph object storage daemon osd.5
+   Loaded: loaded (/usr/lib/systemd/system/ceph-osd@.service; enabled-runtime; vendor preset: disabled)
+   Active: inactive (dead) since Sun 2023-03-05 20:45:15 CST; 8s ago
+  Process: 1729 ExecStart=/usr/bin/ceph-osd -f --cluster $&#123;CLUSTER&#125; --id %i --setuser ceph --setgroup ceph (code=exited, status=0/SUCCESS)
+  Process: 1724 ExecStartPre=/usr/lib/ceph/ceph-osd-prestart.sh --cluster $&#123;CLUSTER&#125; --id %i (code=exited, status=0/SUCCESS)
+ Main PID: 1729 (code=exited, status=0/SUCCESS)
+
+Mar 05 19:49:50 node-3 systemd[1]: Starting Ceph object storage daemon osd.5...
+Mar 05 19:49:50 node-3 systemd[1]: Started Ceph object storage daemon osd.5.
+Mar 05 19:49:56 node-3 ceph-osd[1729]: 2023-03-05 19:49:56.053 7f3fa59a6a80 -1 osd.5 1454 log_to_monitors &#123;default=true&#125;
+Mar 05 19:50:11 node-3 ceph-osd[1729]: 2023-03-05 19:50:11.748 7f3f97fc5700 -1 osd.5 1454 set_numa_affinity unable to identify...rectory
+Mar 05 20:45:15 node-3 systemd[1]: Stopping Ceph object storage daemon osd.5...
+Mar 05 20:45:15 node-3 ceph-osd[1729]: 2023-03-05 20:45:15.800 7f3f9b84b700 -1 received  signal: Terminated from /usr/lib/syst... UID: 0
+Mar 05 20:45:15 node-3 ceph-osd[1729]: 2023-03-05 20:45:15.800 7f3f9b84b700 -1 osd.5 1479 *** Got signal Terminated ***
+Mar 05 20:45:15 node-3 ceph-osd[1729]: 2023-03-05 20:45:15.800 7f3f9b84b700 -1 osd.5 1479 *** Immediate shutdown (osd_fast_shu...ue) ***
+Mar 05 20:45:15 node-3 systemd[1]: Stopped Ceph object storage daemon osd.5.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@node-3 ~]# ceph osd tree #在集群中查看状态
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-1       0.05878 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+-7       0.01959     host node-3                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+ 5   hdd 0.00980         osd.5     down  1.00000 1.00000
+ [root@node-3 ~]# ceph -s  #大概需要10分钟的时候才会触发rebalance的操作
+  cluster:
+    id:     e9a90625-4707-4b6b-b52f-661512ea831d
+    health: HEALTH_WARN
+            1 osds down
+            Degraded data redundancy: 1272/8514 objects degraded (14.940%), 199 pgs degraded
+            1 pools have too few placement groups
+            1 pools have too many placement groups
+            clock skew detected on mon.node-2, mon.node-3
+ 
+  services:
+    mon: 3 daemons, quorum node-1,node-2,node-3 (age 25m)
+    mgr: node-3(active, since 53m), standbys: node-2, node-1
+    mds: cephfs-demo:1 &#123;0=node-3=up:active&#125; 2 up:standby
+    osd: 6 osds: 5 up (since 136y), 6 in (since 19h)
+    rgw: 1 daemon active (node-1)
+ 
+  task status:
+ 
+  data:
+    pools:   9 pools, 736 pgs
+    objects: 2.84k objects, 10 GiB
+    usage:   36 GiB used, 24 GiB / 60 GiB avail
+    pgs:     1272/8514 objects degraded (14.940%)
+             365 active+clean
+             199 active+undersized+degraded
+             172 active+undersized
+[root@node-3 ~]# ceph osd out osd.5 #踢出集群
+marked out osd.5. 
+[root@node-3 ~]# ceph osd tree  #可以看到权重变小，从1变成了0
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-1       0.05878 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+-7       0.01959     host node-3                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+ 5   hdd 0.00980         osd.5     down        0 1.00000 
+[root@node-3 ~]# ceph osd crush dump |grep osd.5 #查看crush
+            &quot;name&quot;: &quot;osd.5&quot;,
+[root@node-3 ~]# ceph osd crush rm osd.5  #删除crush
+removed item id 5 name &#39;osd.5&#39; from crush map
+[root@node-3 ~]# ceph osd tree #查看已经删除crush
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-1       0.04898 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+-7       0.00980     host node-3                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+ 5             0 osd.5             down        0 1.00000
+ [root@node-3 ~]# ceph osd rm osd.5 #删除osd.5
+removed osd.5
+[root@node-3 ~]# ceph osd tree #查看已经删除
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-1       0.04898 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+-7       0.00980     host node-3                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+[root@node-3 ~]#  ceph auth list #查看认证信息
+mds.node-1
+    key: AQBLPwRkgcRTARAAJD+hzTIC+jSlAqsrLqsd4w==
+    caps: [mds] allow
+    caps: [mon] allow profile mds
+    caps: [osd] allow rwx
+mds.node-2
+    key: AQBLPwRk6Z6QOBAAbcoYG/A7WVQ6Xq26QngXcw==
+    caps: [mds] allow
+    caps: [mon] allow profile mds
+    caps: [osd] allow rwx
+mds.node-3
+    key: AQBMPwRk2fIcNhAAtP/K0mVMYRJfN8h5Jlbyig==
+    caps: [mds] allow
+    caps: [mon] allow profile mds
+    caps: [osd] allow rwx
+osd.0
+    key: AQCSKgJkOuSDBBAAN3OVzTiJK9rNWEePf/cHZQ==
+    caps: [mgr] allow profile osd
+    caps: [mon] allow profile osd
+    caps: [osd] allow *
+osd.1
+    key: AQAMKwJkXYOpChAA8Q/pNsKr9BVz+LG5qKLpGA==
+    caps: [mgr] allow profile osd
+    caps: [mon] allow profile osd
+    caps: [osd] allow *
+osd.2
+    key: AQAbKwJkIEoeFRAAVns6sv+UQc85fP4MjoB89w==
+    caps: [mgr] allow profile osd
+    caps: [mon] allow profile osd
+    caps: [osd] allow *
+osd.3
+    key: AQBCgwNkuu0HOhAAz/pnHg4xHpusO6/exoee9Q==
+    caps: [mgr] allow profile osd
+    caps: [mon] allow profile osd
+    caps: [osd] allow *
+osd.4
+    key: AQBSgwNkQp6uJRAAtS5oUJjJsnyWwtruAy9q4Q==
+    caps: [mgr] allow profile osd
+    caps: [mon] allow profile osd
+    caps: [osd] allow *
+osd.5
+    key: AQBigwNkaWJAJRAAUNcvokMMax4UGTgVXSRB4w==
+    caps: [mgr] allow profile osd
+    caps: [mon] allow profile osd
+    caps: [osd] allow *
+client.admin
+    key: AQCJJwJk4RpHLRAAQWMtAAO/4EXn2qXm35LzKw==
+    caps: [mds] allow *
+    caps: [mgr] allow *
+    caps: [mon] allow *
+    caps: [osd] allow *
+client.bootstrap-mds
+    key: AQCJJwJkHStHLRAAj1Nc65WqUG2R+YNC/ewQVQ==
+    caps: [mon] allow profile bootstrap-mds
+client.bootstrap-mgr
+    key: AQCJJwJkyTVHLRAA9eMnrbNwGYgbmietKQ33Kw==
+    caps: [mon] allow profile bootstrap-mgr
+client.bootstrap-osd
+    key: AQCJJwJkrj5HLRAA3n8qXNp0Z7k4zPFtb2UXQg==
+    caps: [mon] allow profile bootstrap-osd
+client.bootstrap-rbd
+    key: AQCJJwJk4UhHLRAAb0x5K5jM/YqcJNpP0aDBQg==
+    caps: [mon] allow profile bootstrap-rbd
+client.bootstrap-rbd-mirror
+    key: AQCJJwJkfVFHLRAA/vh27nUJAeA2aSquy6oBug==
+    caps: [mon] allow profile bootstrap-rbd-mirror
+client.bootstrap-rgw
+    key: AQCJJwJk1VlHLRAALUO430jjgsp+TZKY151KDw==
+    caps: [mon] allow profile bootstrap-rgw
+client.rgw.node-1
+    key: AQDKMANkby1/GxAAfeOIDDwPxjrwS0pibixXtg==
+    caps: [mon] allow rw
+    caps: [osd] allow rwx
+mgr.node-1
+    key: AQDIKAJkngmTBhAAGSBO+ELb4O93uqGQyhtfRA==
+    caps: [mds] allow *
+    caps: [mon] allow profile mgr
+    caps: [osd] allow *
+mgr.node-2
+    key: AQBvLwJkDDPYAhAAkmvWkFb/rdiggG/f1n18dA==
+    caps: [mds] allow *
+    caps: [mon] allow profile mgr
+    caps: [osd] allow *
+mgr.node-3
+    key: AQBwLwJkrN9IJRAA9VAsfNeDV14AOf7uaiqRTQ==
+    caps: [mds] allow *
+    caps: [mon] allow profile mgr
+    caps: [osd] allow *
+installed auth entries:
+[root@node-3 ~]# ceph auth rm osd.5 #删除关于osd5的认证
+updated
+
+需要重新添加上述硬盘时需要格式化硬盘，在node-3执行  
+清除逻辑卷的DM映射，操作如下：
+dmsetup info -C
+dmsetup remove [dm_map_name]
+
+格式化磁盘
+mkfs.xfs -f /dev/vdb
+ceph-deploy disk zap node-3 /dev/sdc
+ceph-deploy osd create node-3 --data /dev/sdc --journal /dev/sdc
 </code></pre>
-<blockquote>
-<p>使用ceph crash archive <id>进行标记，视为已读，或者重启所有OSD也能解决告警问题</id></p>
-</blockquote>
-<p><img src="/images/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/2.jpg"></p>
+<h1><span id="四-数据一致性">四、数据一致性</span></h1><p>作为维护数据一致性和清洁度的一部分，Ceph OSD 还可以清理归置组中的对象。也就是说，Ceph OSD 可以将一个归置组中的对象元数据与其存储在其他 OSD 中的归置组中的副本进行比较。清理（通常每天执行）会捕获 OSD 错误或文件系统错误。OSD 还可以通过逐位比较对象中的数据来执行更深入的清理。深度清理（通常每周执行一次）会发现磁盘上的坏扇区，而这些坏扇区在轻度清理中并不明显。<br>有关配置清理的详细信息，请参阅<a target="_blank" rel="noopener" href="https://docs.ceph.com/en/nautilus/rados/configuration/osd-config-ref#scrubbing">数据清理</a>。</p>
+<p>除了制作对象的多个副本外，Ceph 还通过清理归置组来确保数据完整性。Ceph 清理类似于fsck对象存储层。对于每个归置组，Ceph 生成所有对象的目录并比较每个主对象及其副本以确保没有对象丢失或不匹配。轻度擦洗（每天）检查对象大小和属性。深度清理（每周一次）读取数据并使用校验和确保数据完整性。</p>
+<p><strong>查看帮助</strong></p>
+<pre><code>[root@node-3 ~]# ceph --help | grep scrub 
+  --block               block until completion (scrub and deep-scrub only)
+mon scrub                                                             scrub the monitor stores
+osd deep-scrub &lt;who&gt;                                                  initiate deep scrub on osd &lt;who&gt;, or use &lt;all|any&gt; to deep scrub all
+osd pool deep-scrub &lt;poolname&gt; [&lt;poolname&gt;...]                        initiate deep-scrub on pool &lt;who&gt;
+ noscrub|nodeep-scrub|hit_set_type|hit_set_period|hit_set_count|hit_  
+ read|hit_set_grade_decay_rate|hit_set_search_last_n|scrub_min_       
+ interval|scrub_max_interval|deep_scrub_interval|recovery_priority|   
+ recovery_op_priority|scrub_priority|compression_mode|compression_    
+osd pool scrub &lt;poolname&gt; [&lt;poolname&gt;...]                             initiate scrub on pool &lt;who&gt;
+ fadvise_dontneed|noscrub|nodeep-scrub|hit_set_type|hit_set_period|   
+ hit_set_grade_decay_rate|hit_set_search_last_n|scrub_min_interval|   
+ scrub_max_interval|deep_scrub_interval|recovery_priority|recovery_   
+ op_priority|scrub_priority|compression_mode|compression_algorithm|   
+osd scrub &lt;who&gt;                                                       initiate scrub on osd &lt;who&gt;, or use &lt;all|any&gt; to scrub all
+ norecover|noscrub|nodeep-scrub|notieragent|nosnaptrim|pglog_         
+ norecover|noscrub|nodeep-scrub|notieragent|nosnaptrim                
+pg deep-scrub &lt;pgid&gt;                                                  start deep-scrub on &lt;pgid&gt; #深度清理
+pg scrub &lt;pgid&gt;                                                       start scrub on &lt;pgid&gt; #轻量清理
+</code></pre>
+<p><strong>清理PG</strong></p>
+<pre><code>[root@node-3 ~]# ceph pg dump #先拿到PG的ID
+[root@node-3 ~]# ceph pg scrub 1.197 #进行对比
+instructing pg 1.197 on osd.1 to scrub
+</code></pre>
 <script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
         </article>
 
@@ -413,7 +695,7 @@ crash stat                                                            Summarize 
     
       <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
     
-    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/10/Ceph/0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;10&#x2F;Ceph&#x2F;0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5&#x2F;Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;10&#x2F;Ceph&#x2F;0.Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5&#x2F;Ceph%E5%91%8A%E8%AD%A6%E6%8E%92%E6%9F%A5&#x2F;</a><br>
+    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/19/Ceph/7.OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;19&#x2F;Ceph&#x2F;7.OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98&#x2F;OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;19&#x2F;Ceph&#x2F;7.OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98&#x2F;OSD%E6%89%A9%E5%AE%B9%E5%92%8C%E6%8D%A2%E7%9B%98&#x2F;</a><br>
 
     
       <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
@@ -428,7 +710,7 @@ crash stat                                                            Summarize 
         <a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/">Ceph</a>
     
     
-        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" rel="tag">故障排查</a>
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/OSD/" rel="tag">OSD</a>
     
 </div>
 
@@ -1170,7 +1452,7 @@ crash stat                                                            Summarize 
 <script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
 
 
-<script src="/js/app.js?v=1681880267796"></script>
+<script src="/js/app.js?v=1681881853610"></script>
 
 <script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
 <script>

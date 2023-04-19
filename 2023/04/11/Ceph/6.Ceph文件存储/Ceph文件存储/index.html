@@ -21,14 +21,14 @@
 <meta property="og:url" content="https://zhangboc.github.io/2023/04/11/Ceph/6.Ceph%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/Ceph%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://zhangboc.github.io/images/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg">
 <meta property="article:published_time" content="2023-04-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-16T10:48:01.095Z">
+<meta property="article:modified_time" content="2023-04-19T05:23:23.710Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Ceph">
 <meta property="article:tag" content="CephFS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg">
+<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg">
   <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
   <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
   <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
@@ -37,7 +37,7 @@
   
     <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1681880267783">
+  <link rel="stylesheet" href="/css/style.css?v=1681881853683">
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -62,7 +62,7 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div class="nexmoe-count-item"><span>文章</span>14 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>文章</span>15 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
         <div class="nexmoe-count-item"><span>标签</span>13<div class="item-radius"></div><div class="item-radius item-right"></div></div>
         <div class="nexmoe-count-item"><span>分类</span>3<div class="item-radius"></div><div class="item-radius item-right"></div></div>
     </div>
@@ -185,7 +185,7 @@
   
   <div class="nexmoe-widget-wrap">
     <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 20px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/RBD/" style="font-size: 10px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a>
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/KVM/" style="font-size: 20px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/OSD/" style="font-size: 10px;">OSD</a> <a href="/tags/RBD/" style="font-size: 10px;">RBD</a> <a href="/tags/RGW/" style="font-size: 10px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a>
     </div>
     
   </div>
@@ -195,7 +195,7 @@
   <div class="nexmoe-widget-wrap">
     <h3 class="nexmoe-widget-title">文章</h3>
     <div class="nexmoe-widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">14</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">15</span></li></ul>
     </div>
   </div>
 
@@ -286,7 +286,7 @@ setInterval("createtime()",250);
 <p>Ceph 文件系统或CephFS是一个 POSIX 兼容的文件系统，构建在 Ceph 的分布式对象存储RADOS之上。CephFS致力于为各种应用程序提供最先进、多用途、高可用性和高性能的文件存储，包括共享主目录、HPC 暂存空间和分布式工作流共享存储等传统用例。</p>
 <p>CephFS 通过使用一些新颖的架构选择来实现这些目标。值得注意的是，文件元数据存储在与文件数据不同的 RADOS 池中，并通过可调整大小的元数据服务器集群或MDS提供服务，它可以扩展以支持更高吞吐量的元数据工作负载。文件系统的客户端可以直接访问 RADOS 来读写文件数据块。因此，工作负载可能会随着底层 RADOS 对象存储的大小线性扩展；也就是说，没有网关或代理为客户端调解数据 I&#x2F;O。</p>
 <p>对数据的访问通过 MDS 集群进行协调，MDS 集群充当由客户端和 MDS 共同维护的分布式元数据缓存状态的权威。每个 MDS 将元数据的变化聚合成一系列高效写入 RADOS 上的日志；MDS 没有在本地存储任何元数据状态。该模型允许在 POSIX 文件系统的上下文中在客户端之间进行连贯和快速的协作。</p>
-<p><img src="/images/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg"></p>
+<p><img src="/images/Ceph/Ceph_FS%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/1.jpg"></p>
 <p>CephFS 因其新颖的设计和对文件系统研究的贡献而成为众多学术论文的主题。它是 Ceph 中最古老的存储接口，曾经是 RADOS的主要用例。现在它与另外两个存储接口一起组成了一个现代统一存储系统：RBD（Ceph 块设备）和 RGW（Ceph 对象存储网关）。</p>
 <h1><span id="安装mds服务">安装MDS服务</span></h1><p>在三个节点上同时部署MDS</p>
 <pre><code>[root@node-1 my-cluster]# ceph-deploy mds create node-1 node-2 node-3
@@ -1179,7 +1179,7 @@ test
 <script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
 
 
-<script src="/js/app.js?v=1681880267789"></script>
+<script src="/js/app.js?v=1681881853687"></script>
 
 <script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
 <script>

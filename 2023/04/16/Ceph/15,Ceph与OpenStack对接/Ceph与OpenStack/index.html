@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  
+  <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
+  <title>Ceph与OpenStack对接 - Hexo</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  
+  
+
+    <!-- Site Verification -->
+    <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
+
+  <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Ceph与OpenStack对接">
+<meta property="og:url" content="https://zhangboc.github.io/2023/04/16/Ceph/15,Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/Ceph%E4%B8%8EOpenStack/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/1.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/2.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/3.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/4.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/5.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/6.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/7.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/8.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/9.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/10.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/11.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/12.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/13.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/14.jpg">
+<meta property="article:published_time" content="2023-04-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-20T03:31:43.042Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="OpenStack">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/1.jpg">
+  <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
+  <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
+  <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
+  <link rel="stylesheet" href="/lib/fancybox/css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="https://lib.baomitu.com/justifiedGallery/3.8.1/css/justifiedGallery.min.css">
+  
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
+  
+  <link rel="stylesheet" href="/css/style.css?v=1682237265593">
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="mdui-drawer-body-left">
+  
+  <div id="nexmoe-background">
+    <div class="nexmoe-bg" style="background-image: url(/images/background/xiaomai.jpg)"></div>
+    <div class="nexmoe-small" style="background-image: url(/images/background/lihui.png)"></div>
+    <div class="mdui-appbar mdui-shadow-0">
+      <div class="mdui-toolbar">
+        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+        <div class="mdui-toolbar-spacer"></div>
+        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+        <a href="/" title="John Doe" class="mdui-btn mdui-btn-icon"><img src="/images/head/head.jpg" alt="John Doe"></a>
+       </div>
+    </div>
+  </div>
+  <div id="nexmoe-header">
+      <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="John Doe">
+            <img src="/images/head/head.jpg" alt="John Doe" alt="John Doe">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div class="nexmoe-count-item"><span>文章</span>26 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>标签</span>20<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+        <div class="nexmoe-count-item"><span>分类</span>7<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-meishi"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-hanbao1"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about/index.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-jiubei1"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/friend/index.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-cola"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/download/index.html" title="下载中心">
+            <i class="mdui-list-item-icon nexmoefont icon-tangguo"></i>
+            <div class="mdui-list-item-content">
+                下载中心
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+  
+  
+<!-- 站内搜索 -->
+
+<div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search" >
+        <form id="search-form">
+            <label><input type="text" id="local-search-input" name="q" results="0" placeholder="站内搜索" class="input form-control" autocomplete="off" autocorrect="off"/></label>
+            <!-- 清空/重置搜索框 -->
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+        </form>
+    </div>
+    <div id="local-search-result"></div> <!-- 搜索结果区 -->
+    <!-- <p class='no-result'></p> 无匹配时显示，注意在 CSS 中设置默认隐藏 -->
+</div>
+
+
+  
+  <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="http://wpa.qq.com/msgrd?v=3&uin=1605643129&Site=%E5%8C%97%E4%BA%ACSEO&Menu=yes" target="_blank" mdui-tooltip="{content: 'QQ'}" style="color: rgb(64, 196, 255);background-color: rgba(64, 196, 255, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="mailto:1605643129@qq.com" target="_blank" mdui-tooltip="{content: 'mail'}" style="color: rgb(249,8,8);background-color: rgba(249,8,8,.1);">
+            <i class="nexmoefont icon-mail-fill"></i>
+        </a><a class="mdui-ripple" href="https://blog.csdn.net/qq_40855827?type=blog" target="_blank" mdui-tooltip="{content: 'CSDN'}" style="color: rgb(199,29,35);background-color: rgba(199,29,35,.1);">
+            <i class="nexmoefont icon-csdn"></i>
+        </a><a class="mdui-ripple" href="https://home.cnblogs.com/u/1882665" target="_blank" mdui-tooltip="{content: '博客园'}" style="color: rgb(66, 214, 29);background-color: rgba(66, 214, 29, .1);">
+            <i class="nexmoefont icon-bokeyuan"></i>
+        </a><a class="mdui-ripple" href="https://github.com/zhangboc" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a><a class="mdui-ripple" href="https://gitee.com/with-the-wind-yue" target="_blank" mdui-tooltip="{content: 'gitee'}" style="color: rgb(255, 255, 255);background-color: rgb(199,29,35);">
+            <i class="nexmoefont icon-mayun"></i>
+        </a>
+    </div>
+</div>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/">Ceph</a>
+          <span class="category-list-count">19</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/KVM/">KVM</a>
+          <span class="category-list-count">7</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/Kubernetes/">Kubernetes</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/OpenStack/">OpenStack</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/SDK/">SDK</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/hexo/">hexo</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">Ceph守护进程</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/Cinder/" style="font-size: 10px;">Cinder</a> <a href="/tags/CrushMap/" style="font-size: 10px;">CrushMap</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Kubernetes/" style="font-size: 10px;">Kubernetes</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/OSD/" style="font-size: 10px;">OSD</a> <a href="/tags/OpenStack/" style="font-size: 12.5px;">OpenStack</a> <a href="/tags/RBD/" style="font-size: 12.5px;">RBD</a> <a href="/tags/RGW/" style="font-size: 12.5px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a> <a href="/tags/%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/" style="font-size: 10px;">集群测试</a>
+    </div>
+    
+  </div>
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">26</span></li></ul>
+    </div>
+  </div>
+
+
+<style>
+.nexmoe-widget .archive-list-count{
+	position : absolute;
+	right: 15px;
+	top:9px;
+	color: #DDD;
+}
+</style>
+
+  
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 John Doe
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/zhangboc/hexo.github.io/" target="_blank">ZhangboCheng</a><br/>
+        <a href="http://beian.miit.gov.cn" target="_blank">辽ICP备2021002341号</a><br/>
+        
+        <div style="font-size: 12px">
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            本站总访问量  <a id="busuanzi_value_site_pv"></a> 次<br />
+            本站访客数<a id="busuanzi_value_site_uv"></a>人次
+        </div>
+        <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+        <script>
+            var now = new Date(); 
+            function createtime() { 
+                var grt= new Date("08/10/2018 17:38:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+                now.setTime(now.getTime()+250); 
+                days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+                hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+                if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+                mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+                seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+                snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+                document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+                document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+
+
+        
+        
+    </div>
+
+</div><!-- .nexmoe-drawer -->
+
+  </div>
+  <div id="nexmoe-content">
+    <div class="nexmoe-primary">
+        <div class="nexmoe-post">
+    
+        <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
+            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph与OpenStack对接" class="lazyload">
+            <h1>Ceph与OpenStack对接</h1>
+        </div>
+    
+
+        <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月16日</a>
+    <a><i class="nexmoefont icon-areachart"></i>12.3k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 68 分钟</a>
+</div>
+
+        <div class="nexmoe-post-right">
+            
+        </div>
+
+        <article>
+            <h1><span id></span></h1><span id="more"></span>
+
+<!-- toc -->
+
+<ul>
+<li><a href="#1-openstack-%E7%9A%84%E4%B8%89%E4%B8%AA%E9%83%A8%E5%88%86%E4%B8%8E-ceph-%E7%9A%84%E5%9D%97%E8%AE%BE%E5%A4%87%E9%9B%86%E6%88%90">1、OpenStack 的三个部分与 Ceph 的块设备集成：</a></li>
+<li><a href="#2-%E5%88%9B%E5%BB%BA%E6%B1%A0">2、创建池</a></li>
+</ul>
+<ul>
+<li><a href="#%E4%BA%8C-%E4%B8%80%E9%94%AE%E9%83%A8%E7%BD%B2openstack">二、一键部署Openstack</a><ul>
+<li><a href="#1-%E6%9F%A5%E7%9C%8Boepnstack%E7%89%88%E6%9C%AC">1、查看Oepnstack版本</a></li>
+<li><a href="#2-%E5%AE%89%E8%A3%85">2、安装</a></li>
+<li><a href="#3-%E8%A7%A3%E5%86%B3%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98">3、解决安装过程中遇到的问题</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-openstack%E5%AF%B9%E6%8E%A5%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">三、Openstack对接环境准备</a><ul>
+<li><a href="#1-%E5%88%9B%E5%BB%BA%E6%B1%A0">1、创建池</a></li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE-openstack-ceph-%E5%AE%A2%E6%88%B7%E7%AB%AF">2、配置 OPENSTACK CEPH 客户端</a><ul>
+<li><a href="#21%E5%AE%89%E8%A3%85-ceph-%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8C%85">2.1安装 CEPH 客户端包</a></li>
+<li><a href="#22%E8%AE%BE%E7%BD%AE-ceph-%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81">2.2设置 CEPH 客户端身份验证</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-glance%E5%92%8Cceph%E5%AF%B9%E6%8E%A5">四、Glance和Ceph对接</a><ul>
+<li><a href="#1-%E9%85%8D%E7%BD%AE%E6%A6%82%E8%A7%88">1、配置概览</a></li>
+<li><a href="#2-junoprior-to-juno">2、JUNOPRIOR TO JUNO</a></li>
+<li><a href="#3-juno">3、JUNO</a></li>
+<li><a href="#4-kilo-and-after">4、KILO AND AFTER</a></li>
+<li><a href="#5-%E5%90%AF%E7%94%A8%E5%9B%BE%E5%83%8F%E7%9A%84%E5%86%99%E6%97%B6%E5%A4%8D%E5%88%B6%E5%85%8B%E9%9A%86">5、启用图像的写时复制克隆</a></li>
+<li><a href="#6-%E7%A6%81%E7%94%A8%E7%BC%93%E5%AD%98%E7%AE%A1%E7%90%86%E4%BB%BB%E4%BD%95-openstack-%E7%89%88%E6%9C%AC">6、禁用缓存管理（任何 OPENSTACK 版本）</a></li>
+<li><a href="#7-%E5%9B%BE%E5%83%8F%E5%B1%9E%E6%80%A7">7、图像属性</a></li>
+<li><a href="#8-%E5%AE%9E%E8%B7%B5">8、实践</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-glance%E5%AF%B9%E6%8E%A5%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95">五、Glance对接功能测试</a></li>
+<li><a href="#%E5%85%AD-cinder%E4%B8%8Eceph%E5%AF%B9%E6%8E%A5">六、Cinder与Ceph对接</a></li>
+<li><a href="#%E4%B8%83-cinder%E5%AF%B9%E6%8E%A5%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95">七、Cinder对接功能测试</a><ul>
+<li><a href="#1-%E6%89%BE%E5%88%B0%E5%8D%B7">1、找到卷</a></li>
+<li><a href="#2-%E5%88%9B%E5%BB%BA%E5%8D%B7">2、创建卷</a></li>
+<li><a href="#3-%E6%89%A9%E5%B1%95%E5%8D%B7">3、扩展卷</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AB-cinder-bakup%E5%AF%B9%E6%8E%A5%E5%92%8C%E6%B5%8B%E8%AF%95">八、Cinder-bakup对接和测试</a><ul>
+<li><a href="#1-%E9%85%8D%E7%BD%AE-cinder-%E5%A4%87%E4%BB%BD">1、配置 CINDER 备份</a></li>
+<li><a href="#2-%E5%AE%9E%E8%B7%B5">2、实践</a></li>
+<li><a href="#3-%E6%B5%8B%E8%AF%95">3、测试</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B9%9D-nova%E5%92%8Cceph%E5%AF%B9%E6%8E%A5">九、Nova和Ceph对接</a><ul>
+<li><a href="#1-%E9%85%8D%E7%BD%AE-nova-%E9%99%84%E5%8A%A0-ceph-rbd-%E5%9D%97%E8%AE%BE%E5%A4%87">1、配置 NOVA 附加 CEPH RBD 块设备</a></li>
+</ul>
+</li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE-nova">2、配置 NOVA</a><ul>
+<li><a href="#21-havana-and-icehouse">2.1、HAVANA AND ICEHOUSE</a></li>
+<li><a href="#22-juno">2.2、JUNO</a></li>
+<li><a href="#33-kilo">3.3、KILO</a></li>
+</ul>
+<ul>
+<li><a href="#3-%E5%AE%9E%E8%B7%B5">3、实践</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81-nova%E5%92%8Cceph%E5%AF%B9%E6%8E%A5%E6%B5%8B%E8%AF%95">十、Nova和Ceph对接测试</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-%E9%87%8D%E5%90%AF-openstack">十一、重启 OPENSTACK</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-%E4%BB%8E%E5%9D%97%E8%AE%BE%E5%A4%87%E5%90%AF%E5%8A%A8">十二、从块设备启动</a></li>
+</ul>
+<!-- tocstop -->
+
+<p>一、Ceph与Openstack对接概述</p>
+<p>您可以通过 OpenStack 使用 Ceph 块设备映像libvirt，它将 QEMU 接口配置为librbd. Ceph 将块设备映像作为对象跨集群进行条带化，这意味着大型 Ceph 块设备映像比独立服务器具有更好的性能！</p>
+<p>要将 Ceph 块设备与 OpenStack 一起使用，您必须先安装 QEMU、libvirt和 OpenStack。我们建议为您的 OpenStack 安装使用单独的物理节点。</p>
+<p>OpenStack 推荐至少 8GB 内存和四核处理器。下图描述了 OpenStack&#x2F;Ceph 技术栈。</p>
+<p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/1.jpg"></p>
+<h2><span id="1-openstack-的三个部分与-ceph-的块设备集成">1、OpenStack 的三个部分与 Ceph 的块设备集成：</span></h2><ul>
+<li>图像：OpenStack Glance 管理 VM 的图像。图像是不可变的。OpenStack 将图像视为二进制 blob 并相应地下载它们。</li>
+<li>卷：卷是块设备。OpenStack 使用卷来引导 VM，或将卷附加到正在运行的 VM。OpenStack 使用 Cinder 服务管理卷。</li>
+<li>来宾磁盘：来宾磁盘是来宾操作系统磁盘。默认情况下，当您启动虚拟机时，其磁盘在管理程序的文件系统中显示为一个文件（通常在 下&#x2F;var&#x2F;lib&#x2F;nova&#x2F;instances&#x2F;<uuid>&#x2F;）。在 OpenStack Havana 之前，在 Ceph 中启动 VM 的唯一方法是使用 Cinder 的从卷启动功能。但是，现在可以在不使用 Cinder 的情况下直接启动 Ceph 中的每个虚拟机，这是有利的，因为它允许您通过实时迁移过程轻松执行维护操作。此外，如果您的管理程序死机，也可以方便地几乎无缝地在其他地方触发和运行虚拟机。这样做时， 独占锁会阻止多个计算节点同时访问来宾磁盘。nova evacuate</uuid></li>
+</ul>
+<blockquote>
+<p>您可以使用 OpenStack Glance 将映像存储在 Ceph 块设备中，并且可以使用 Cinder 通过映像的写时复制克隆来启动 VM。</p>
+</blockquote>
+<blockquote>
+<p>下面的说明详细介绍了 Glance、Cinder 和 Nova 的设置，尽管它们不必一起使用。您可以在使用本地磁盘运行 VM 时将图像存储在 Ceph 块设备中，反之亦然。</p>
+</blockquote>
+<blockquote>
+<p>不建议使用 QCOW2 托管虚拟机磁盘。如果你想在 Ceph 中启动虚拟机（临时后端或从卷启动），请使用rawGlance 中的图像格式。</p>
+</blockquote>
+<h2><span id="2-创建池">2、创建池</span></h2><p>** 默认情况下，Ceph 块设备使用rbd池。您可以使用任何可用的池。我们建议为 Cinder 创建一个池，为 Glance 创建一个池。确保您的 Ceph 集群正在运行，然后创建池。**</p>
+<pre><code>[root@node-1 ~]#  ceph osd pool create volumes   16 16  #存放卷
+[root@node-1 ~]#  ceph osd pool create images    16 16  #存放镜像
+[root@node-1 ~]#  ceph osd pool create backups   16 16  #存放卷的备份
+[root@node-1 ~]#  ceph osd pool create vms       16 16  #存放虚拟机
+</code></pre>
+<p><strong>新创建的池必须在使用前进行初始化。使用该rbd工具初始化池：</strong></p>
+<pre><code>[root@node-1 ~]#  rbd pool init volumes
+[root@node-1 ~]#  rbd pool init images
+[root@node-1 ~]#  rbd pool init backups
+[root@node-1 ~]#  rbd pool init vms
+</code></pre>
+<h1><span id="二-一键部署openstack">二、一键部署Openstack</span></h1><blockquote>
+<p>使用Packstack一键部署：<a target="_blank" rel="noopener" href="https://wiki.openstack.org/wiki/Packstack">https://wiki.openstack.org/wiki/Packstack</a><br>新主机需要初始化及安装ceph-common的软件包</p>
+</blockquote>
+<h2><span id="1-查看oepnstack版本">1、查看Oepnstack版本</span></h2><pre><code>[root@node-1 ~]# yum list | grep openstack
+Repository docker-ce-stable is listed more than once in the configuration
+ansible-openstack-modules.noarch         0-20140902git79d751a.el7      epel     
+centos-release-openstack-queens.noarch   1-2.el7.centos                extras   
+centos-release-openstack-rocky.noarch    1-1.el7.centos                extras   
+centos-release-openstack-stein.noarch    1-1.el7.centos                extras   
+centos-release-openstack-train.noarch    1-1.el7.centos                extras   
+resalloc-openstack.noarch                9.5-1.el7                     epel     
+[root@node-1 ~]# yum info centos-release-openstack-train.noarch
+已加载插件：fastestmirror, langpacks
+Repository docker-ce-stable is listed more than once in the configuration
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * extras: mirrors.aliyun.com
+ * updates: mirrors.aliyun.com
+可安装的软件包
+名称    ：centos-release-openstack-train
+架构    ：noarch
+版本    ：1
+发布    ：1.el7.centos
+大小    ：5.3 k
+源    ：extras/7/x86_64
+简介    ： OpenStack from the CentOS Cloud SIG repo configs
+网址    ：http://wiki.centos.org/SpecialInterestGroup/Cloud
+协议    ： GPL
+描述    ： yum Configs and basic docs for OpenStack as delivered via the CentOS Cloud SIG.
+</code></pre>
+<h2><span id="2-安装">2、安装</span></h2><pre><code>[root@node-1 ~]# yum install  centos-release-openstack-train.noarch -y #安装Openstack
+[root@node-1 yum.repos.d]# ls -lha /etc/yum.repos.d/*OpenStack*
+-rw-r--r-- 1 root root 1.3K 10月 23 2019 /etc/yum.repos.d/CentOS-OpenStack-train.repo
+[root@node-1 yum.repos.d]# rpm -ql centos-release-openstack-train 
+/etc/pki/rpm-gpg
+/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+/etc/yum.repos.d/CentOS-OpenStack-train.repo
+[root@node-1 yum.repos.d]# yum install openstack-packstack -y #安装自动化部署工具
+[root@node-1 yum.repos.d]# packstack --gen-answer-file train-for-ceph.txt #生成应答文件
+Additional information:
+ * Parameter CONFIG_NEUTRON_L2_AGENT: You have chosen OVN Neutron backend. Note that this backend does not support the VPNaaS or FWaaS services. Geneve will be used as the encapsulation method for tenant networks
+[root@node-1 yum.repos.d]# vim train-for-ceph.txt #修改应答文件中的密码，可不修改，后续在此文档查看即可；
+CONFIG_KEYSTONE_ADMIN_PW=password
+[root@node-1 yum.repos.d]# packstack --answer-file train-for-ceph.txt #开始安装
+[root@localhost ~]# cat train-for-ceph.txt | grep ADMIN_PW #获取登录的密码，用户名为admin
+CONFIG_KEYSTONE_ADMIN_PW=78d34f707f0745ad
+</code></pre>
+<p><strong>测试成功访问</strong></p>
+<p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/2.jpg"></p>
+<h2><span id="3-解决安装过程中遇到的问题">3、解决安装过程中遇到的问题</span></h2><pre><code>[root@node-1 yum.repos.d]# yum list |grep leatherma
+Repository docker-ce-stable is listed more than once in the configuration
+leatherman.x86_64                        1.10.0-1.el7                  @epel    
+leatherman-devel.x86_64                  1.10.0-1.el7                  epel     
+[root@node-1 yum.repos.d]#  yum downgrade leatherman #回退版本
+[root@node-1 yum.repos.d]# facter -p|more #测试正常
+2023-03-19 01:51:32.656090 WARN  puppetlabs.facter - skipping external facts for &quot;/var/lib/puppet/facts.d&quot;: No such file or directory
+disks =&gt; &#123;
+  sda =&gt; &#123;
+    model =&gt; &quot;VMware Virtual S&quot;,
+    size =&gt; &quot;20.00 GiB&quot;,
+    size_bytes =&gt; 21474836480,
+    vendor =&gt; &quot;VMware,&quot;
+  &#125;,
+  sdb =&gt; &#123;
+    model =&gt; &quot;VMware Virtual S&quot;,
+    size =&gt; &quot;10.00 GiB&quot;,
+    size_bytes =&gt; 10737418240,
+    vendor =&gt; &quot;VMware,&quot;
+  &#125;,
+</code></pre>
+<p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/3.jpg"></p>
+<h1><span id="三-openstack对接环境准备">三、Openstack对接环境准备</span></h1><p><a target="_blank" rel="noopener" href="https://docs.ceph.com/en/nautilus/rbd/rbd-openstack/">官方文档</a></p>
+<p>您可以通过 OpenStack 使用 Ceph 块设备映像libvirt，它将 QEMU 接口配置为librbd. Ceph 将块设备映像作为对象跨集群进行条带化，这意味着大型 Ceph 块设备映像比独立服务器具有更好的性能！</p>
+<p>要将 Ceph 块设备与 OpenStack 一起使用，您必须先安装 QEMU、libvirt和 OpenStack。我们建议为您的 OpenStack 安装使用单独的物理节点。OpenStack 推荐至少 8GB 内存和四核处理器。下图描述了 OpenStack&#x2F;Ceph 技术栈。</p>
+<blockquote>
+<p>要将 Ceph 块设备与 OpenStack 一起使用，您必须有权访问正在运行的 Ceph 存储集群。</p>
+</blockquote>
+<p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/4.jpg"></p>
+<p>OpenStack 的三个部分与 Ceph 的块设备集成：</p>
+<ul>
+<li>图像：OpenStack Glance 管理 VM 的图像。图像是不可变的。OpenStack 将图像视为二进制 blob 并相应地下载它们。</li>
+<li>卷：卷是块设备。OpenStack 使用卷来引导 VM，或将卷附加到正在运行的 VM。OpenStack 使用 Cinder 服务管理卷。</li>
+<li>来宾磁盘：来宾磁盘是来宾操作系统磁盘。默认情况下，当您启动虚拟机时，其磁盘在管理程序的文件系统中显示为一个文件（通常在 下&#x2F;var&#x2F;lib&#x2F;nova&#x2F;instances&#x2F;<uuid>&#x2F;）。在 OpenStack Havana 之前，在 Ceph 中启动 VM 的唯一方法是使用 Cinder 的从卷启动功能。但是，现在可以在不使用 Cinder 的情况下直接启动 Ceph 中的每个虚拟机，这是有利的，因为它允许您通过实时迁移过程轻松执行维护操作。此外，如果您的管理程序死机，也可以方便地几乎无缝地在其他地方触发和运行虚拟机。nova evacuate</uuid></li>
+</ul>
+<p><strong>您可以使用 OpenStack Glance 将映像存储在 Ceph 块设备中，并且可以使用 Cinder 通过映像的写时复制克隆来启动 VM。</strong></p>
+<p><strong>下面的说明详细介绍了 Glance、Cinder 和 Nova 的设置，尽管它们不必一起使用。您可以在使用本地磁盘运行 VM 时将图像存储在 Ceph 块设备中，反之亦然。</strong></p>
+<blockquote>
+<p>Ceph 不支持 QCOW2 来托管虚拟机磁盘。因此，如果你想在 Ceph 中启动虚拟机（临时后端或从卷启动），Glance 映像格式必须是RAW.</p>
+</blockquote>
+<h2><span id="1-创建池">1、创建池</span></h2><pre><code>ceph节点：
+[root@node-1 ~]# ceph osd pool create volumes 16 #创建volumes的pool
+，后期存放卷
+[root@node-1 ~]# ceph osd pool create images 16
+ #创建images的pool,后期存放镜像
+[root@node-1 ~]# ceph osd pool create backups 16
+ #创建bakups的pool，后期存放卷的备份
+[root@node-1 ~]# ceph osd pool create vms 16
+ #创建vms的pool，后期存放虚拟机系统
+[root@node-1 ~]# rbd pool init volumes #初始化池
+[root@node-1 ~]# rbd pool init images #初始化池
+[root@node-1 ~]# rbd pool init backups #初始化池
+[root@node-1 ~]# rbd pool init vms #初始化池
+</code></pre>
+<h2><span id="2-配置-openstack-ceph-客户端">2、配置 OPENSTACK CEPH 客户端</span></h2><p>glance-api运行、cinder-volume和nova-compute的 节点cinder-backup充当 Ceph 客户端。每个都需要ceph.conf文件：</p>
+<pre><code>ceph节点：
+[root@node-1 ~]# ssh &#123;your-openstack-server&#125; sudo tee /etc/ceph/ceph.conf &lt;/etc/ceph/ceph.conf #将Ceph的配置文件复制到Openstack节点中
+</code></pre>
+<h3><span id="21安装-ceph-客户端包">2.1安装 CEPH 客户端包</span></h3><p>在glance-api节点上，您将需要 Python 绑定librbd：</p>
+<pre><code>Openstack节点：
+
+[root@controller ~]# sudo apt-get install python-rbd #Ubuntu在Glance服务器中安装必要的软件包
+[root@controller ~]# sudo yum install python-rbd #Centos在Glance服务器中安装必要的软件包
+</code></pre>
+<p>在nova-compute和cinder-backup节点上cinder-volume，同时使用 Python 绑定和客户端命令行工具：</p>
+<pre><code>[root@controller ~]# sudo apt-get install ceph-common #Ubuntu在Nova和Cinder服务器中安装必要的软件包
+[root@controller ~]# sudo yum install ceph-common #Centos在Nova和Cinder服务器中安装必要的软件包
+</code></pre>
+<h3><span id="22设置-ceph-客户端身份验证">2.2设置 CEPH 客户端身份验证</span></h3><p>如果启用了cephx 身份验证，请为 Nova&#x2F;Cinder 和 Glance 创建一个新用户。执行以下操作：</p>
+<pre><code>Ceph节点：
+[root@node-1 ~]# ceph auth get-or-create client.glance mon &#39;profile rbd&#39; osd &#39;profile rbd pool=images&#39; mgr &#39;profile rbd pool=images&#39; #在Ceph集群中创建glance的用户，后期与OpenStack对接使用，并授权访问images的池
+[root@node-1 ~]# ceph auth get-or-create client.cinder mon &#39;profile rbd&#39; osd &#39;profile rbd pool=volumes, profile rbd pool=vms, profile rbd-read-only pool=images&#39; mgr &#39;profile rbd pool=volumes, profile rbd pool=vms&#39; #在Ceph集群中创建cinder的用户，后期与OpenStack对接使用，并授权访问images、vms、volumes的池
+[root@node-1 ~]# ceph auth get-or-create client.cinder-backup mon &#39;profile rbd&#39; osd &#39;profile rbd pool=backups&#39; mgr &#39;profile rbd pool=backups&#39; #在Ceph集群中创建cinder=backup的用户，后期与OpenStack对接使用，并授权访问backups的池
+</code></pre>
+<p>client.cinder将、client.glance和 的密钥环添加client.cinder-backup到适当的节点并更改其所有权：</p>
+<pre><code>Ceph节点：
+[root@node-1 ~]# ceph auth get-or-create client.glance | ssh &#123;your-glance-api-server&#125; sudo tee /etc/ceph/ceph.client.glance.keyring #将创建的glance用户的密钥传到Openstack的Glance服务器中
+[root@node-1 ~]# ssh &#123;your-glance-api-server&#125; sudo chown glance:glance /etc/ceph/ceph.client.glance.keyring #修改权限
+[root@node-1 ~]# ceph auth get-or-create client.cinder | ssh &#123;your-volume-server&#125; sudo tee /etc/ceph/ceph.client.cinder.keyring #将创建的cinnder用户的密钥传到Openstack的Cinder服务器中
+[root@node-1 ~]# ssh &#123;your-cinder-volume-server&#125; sudo chown cinder:cinder /etc/ceph/ceph.client.cinder.keyring #修改权限
+[root@node-1 ~]# ceph auth get-or-create client.cinder-backup | ssh &#123;your-cinder-backup-server&#125; sudo tee /etc/ceph/ceph.client.cinder-backup.keyring #将创建的backup用户的密钥传到Openstack的Cinder-backup服务器中
+[root@node-1 ~]# ssh &#123;your-cinder-backup-server&#125; sudo chown cinder:cinder /etc/ceph/ceph.client.cinder-backup.keyring #修改权限
+Openstack节点：
+[root@controller ceph]# pwd #在Openstack中查看文件是否接受，并查看相关权限
+/etc/ceph
+[root@controller ceph]# ls -lha 
+total 32K
+drwxr-xr-x    2 root   root    146 Mar 19 23:28 .
+drwxr-xr-x. 118 root   root   8.0K Mar 19 22:23 ..
+-rw-r--r--    1 cinder cinder   71 Mar 19 23:28 ceph.client.cinder-backup.keyring
+-rw-r--r--    1 cinder cinder   64 Mar 19 22:23 ceph.client.cinder.keyring
+-rw-r--r--    1 glance glance   64 Mar 19 23:27 ceph.client.glance.keyring
+-rw-r--r--    1 root   root    472 Mar 19 22:18 ceph.conf
+-rw-r--r--    1 root   root     92 Apr 21  2021 rbdmap
+</code></pre>
+<p>运行的节点nova-compute需要进程的密钥环文件nova-compute ：</p>
+<pre><code>Ceph节点：
+[root@node-1 ~]# ceph auth get-or-create client.cinder | ssh &#123;your-nova-compute-server&#125; sudo tee /etc/ceph/ceph.client.cinder.keyring #将创建的cinder用户的密钥传到Openstack的Nova-Server服务器中
+</code></pre>
+<p>他们还需要将用户的密钥存储client.cinder在 libvirt. libvirt 进程需要它来访问集群，同时从 Cinder 附加块设备。<br>在运行的节点上创建密钥的临时副本 nova-compute：</p>
+<pre><code>Ceph节点：
+[root@node-1 ~]# ceph auth get-key client.cinder | ssh &#123;your-compute-node&#125; tee client.cinder.key #将创建的cinder用户的密钥传到Openstack的Nova-node服务器中
+</code></pre>
+<p>然后，在计算节点上，将密钥添加到libvirt并删除密钥的临时副本：</p>
+<pre><code>Openstack:
+[root@controller ceph]# uuidgen #随机生成UUID
+617ac927-1a98-444f-b3b4-1f682d7bfd7a
+
+[root@controller ceph]# cat &gt; secret.xml &lt;&lt;EOF #将UUID写入到这个文件中
+&lt;secret ephemeral=&#39;no&#39; private=&#39;no&#39;&gt;
+  &lt;uuid&gt;617ac927-1a98-444f-b3b4-1f682d7bfd7a&lt;/uuid&gt;
+  &lt;usage type=&#39;ceph&#39;&gt;
+    &lt;name&gt;client.cinder secret&lt;/name&gt;
+  &lt;/usage&gt;
+&lt;/secret&gt;
+EOF
+[root@controller ceph]# sudo virsh secret-define --file secret.xml #导入密钥
+Secret 617ac927-1a98-444f-b3b4-1f682d7bfd7a created
+[root@controller ceph]# cat ceph.client.cinder.keyring  #查看cinder用户的密钥
+[client.cinder]
+    key = AQCY4Bdkt7hdBRAAJNz56pz79U+PoTHueqMofA==
+[root@controller ceph]# cat client.cinder.key #创建文件，并将Cinder的密钥放在里面
+AQCY4Bdkt7hdBRAAJNz56pz79U+PoTHueqMofA==
+[root@controller ceph]# sudo virsh secret-set-value --secret 617ac927-1a98-444f-b3b4-1f682d7bfd7a --base64 $(cat client.cinder.key) &amp;&amp; rm client.cinder.key secret.xml #配置认证
+[root@controller ceph]# virsh secret-list  #查看认证
+ UUID                                  Usage
+--------------------------------------------------------------------------------
+ 617ac927-1a98-444f-b3b4-1f682d7bfd7a  ceph client.cinder secret
+
+[root@controller ceph]# virsh secret-get-value 617ac927-1a98-444f-b3b4-1f682d7bfd7a  #查看认证
+AQCY4Bdkt7hdBRAAJNz56pz79U+PoTHueqMofA==
+</code></pre>
+<p>保存 secret 的 uuid 以备nova-compute后用。</p>
+<h1><span id="四-glance和ceph对接">四、Glance和Ceph对接</span></h1><h2><span id="1-配置概览">1、配置概览</span></h2><p>Glance 可以使用多个后端来存储图像。要默认使用 Ceph 块设备，请像下面这样配置 Glance。</p>
+<h2><span id="2-junoprior-to-juno">2、JUNOPRIOR TO JUNO</span></h2><p>编辑&#x2F;etc&#x2F;glance&#x2F;glance-api.conf并在该部分下添加[DEFAULT]：</p>
+<pre><code>default_store = rbd
+rbd_store_user = glance
+rbd_store_pool = images
+rbd_store_chunk_size = 8
+</code></pre>
+<h2><span id="3-juno">3、JUNO</span></h2><p>编辑&#x2F;etc&#x2F;glance&#x2F;glance-api.conf并在该部分下添加[glance_store]：</p>
+<pre><code>[DEFAULT]
+...
+default_store = rbd
+...
+[glance_store]
+stores = rbd
+rbd_store_pool = images
+rbd_store_user = glance
+rbd_store_ceph_conf = /etc/ceph/ceph.conf
+rbd_store_chunk_size = 8
+</code></pre>
+<p>Glance 还没有完全移动到“存储”。所以我们仍然需要在 DEFAULT 部分配置存储，直到 Kilo。</p>
+<h2><span id="4-kilo-and-after">4、KILO AND AFTER</span></h2><p>编辑&#x2F;etc&#x2F;glance&#x2F;glance-api.conf并在该部分下添加[glance_store]：</p>
+<pre><code>[glance_store]
+stores = rbd
+default_store = rbd
+rbd_store_pool = images
+rbd_store_user = glance
+rbd_store_ceph_conf = /etc/ceph/ceph.conf
+rbd_store_chunk_size = 8
+</code></pre>
+<p>有关 Glance 中可用配置选项的更多信息，请参阅 OpenStack 配置参考： http: &#x2F;&#x2F;docs.openstack.org&#x2F;。</p>
+<h2><span id="5-启用图像的写时复制克隆">5、启用图像的写时复制克隆</span></h2><p>请注意，这会通过 Glance 的 API 公开后端位置，因此启用此选项的端点不应公开访问。<br>除 MITAKA 之外的任何 OPENSTACK 版本<br>如果要启用图像的写时复制克隆，还要在该[DEFAULT]部分下添加：</p>
+<pre><code>show_image_direct_url = True
+</code></pre>
+<p>仅限三鹰<br>要启用图像位置并利用图像的写时复制克隆，请在该[DEFAULT]部分下添加：</p>
+<pre><code>show_multiple_locations = True
+show_image_direct_url = True
+</code></pre>
+<h2><span id="6-禁用缓存管理任何-openstack-版本">6、禁用缓存管理（任何 OPENSTACK 版本）</span></h2><p>禁用 Glance 缓存管理以避免图像缓存在 下&#x2F;var&#x2F;lib&#x2F;glance&#x2F;image-cache&#x2F;，假设您的配置文件具有：flavor &#x3D; keystone+cachemanagement</p>
+<pre><code>[paste_deploy]
+flavor = keystone
+</code></pre>
+<h2><span id="7-图像属性">7、图像属性</span></h2><p>我们建议为您的图像使用以下属性：</p>
+<ul>
+<li>hw_scsi_model&#x3D;virtio-scsi: 添加 virtio-scsi 控制器并获得更好的性能和对丢弃操作的支持</li>
+<li>hw_disk_bus&#x3D;scsi：将每个煤渣块设备连接到该控制器</li>
+<li>hw_qemu_guest_agent&#x3D;yes: 启用 QEMU 来宾代理</li>
+<li>os_require_quiesce&#x3D;yes: 通过 QEMU 来宾代理发送 fs-freeze&#x2F;thaw 调用</li>
+</ul>
+<h2><span id="8-实践">8、实践</span></h2><pre><code>[root@controller ceph]# cat  /etc/glance/glance-api.conf | grep -v  &quot;#&quot; | grep -v &quot;^$&quot;
+[DEFAULT]
+bind_host=0.0.0.0
+bind_port=9292
+workers=4
+image_cache_dir=/var/lib/glance/image-cache
+registry_host=0.0.0.0
+debug=False
+log_file=/var/log/glance/api.log
+log_dir=/var/log/glance
+transport_url=rabbit://guest:guest@192.168.187.204:5672/
+enable_v1_api=False
+show_multiple_locations = True #启用copy-on-write 
+show_image_direct_url = True  #启用copy-on-write 
+[cinder]
+[cors]
+[database]
+connection=mysql+pymysql://glance:6588a16556eb4abf@192.168.187.204/glance
+[file]
+[glance.store.http.store]
+[glance.store.rbd.store]
+[glance.store.sheepdog.store]
+[glance.store.swift.store]
+[glance.store.vmware_datastore.store]
+[glance_store]
+stores = rbd
+default_store = rbd
+rbd_store_pool = images
+rbd_store_user = glance
+rbd_store_ceph_conf = /etc/ceph/ceph.conf
+rbd_store_chunk_size = 8
+stores=file,http,swift,rbd
+
+
+os_region_name=RegionOne
+[image_format]
+[keystone_authtoken]
+www_authenticate_uri=http://192.168.187.204:5000/v3
+auth_type=password
+auth_url=http://192.168.187.204:5000
+username=glance
+password=f20a4d2094ab4018
+user_domain_name=Default
+project_name=services
+project_domain_name=Default
+[oslo_concurrency]
+[oslo_messaging_amqp]
+[oslo_messaging_kafka]
+[oslo_messaging_notifications]
+driver=messagingv2
+topics=notifications
+[oslo_messaging_rabbit]
+ssl=False
+default_notification_exchange=glance
+[oslo_middleware]
+[oslo_policy]
+policy_file=/etc/glance/policy.json
+[paste_deploy]
+flavor=keystone
+[profiler]
+[root@controller ceph]# systemctl restart openstack-glance-api.service 
+
+
+[root@controller ceph]# systemctl status openstack-glance-api.service 
+● openstack-glance-api.service - OpenStack Image Service (code-named Glance) API server
+   Loaded: loaded (/usr/lib/systemd/system/openstack-glance-api.service; enabled; vendor preset: disabled)
+   Active: active (running) since Mon 2023-03-20 00:36:19 EDT; 10s ago
+ Main PID: 10583 (glance-api)
+    Tasks: 5
+   CGroup: /system.slice/openstack-glance-api.service
+           ├─10583 /usr/bin/python2 /usr/bin/glance-api
+           ├─10599 /usr/bin/python2 /usr/bin/glance-api
+           ├─10600 /usr/bin/python2 /usr/bin/glance-api
+           ├─10601 /usr/bin/python2 /usr/bin/glance-api
+           └─10602 /usr/bin/python2 /usr/bin/glance-api
+
+Mar 20 00:36:19 controller systemd[1]: Started OpenStack Image Service (code-named Glance) API server.
+Mar 20 00:36:21 controller glance-api[10583]: /usr/lib/python2.7/site-packages/paste/deploy/loadwsgi.py:22: PkgResourcesDeprecati...rately.
+Mar 20 00:36:21 controller glance-api[10583]: return pkg_resources.EntryPoint.parse(&quot;x=&quot; + s).load(False)
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@controller ceph]# tail -f /var/log/glance/api.log 
+2023-03-20 00:36:22.933 10583 WARNING glance_store.driver [-] Failed to configure store correctly: A value for swift_store_auth_address is required. Disabling add method.: BadStoreConfiguration: A value for swift_store_auth_address is required.
+2023-03-20 00:36:22.935 10583 INFO glance.common.wsgi [-] Starting 4 workers
+2023-03-20 00:36:22.954 10599 INFO eventlet.wsgi.server [-] (10599) wsgi starting up on http://0.0.0.0:9292
+2023-03-20 00:36:22.941 10583 INFO glance.common.wsgi [-] Started child 10599
+2023-03-20 00:36:22.979 10583 INFO glance.common.wsgi [-] Started child 10600
+2023-03-20 00:36:22.982 10600 INFO eventlet.wsgi.server [-] (10600) wsgi starting up on http://0.0.0.0:9292
+2023-03-20 00:36:22.988 10583 INFO glance.common.wsgi [-] Started child 10601
+2023-03-20 00:36:23.013 10601 INFO eventlet.wsgi.server [-] (10601) wsgi starting up on http://0.0.0.0:9292
+2023-03-20 00:36:23.034 10602 INFO eventlet.wsgi.server [-] (10602) wsgi starting up on http://0.0.0.0:9292
+2023-03-20 00:36:23.005 10583 INFO glance.common.wsgi [-] Started child 10602
+</code></pre>
+<h1><span id="五-glance对接功能测试">五、Glance对接功能测试</span></h1><pre><code>[root@controller ~]# ls
+anaconda-ks.cfg  client.cinder.key  keystonerc_admin  keystonerc_demo  train-for-ceph.txt
+[root@controller ~]# source keystonerc_admin 
+[root@controller ~(keystone_admin)]# pwd
+/root
+[root@controller ~(keystone_admin)]# ls -lha /var/lib/glance/images/
+total 4.0K
+drwxr-x--- 2 glance glance  50 Mar 19 11:38 .
+drwxr-xr-x 3 glance nobody  20 Mar 19 11:37 ..
+-rw-r----- 1 glance glance 273 Mar 19 11:38 38c7585e-23ec-449d-8026-ca5a87442154
+[root@controller ~(keystone_admin)]# glance help image-create
+usage: glance image-create [--architecture &lt;ARCHITECTURE&gt;]
+                           [--protected [True|False]] [--name &lt;NAME&gt;]
+                           [--instance-uuid &lt;INSTANCE_UUID&gt;]
+                           [--min-disk &lt;MIN_DISK&gt;] [--visibility &lt;VISIBILITY&gt;]
+                           [--kernel-id &lt;KERNEL_ID&gt;]
+                           [--tags &lt;TAGS&gt; [&lt;TAGS&gt; ...]]
+                           [--os-version &lt;OS_VERSION&gt;]
+                           [--disk-format &lt;DISK_FORMAT&gt;]
+                           [--os-distro &lt;OS_DISTRO&gt;] [--id &lt;ID&gt;]
+                           [--owner &lt;OWNER&gt;] [--ramdisk-id &lt;RAMDISK_ID&gt;]
+                           [--min-ram &lt;MIN_RAM&gt;]
+                           [--container-format &lt;CONTAINER_FORMAT&gt;]
+                           [--hidden [True|False]] [--property &lt;key=value&gt;]
+                           [--file &lt;FILE&gt;] [--progress] [--store &lt;STORE&gt;]
+
+Create a new image.
+
+Optional arguments:
+  --architecture &lt;ARCHITECTURE&gt;
+                        Operating system architecture as specified in
+                        https://docs.openstack.org/python-
+                        glanceclient/latest/cli/property-keys.html
+  --protected [True|False]
+                        If true, image will not be deletable.
+  --name &lt;NAME&gt;         Descriptive name for the image
+  --instance-uuid &lt;INSTANCE_UUID&gt;
+                        Metadata which can be used to record which instance
+                        this image is associated with. (Informational only,
+                        does not create an instance snapshot.)
+  --min-disk &lt;MIN_DISK&gt;
+                        Amount of disk space (in GB) required to boot image.
+  --visibility &lt;VISIBILITY&gt;
+                        Scope of image accessibility Valid values: public,
+                        private, community, shared
+  --kernel-id &lt;KERNEL_ID&gt;
+                        ID of image stored in Glance that should be used as
+                        the kernel when booting an AMI-style image.
+  --tags &lt;TAGS&gt; [&lt;TAGS&gt; ...]
+                        List of strings related to the image
+  --os-version &lt;OS_VERSION&gt;
+                        Operating system version as specified by the
+                        distributor
+  --disk-format &lt;DISK_FORMAT&gt;
+                        Format of the disk Valid values: None, ami, ari, aki,
+                        vhd, vhdx, vmdk, raw, qcow2, vdi, iso, ploop
+  --os-distro &lt;OS_DISTRO&gt;
+                        Common name of operating system distribution as
+                        specified in https://docs.openstack.org/python-
+                        glanceclient/latest/cli/property-keys.html
+  --id &lt;ID&gt;             An identifier for the image
+  --owner &lt;OWNER&gt;       Owner of the image
+  --ramdisk-id &lt;RAMDISK_ID&gt;
+                        ID of image stored in Glance that should be used as
+                        the ramdisk when booting an AMI-style image.
+  --min-ram &lt;MIN_RAM&gt;   Amount of ram (in MB) required to boot image.
+  --container-format &lt;CONTAINER_FORMAT&gt;
+                        Format of the container Valid values: None, ami, ari,
+                        aki, bare, ovf, ova, docker
+  --hidden [True|False]
+                        If true, image will not appear in default image list
+                        response.
+  --property &lt;key=value&gt;
+                        Arbitrary property to associate with image. May be
+                        used multiple times.
+  --file &lt;FILE&gt;         Local file that contains disk image to be uploaded
+                        during creation. Alternatively, the image data can be
+                        passed to the client via stdin.
+  --progress            Show upload progress bar.
+  --store &lt;STORE&gt;       Backend store to upload image to.
+
+Run `glance --os-image-api-version 1 help image-create` for v1 help
+[root@controller ~(keystone_admin)]# glance image-create --name ceph-test --disk-format raw --container-format bare --file /var/lib/glance/
+images/38c7585e-23ec-449d-8026-ca5a87442154 --progress --public  #上传镜像
+[=============================&gt;] 100%
++------------------+----------------------------------------------------------------------------------+
+| Property         | Value                                                                            |
++------------------+----------------------------------------------------------------------------------+
+| checksum         | 52ba1c45042aa3688c09f303da283524                                                 |
+| container_format | bare                                                                             |
+| created_at       | 2023-03-20T04:42:52Z                                                             |
+| disk_format      | raw                                                                              |
+| id               | a3af191a-70c5-467e-a1f4-1c7991fff838                                             |
+| min_disk         | 0                                                                                |
+| min_ram          | 0                                                                                |
+| name             | ceph-test                                                                        |
+| os_hash_algo     | sha512                                                                           |
+| os_hash_value    | 507ca3ef53a49145ede39d6cb7394bb40b5f419aec5abac496880112825cf177c15f49e35ac7c8c9 |
+|                  | a45d659598b71d0c59b93d85c79c2d54c69748bdeda2b0a5                                 |
+| os_hidden        | False                                                                            |
+| owner            | 536255bf80df451ebcdf8277d214661d                                                 |
+| protected        | False                                                                            |
+| size             | 273                                                                              |
+| status           | active                                                                           |
+| tags             | []                                                                               |
+| updated_at       | 2023-03-20T04:42:53Z                                                             |
+| virtual_size     | Not available                                                                    |
+| visibility       | shared                                                                           |
++------------------+----------------------------------------------------------------------------------+
+[root@controller ~(keystone_admin)]# glance image-list #查看创建的镜像 
++--------------------------------------+-----------+
+| ID                                   | Name      |
++--------------------------------------+-----------+
+| a3af191a-70c5-467e-a1f4-1c7991fff838 | ceph-test |
+| 38c7585e-23ec-449d-8026-ca5a87442154 | cirros    |
++--------------------------------------+-----------+
+[root@node-1 ~]# rbd ls -p images #在Ceph中查看是否创建镜像
+a3af191a-70c5-467e-a1f4-1c7991fff838
+</code></pre>
+<h1><span id="六-cinder与ceph对接">六、Cinder与Ceph对接</span></h1><pre><code>cat /etc/cinder/cinder.conf |grep -v &quot;#&quot; |grep -v &quot;^$&quot;
+ #修改配置文件
+[DEFAULT]
+backup_swift_url=http://192.168.187.204:8080/v1/AUTH_
+backup_swift_container=volumebackups
+backup_driver=cinder.backup.drivers.swift.SwiftBackupDriver
+enable_v3_api=True
+auth_strategy=keystone
+storage_availability_zone=nova
+default_availability_zone=nova
+default_volume_type=iscsi
+enabled_backends=ceph #修改成Ceph
+glance_api_version = 2
+ #设置API的版本，需要新增，原来没有配置
+osapi_volume_listen=0.0.0.0
+osapi_volume_workers=4
+debug=False
+log_dir=/var/log/cinder
+transport_url=rabbit://guest:guest@192.168.187.204:5672/
+control_exchange=openstack
+api_paste_config=/etc/cinder/api-paste.ini
+glance_host=192.168.187.204
+[backend]
+[backend_defaults]
+[barbican]
+[brcd_fabric_example]
+[cisco_fabric_example]
+[coordination]
+[cors]
+[database]
+connection=mysql+pymysql://cinder:57095b3dc17b45b3@192.168.187.204/cinder
+[fc-zone-manager]
+[healthcheck]
+[key_manager]
+[keystone_authtoken]
+www_authenticate_uri=http://192.168.187.204:5000/
+auth_type=password
+auth_url=http://192.168.187.204:5000
+username=cinder
+password=0b71eb2ae1d84aeb
+user_domain_name=Default
+project_name=services
+project_domain_name=Default
+[nova]
+[oslo_concurrency]
+lock_path=/var/lib/cinder/tmp
+[oslo_messaging_amqp]
+[oslo_messaging_kafka]
+[oslo_messaging_notifications]
+driver=messagingv2
+[oslo_messaging_rabbit]
+ssl=False
+[oslo_middleware]
+[oslo_policy]
+policy_file=/etc/cinder/policy.json
+[oslo_reports]
+[oslo_versionedobjects]
+[privsep]
+[profiler]
+[sample_castellan_source]
+[sample_remote_file_source]
+[service_user]
+[ssl]
+[vault]
+[lvm]
+volume_backend_name=lvm
+volume_driver=cinder.volume.drivers.lvm.LVMVolumeDriver
+target_ip_address=192.168.187.204
+target_helper=lioadm
+volume_group=cinder-volumes
+volumes_dir=/var/lib/cinder/volumes
+[ceph] #新增如下配置
+volume_driver = cinder.volume.drivers.rbd.RBDDriver #RBD的驱动
+volume_backend_name = ceph #需要前后一致
+rbd_pool = volumes #连接的pool的名称
+rbd_ceph_conf = /etc/ceph/ceph.conf #Ceph的配置文件
+rbd_flatten_volume_from_snapshot = false
+  #超过设置的克隆最大深度就会执行flatten的操作
+rbd_max_clone_depth = 5
+ #克隆的最大深度
+rbd_store_chunk_size = 4
+rados_connect_timeout = -1
+rbd_user = cinder #RBD使用的用户
+rbd_secret_uuid = 617ac927-1a98-444f-b3b4-1f682d7bfd7a
+ #RBD的认证信息，可通过virsh secret-list 查看
+[root@controller ~(keystone_admin)]# systemctl restart openstack-cinder-volume.service #重启Cinder-volumes服务
+[root@controller ~(keystone_admin)]# systemctl status openstack-cinder-volume.service #查看状态
+● openstack-cinder-volume.service - OpenStack Cinder Volume Server
+   Loaded: loaded (/usr/lib/systemd/system/openstack-cinder-volume.service; enabled; vendor preset: disabled)
+   Active: active (running) since Mon 2023-03-20 08:27:27 EDT; 26s ago
+ Main PID: 22309 (cinder-volume)
+    Tasks: 22
+   CGroup: /system.slice/openstack-cinder-volume.service
+           ├─22309 /usr/bin/python2 /usr/bin/cinder-volume --config-file /usr/share/cinder/cinder-dist.conf --config-file /etc/cinder/cinder.conf --logfile /var/log/cinder/volume.log
+           └─22321 /usr/bin/python2 /usr/bin/cinder-volume --config-file /usr/share/cinder/cinder-dist.conf --config-file /etc/cinder/cinder.conf --logfile /var/log/cinder/volume.log
+
+Mar 20 08:27:27 controller systemd[1]: Stopped OpenStack Cinder Volume Server.
+Mar 20 08:27:27 controller systemd[1]: Started OpenStack Cinder Volume Server.
+Mar 20 08:27:28 controller cinder-volume[22309]: Deprecated: Option &quot;logdir&quot; from group &quot;DEFAULT&quot; is deprecated. Use option &quot;log-dir&quot; from group &quot;DEFAULT&quot;.
+
+[root@controller ~]# . keystonerc_admin 
+ #执行变量
+[root@controller ~(keystone_admin)]# cinder type-create ceph  #创建Cinder类型
++--------------------------------------+------+-------------+-----------+
+| ID                                   | Name | Description | Is_Public |
++--------------------------------------+------+-------------+-----------+
+| cc001eeb-cb9a-4f7a-a399-645564cfd1b9 | ceph | -           | True      |
++--------------------------------------+------+-------------+-----------+
+[root@controller ~(keystone_admin)]# cinder type-key cc001eeb-cb9a-4f7a-a399-645564cfd1b9 set volume_backend_name=ceph #在/etc/cinder/cinder.conf中设置的volume_backend_name=ceph参数
+[root@controller ~(keystone_admin)]# cinder type-list #查看Cinder类型
++--------------------------------------+-------------+---------------------+-----------+
+| ID                                   | Name        | Description         | Is_Public |
++--------------------------------------+-------------+---------------------+-----------+
+| 1a116c34-beb5-472a-9bdb-1233e1ac7ecc | iscsi       | -                   | True      |
+| c1b4d434-b521-4818-86f1-be2cb7a8c771 | __DEFAULT__ | Default Volume Type | True      |
+| cc001eeb-cb9a-4f7a-a399-645564cfd1b9 | ceph        | -                   | True      |
++--------------------------------------+-------------+---------------------+-----------+
+[root@controller ~(keystone_admin)]# tail -f /var/log/cinder/cinder-manage.log #查看Cinder日志
+2023-03-20 00:01:12.745 5965 INFO cinder.db.sqlalchemy.api [req-07bd8d2a-a84e-47f6-9d5b-e41f53b58321 - - - - -] Purging deleted rows older than age=1 days from table=quota_usages
+2023-03-20 00:01:12.749 5965 INFO cinder.db.sqlalchemy.api [req-07bd8d2a-a84e-47f6-9d5b-e41f53b58321 - - - - -] Purging deleted rows older than age=1 days from table=quota_classes
+2023-03-20 00:01:12.754 5965 INFO cinder.db.sqlalchemy.api [req-07bd8d2a-a84e-47f6-9d5b-e41f53b58321 - - - - -] Purging deleted rows older than age=1 days from table=quality_of_service_specs
+2023-03-20 00:01:13.012 5965 INFO cinder.db.sqlalchemy.api [req-07bd8d2a-a84e-47f6-9d5b-e41f53b58321 - - - - -] Purging deleted rows older than age=1 days from table=messages
+2023-03-20 00:01:13.019 5965 INFO cinder.db.sqlalchemy.api [req-07bd8d2a-a84e-47f6-9d5b-e41f53b58321 - - - - -] Purging deleted rows older than age=1 days from table=groups
+</code></pre>
+<h1><span id="七-cinder对接功能测试">七、Cinder对接功能测试</span></h1><h2><span id="1-找到卷">1、找到卷</span></h2><p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/5.jpg"></p>
+<h2><span id="2-创建卷">2、创建卷</span></h2><p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/6.jpg"></p>
+<p>创建成功：</p>
+<p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/7.jpg"></p>
+<h2><span id="3-扩展卷">3、扩展卷</span></h2><p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/8.jpg"></p>
+<p>扩展成功：</p>
+<p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/9.jpg"></p>
+<p>Ceph服务器查看状态</p>
+<pre><code>[root@node-1 ~]# rbd info -p volumes volume-7fbedcfa-0b83-4986-bbd8-25c3f17c8497
+rbd image &#39;volume-7fbedcfa-0b83-4986-bbd8-25c3f17c8497&#39;:
+    size 3 GiB in 768 objects
+    order 22 (4 MiB objects)
+    snapshot_count: 0
+    id: 69ff51af94c05
+    block_name_prefix: rbd_data.69ff51af94c05
+    format: 2
+    features: layering, exclusive-lock, object-map, fast-diff, deep-flatten
+    op_features: 
+    flags: 
+    create_timestamp: Mon Mar 20 20:29:18 2023
+    access_timestamp: Mon Mar 20 20:29:18 2023
+    modify_timestamp: Mon Mar 20 20:29:18 2023
+</code></pre>
+<p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/10.jpg"><br><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/11.jpg"><br><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/12.jpg"></p>
+<pre><code>[root@node-1 ~]# rbd snap ls volumes/volume-7fbedcfa-0b83-4986-bbd8-25c3f17c8497
+SNAPID NAME                                          SIZE  PROTECTED TIMESTAMP                
+     4 snapshot-92cfcfe4-0d79-4134-bbd3-b5450590723a 3 GiB yes       Mon Mar 20 20:33:15 2023
+</code></pre>
+<h1><span id="八-cinder-bakup对接和测试">八、Cinder-bakup对接和测试</span></h1><h2><span id="1-配置-cinder-备份">1、配置 CINDER 备份</span></h2><p>OpenStack Cinder Backup 需要一个特定的守护进程，所以不要忘记安装它。在您的 Cinder Backup 节点上，编辑&#x2F;etc&#x2F;cinder&#x2F;cinder.conf并添加：</p>
+<pre><code>backup_driver = cinder.backup.drivers.ceph
+backup_ceph_conf = /etc/ceph/ceph.conf
+backup_ceph_user = cinder-backup
+backup_ceph_chunk_size = 134217728
+backup_ceph_pool = backups
+backup_ceph_stripe_unit = 0
+backup_ceph_stripe_count = 0
+restore_discard_excess_bytes = true
+</code></pre>
+<h2><span id="2-实践">2、实践</span></h2><pre><code>[root@controller ~(keystone_admin)]# cat /etc/cinder/cinder.conf | grep -v &quot;#&quot; |grep -v &quot;^$&quot; #在DEFAULT下增加即可，需要注释原来的backup_driver=cinder.backup.drivers.swift.SwiftBackupDriver
+[DEFAULT]
+backup_driver = cinder.backup.drivers.ceph
+backup_ceph_conf = /etc/ceph/ceph.conf
+backup_ceph_user = cinder-backup
+backup_ceph_chunk_size = 134217728
+backup_ceph_pool = backups
+backup_ceph_stripe_unit = 0
+backup_ceph_stripe_count = 0
+restore_discard_excess_bytes = true
+backup_swift_url=http://192.168.187.204:8080/v1/AUTH_
+backup_swift_container=volumebackups
+
+enable_v3_api=True
+auth_strategy=keystone
+storage_availability_zone=nova
+default_availability_zone=nova
+default_volume_type=iscsi
+enabled_backends = ceph
+glance_api_version = 2
+osapi_volume_listen=0.0.0.0
+osapi_volume_workers=4
+debug=False
+log_dir=/var/log/cinder
+transport_url=rabbit://guest:guest@192.168.187.204:5672/
+control_exchange=openstack
+api_paste_config=/etc/cinder/api-paste.ini
+glance_host=192.168.187.204
+[backend]
+[backend_defaults]
+[barbican]
+[brcd_fabric_example]
+[cisco_fabric_example]
+[coordination]
+[cors]
+[database]
+connection=mysql+pymysql://cinder:57095b3dc17b45b3@192.168.187.204/cinder
+[fc-zone-manager]
+[healthcheck]
+[key_manager]
+[keystone_authtoken]
+www_authenticate_uri=http://192.168.187.204:5000/
+auth_type=password
+auth_url=http://192.168.187.204:5000
+username=cinder
+password=0b71eb2ae1d84aeb
+user_domain_name=Default
+project_name=services
+project_domain_name=Default
+[nova]
+[oslo_concurrency]
+lock_path=/var/lib/cinder/tmp
+[oslo_messaging_amqp]
+[oslo_messaging_kafka]
+[oslo_messaging_notifications]
+driver=messagingv2
+[oslo_messaging_rabbit]
+ssl=False
+[oslo_middleware]
+[oslo_policy]
+policy_file=/etc/cinder/policy.json
+[oslo_reports]
+[oslo_versionedobjects]
+[privsep]
+[profiler]
+[sample_castellan_source]
+[sample_remote_file_source]
+[service_user]
+[ssl]
+[vault]
+[lvm]
+volume_backend_name=lvm
+volume_driver=cinder.volume.drivers.lvm.LVMVolumeDriver
+target_ip_address=192.168.187.204
+target_helper=lioadm
+volume_group=cinder-volumes
+volumes_dir=/var/lib/cinder/volumes
+[ceph]
+volume_driver = cinder.volume.drivers.rbd.RBDDriver
+volume_backend_name = ceph
+rbd_pool = volumes
+rbd_ceph_conf = /etc/ceph/ceph.conf
+rbd_flatten_volume_from_snapshot = false
+rbd_max_clone_depth = 5
+rbd_store_chunk_size = 4
+rados_connect_timeout = -1
+rbd_user = cinder
+rbd_secret_uuid = 617ac927-1a98-444f-b3b4-1f682d7bfd7a
+[root@controller ~(keystone_admin)]# systemctl restart openstack-cinder-backup.service
+[root@controller ~(keystone_admin)]# systemctl status openstack-cinder-backup.service
+● openstack-cinder-backup.service - OpenStack Cinder Backup Server
+   Loaded: loaded (/usr/lib/systemd/system/openstack-cinder-backup.service; enabled; vendor preset: disabled)
+   Active: active (running) since Mon 2023-03-20 09:10:25 EDT; 2s ago
+ Main PID: 27495 (cinder-backup)
+    Tasks: 1
+   CGroup: /system.slice/openstack-cinder-backup.service
+           └─27495 /usr/bin/python2 /usr/bin/cinder-backup --config-file /usr/share/cinder/cinder-dist.conf --config-file /etc/cinder/cinder.conf --logfile /var/log/cinder/backup.log
+
+Mar 20 09:10:25 controller systemd[1]: Started OpenStack Cinder Backup Server.
+[root@controller ~(keystone_admin)]# tail -f /var/log/cinder/backup.log  #目前报错内容是版本问题导致的，查找原因是因为驱动错误，新的T版本的驱动名称产生变化
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/service.py&quot;, line 400, in create
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup     cluster=cluster, **kwargs)
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/service.py&quot;, line 155, in __init__
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup     *args, **kwargs)
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/backup/manager.py&quot;, line 136, in __init__
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup     self.service = importutils.import_class(self.driver_name)
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/oslo_utils/importutils.py&quot;, line 36, in import_class
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup     traceback.format_exception(*sys.exc_info())))
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup ImportError: Class ceph cannot be found ([&#39;Traceback (most recent call last):\n&#39;, &#39;  File &quot;/usr/lib/python2.7/site-packages/oslo_utils/importutils.py&quot;, line 32, in import_class\n    return getattr(sys.modules[mod_str], class_str)\n&#39;, &quot;AttributeError: &#39;module&#39; object has no attribute &#39;ceph&#39;\n&quot;])
+2023-03-20 09:10:48.420 27634 ERROR cinder.cmd.backup 
+2023-03-20 09:10:51.071 27648 INFO cinder.cmd.backup [-] Backup running with 1 processes.
+2023-03-20 09:10:51.402 27648 INFO cinder.rpc [req-5dd92b53-f481-46b5-8a2d-c7578b77cd4c - - - - -] Automatically selected cinder-backup objects version 1.38 as minimum service version.
+2023-03-20 09:10:51.409 27648 INFO cinder.rpc [req-5dd92b53-f481-46b5-8a2d-c7578b77cd4c - - - - -] Automatically selected cinder-backup RPC version 2.1 as minimum service version.
+2023-03-20 09:10:51.416 27648 INFO cinder.rpc [req-5dd92b53-f481-46b5-8a2d-c7578b77cd4c - - - - -] Automatically selected cinder-volume objects version 1.38 as minimum service version.
+2023-03-20 09:10:51.428 27648 INFO cinder.rpc [req-5dd92b53-f481-46b5-8a2d-c7578b77cd4c - - - - -] Automatically selected cinder-volume RPC version 3.16 as minimum service version.
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup [req-5dd92b53-f481-46b5-8a2d-c7578b77cd4c - - - - -] Backup service controller failed to start.: ImportError: Class ceph cannot be found ([&#39;Traceback (most recent call last):\n&#39;, &#39;  File &quot;/usr/lib/python2.7/site-packages/oslo_utils/importutils.py&quot;, line 32, in import_class\n    return getattr(sys.modules[mod_str], class_str)\n&#39;, &quot;AttributeError: &#39;module&#39; object has no attribute &#39;ceph&#39;\n&quot;])
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup Traceback (most recent call last):
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/cmd/backup.py&quot;, line 71, in _launch_backup_process
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup     process_number=num_process)
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/service.py&quot;, line 400, in create
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup     cluster=cluster, **kwargs)
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/service.py&quot;, line 155, in __init__
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup     *args, **kwargs)
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/backup/manager.py&quot;, line 136, in __init__
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup     self.service = importutils.import_class(self.driver_name)
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/oslo_utils/importutils.py&quot;, line 36, in import_class
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup     traceback.format_exception(*sys.exc_info())))
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup ImportError: Class ceph cannot be found ([&#39;Traceback (most recent call last):\n&#39;, &#39;  File &quot;/usr/lib/python2.7/site-packages/oslo_utils/importutils.py&quot;, line 32, in import_class\n    return getattr(sys.modules[mod_str], class_str)\n&#39;, &quot;AttributeError: &#39;module&#39; object has no attribute &#39;ceph&#39;\n&quot;])
+2023-03-20 09:10:51.430 27648 ERROR cinder.cmd.backup 
+
+2023-03-20 09:10:53.965 27671 INFO cinder.cmd.backup [-] Backup running with 1 processes.
+2023-03-20 09:10:54.380 27671 INFO cinder.rpc [req-a36ac363-171c-4ebf-9a56-189a2cb47116 - - - - -] Automatically selected cinder-backup objects version 1.38 as minimum service version.
+2023-03-20 09:10:54.388 27671 INFO cinder.rpc [req-a36ac363-171c-4ebf-9a56-189a2cb47116 - - - - -] Automatically selected cinder-backup RPC version 2.1 as minimum service version.
+2023-03-20 09:10:54.396 27671 INFO cinder.rpc [req-a36ac363-171c-4ebf-9a56-189a2cb47116 - - - - -] Automatically selected cinder-volume objects version 1.38 as minimum service version.
+2023-03-20 09:10:54.408 27671 INFO cinder.rpc [req-a36ac363-171c-4ebf-9a56-189a2cb47116 - - - - -] Automatically selected cinder-volume RPC version 3.16 as minimum service version.
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup [req-a36ac363-171c-4ebf-9a56-189a2cb47116 - - - - -] Backup service controller failed to start.: ImportError: Class ceph cannot be found ([&#39;Traceback (most recent call last):\n&#39;, &#39;  File &quot;/usr/lib/python2.7/site-packages/oslo_utils/importutils.py&quot;, line 32, in import_class\n    return getattr(sys.modules[mod_str], class_str)\n&#39;, &quot;AttributeError: &#39;module&#39; object has no attribute &#39;ceph&#39;\n&quot;])
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup Traceback (most recent call last):
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/cmd/backup.py&quot;, line 71, in _launch_backup_process
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup     process_number=num_process)
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/service.py&quot;, line 400, in create
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup     cluster=cluster, **kwargs)
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/service.py&quot;, line 155, in __init__
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup     *args, **kwargs)
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/cinder/backup/manager.py&quot;, line 136, in __init__
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup     self.service = importutils.import_class(self.driver_name)
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup   File &quot;/usr/lib/python2.7/site-packages/oslo_utils/importutils.py&quot;, line 36, in import_class
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup     traceback.format_exception(*sys.exc_info())))
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup ImportError: Class ceph cannot be found ([&#39;Traceback (most recent call last):\n&#39;, &#39;  File &quot;/usr/lib/python2.7/site-packages/oslo_utils/importutils.py&quot;, line 32, in import_class\n    return getattr(sys.modules[mod_str], class_str)\n&#39;, &quot;AttributeError: &#39;module&#39; object has no attribute &#39;ceph&#39;\n&quot;])
+2023-03-20 09:10:54.411 27671 ERROR cinder.cmd.backup 
+</code></pre>
+<p><a target="_blank" rel="noopener" href="https://bugs.launchpad.net/kolla-ansible/+bug/1859889"><strong>参考文档</strong></a></p>
+<pre><code>[root@controller ~(keystone_admin)]# cat /etc/cinder/cinder.conf #修改如下配置
+backup_driver = cinder.backup.drivers.ceph.CephBackupDriver
+[root@controller ~(keystone_admin)]# systemctl restart openstack-cinder-backup.service #重启服务
+[root@controller ~(keystone_admin)]# tail -f /var/log/cinder/backup.log  #查看日志，没有报错了，就是因为驱动的名称变动引起的故障；
+2023-03-20 09:15:56.547 29397 INFO cinder.rpc [req-ed7ee319-2a97-468e-8e17-a0e08a45221c - - - - -] Automatically selected cinder-backup RPC version 2.1 as minimum service version.
+2023-03-20 09:15:56.555 29397 INFO cinder.rpc [req-ed7ee319-2a97-468e-8e17-a0e08a45221c - - - - -] Automatically selected cinder-volume objects version 1.38 as minimum service version.
+2023-03-20 09:15:56.560 29397 INFO cinder.rpc [req-ed7ee319-2a97-468e-8e17-a0e08a45221c - - - - -] Automatically selected cinder-volume RPC version 3.16 as minimum service version.
+2023-03-20 09:15:56.588 29397 INFO oslo_service.service [req-ed7ee319-2a97-468e-8e17-a0e08a45221c - - - - -] Starting 1 workers
+2023-03-20 09:15:56.614 29409 INFO cinder.service [-] Starting cinder-backup node (version 15.6.0)
+2023-03-20 09:15:56.777 29409 INFO cinder.backup.manager [req-ea25f46d-2c7b-4057-84be-f1150b60fc2b - - - - -] Cleaning up incomplete backup operations.
+2023-03-20 09:15:56.875 29409 INFO cinder.keymgr.migration [req-8ab38b7c-ed98-470b-b698-10a35f399b13 - - - - -] Not migrating encryption keys because the ConfKeyManager&#39;s fixed_key is not in use.
+2023-03-20 09:16:56.032 29397 INFO oslo_service.service [req-ed7ee319-2a97-468e-8e17-a0e08a45221c - - - - -] Caught SIGTERM, stopping children
+2023-03-20 09:16:56.034 29397 INFO oslo_service.service [req-ed7ee319-2a97-468e-8e17-a0e08a45221c - - - - -] Waiting on 1 children to exit
+2023-03-20 09:16:56.051 29397 INFO oslo_service.service [req-ed7ee319-2a97-468e-8e17-a0e08a45221c - - - - -] Child 29409 killed by signal 15
+2023-03-20 09:16:59.092 29603 INFO cinder.cmd.backup [-] Backup running with 1 processes.
+2023-03-20 09:16:59.611 29603 INFO cinder.rpc [req-9235ef09-7845-42f9-ba72-acda5526d958 - - - - -] Automatically selected cinder-backup objects version 1.38 as minimum service version.
+2023-03-20 09:16:59.627 29603 INFO cinder.rpc [req-9235ef09-7845-42f9-ba72-acda5526d958 - - - - -] Automatically selected cinder-backup RPC version 2.1 as minimum service version.
+2023-03-20 09:16:59.639 29603 INFO cinder.rpc [req-9235ef09-7845-42f9-ba72-acda5526d958 - - - - -] Automatically selected cinder-volume objects version 1.38 as minimum service version.
+2023-03-20 09:16:59.651 29603 INFO cinder.rpc [req-9235ef09-7845-42f9-ba72-acda5526d958 - - - - -] Automatically selected cinder-volume RPC version 3.16 as minimum service version.
+2023-03-20 09:16:59.690 29603 INFO oslo_service.service [req-9235ef09-7845-42f9-ba72-acda5526d958 - - - - -] Starting 1 workers
+2023-03-20 09:16:59.702 29618 INFO cinder.service [-] Starting cinder-backup node (version 15.6.0)
+2023-03-20 09:16:59.745 29618 INFO cinder.backup.manager [req-bdfe6eb4-35a8-4374-a04b-90a9983f21fe - - - - -] Cleaning up incomplete backup operations.
+2023-03-20 09:16:59.858 29618 INFO cinder.keymgr.migration [req-76156fe7-6a74-4155-a040-f534cb90a9e0 - - - - -] Not migrating encryption keys because the ConfKeyManager&#39;s fixed_key is not in use.
+</code></pre>
+<h2><span id="3-测试">3、测试</span></h2><pre><code>[root@controller ~(keystone_admin)]# cinder -h | grep backup #搜索帮助文档
+    backup-create       Creates a volume backup.
+    backup-delete       Removes one or more backups.
+    backup-export       Export backup metadata record.
+    backup-import       Import backup metadata record.
+    backup-list         Lists all backups.
+    backup-reset-state  Explicitly updates the backup state.
+    backup-restore      Restores a backup.
+    backup-show         Shows backup details.
+    backup-update       Updates a backup. (Supported by API versions 3.9 -
+[root@controller ~(keystone_admin)]# cinder help backup-create  #查看帮助文档
+usage: cinder backup-create [--container &lt;container&gt;] [--name &lt;name&gt;]
+                            [--description &lt;description&gt;] [--incremental]
+                            [--force] [--snapshot-id &lt;snapshot-id&gt;]
+                            [--metadata [&lt;key=value&gt; [&lt;key=value&gt; ...]]]
+                            [--availability-zone AVAILABILITY_ZONE]
+                            &lt;volume&gt;
+
+Creates a volume backup.
+
+Positional Arguments:
+  &lt;volume&gt;              Name or ID of volume to backup.
+
+Optional Arguments:
+  --container &lt;container&gt;
+                        Backup container name. Default=None.
+  --name &lt;name&gt;         Backup name. Default=None.
+  --description &lt;description&gt;
+                        Backup description. Default=None.
+  --incremental         Incremental backup. Default=False.
+  --force               Allows or disallows backup of a volume when the volume
+                        is attached to an instance. If set to True, backs up
+                        the volume whether its status is &quot;available&quot; or &quot;in-
+                        use&quot;. The backup of an &quot;in-use&quot; volume means your data
+                        is crash consistent. Default=False.
+  --snapshot-id &lt;snapshot-id&gt;
+                        ID of snapshot to backup. Default=None.
+  --metadata [&lt;key=value&gt; [&lt;key=value&gt; ...]]
+                        Metadata key and value pairs. Default=None. (Supported
+                        by API version 3.43 and later)
+  --availability-zone AVAILABILITY_ZONE
+                        AZ where the backup should be stored, by default it
+                        will be the same as the source. (Supported by API
+                        version 3.51 and later)
+[root@controller ~(keystone_admin)]# cinder list 
++--------------------------------------+-----------+-------------+------+-------------+----------+-------------+
+| ID                                   | Status    | Name        | Size | Volume Type | Bootable | Attached to |
++--------------------------------------+-----------+-------------+------+-------------+----------+-------------+
+| 4b50e431-e1b2-4e4a-8a78-e224a4112a0b | available | Cinder-ceph | 10   | ceph        | false    |             |
++--------------------------------------+-----------+-------------+------+-------------+----------+-------------+
+[root@controller ~(keystone_admin)]# cinder backup-create 4b50e431-e1b2-4e4a-8a78-e224a4112a0b --name Cinder-ceph-BACKUP #创建备份
++-----------+--------------------------------------+
+| Property  | Value                                |
++-----------+--------------------------------------+
+| id        | 5a4dce08-3205-4c4e-add6-fda12ff2bffb |
+| name      | Cinder-ceph-BACKUP                   |
+| volume_id | 4b50e431-e1b2-4e4a-8a78-e224a4112a0b |
++-----------+--------------------------------------+
+[root@controller ~(keystone_admin)]# cinder backup-list #查看备份列表
++--------------------------------------+--------------------------------------+-----------+--------------------+------+--------------+-----------+----------------------------------+
+| ID                                   | Volume ID                            | Status    | Name               | Size | Object Count | Container | User ID                          |
++--------------------------------------+--------------------------------------+-----------+--------------------+------+--------------+-----------+----------------------------------+
+| 5a4dce08-3205-4c4e-add6-fda12ff2bffb | 4b50e431-e1b2-4e4a-8a78-e224a4112a0b | available | Cinder-ceph-BACKUP | 10   | 0            | backups   | d4e27e0e22864b6caaa6c9b7f9252f19 |
++--------------------------------------+--------------------------------------+-----------+--------------------+------+--------------+-----------+----------------------------------+
+[root@node-1 ~]# rbd ls -p backups #ceph节点中查看已经能看到这个备份的卷了
+volume-4b50e431-e1b2-4e4a-8a78-e224a4112a0b.backup.5a4dce08-3205-4c4e-add6-fda12ff2bffb
+</code></pre>
+<h1><span id="九-nova和ceph对接">九、Nova和Ceph对接</span></h1><h2><span id="1-配置-nova-附加-ceph-rbd-块设备">1、配置 NOVA 附加 CEPH RBD 块设备</span></h2><p>为了附加 Cinder 设备（普通块或从卷启动），您必须告诉 Nova（和 libvirt）在附加设备时要引用哪个用户和 UUID。在与 Ceph 集群连接和验证时，libvirt 将引用此用户。</p>
+<pre><code>[libvirt]
+...
+rbd_user = cinder
+rbd_secret_uuid = 457eb676-33da-42ec-9a8c-9293d545c337
+</code></pre>
+<p>Nova 临时后端也使用这两个标志。</p>
+<h1><span id="2-配置-nova">2、配置 NOVA</span></h1><p>为了将所有虚拟机直接引导到 Ceph 中，您必须为 Nova 配置临时后端。<br>建议在 Ceph 配置文件中启用 RBD 缓存（自 Giant 以来默认启用）。此外，启用管理套接字在故障排除时带来了很多好处。每个使用 Ceph 块设备的虚拟机都有一个套接字将有助于调查性能和&#x2F;或错误行为。<br>这个套接字可以像这样访问：</p>
+<pre><code>ceph daemon /var/run/ceph/ceph-client.cinder.19195.32310016.asok help
+</code></pre>
+<p>现在在每个计算节点上编辑 Ceph 配置文件：</p>
+<pre><code>[client]
+    rbd cache = true
+    rbd cache writethrough until flush = true
+    admin socket = /var/run/ceph/guests/$cluster-$type.$id.$pid.$cctid.asok
+    log file = /var/log/qemu/qemu-guest-$pid.log
+    rbd concurrent management ops = 20
+</code></pre>
+<p>配置这些路径的权限：</p>
+<pre><code>mkdir -p /var/run/ceph/guests/ /var/log/qemu/
+chown qemu:libvirtd /var/run/ceph/guests /var/log/qemu/
+</code></pre>
+<p>请注意，用户qemu和组libvirtd可能因您的系统而异。提供的示例适用于基于 RedHat 的系统。</p>
+<blockquote>
+<p>如果您的虚拟机已经在运行，您只需重新启动它即可获取套接字</p>
+</blockquote>
+<h3><span id="21-havana-and-icehouse">2.1、HAVANA AND ICEHOUSE</span></h3><p>Havana 和 Icehouse 需要补丁来实现写时复制克隆并修复图像大小和 rbd 上临时磁盘实时迁移的错误。这些在基于上游 Nova s ​​table&#x2F;havana 和 stable&#x2F;icehouse 的分支中可用。使用它们不是强制性的，但强烈建议使用它们以利用写时复制克隆功能。<br>在每个计算节点上，编辑&#x2F;etc&#x2F;nova&#x2F;nova.conf并添加：</p>
+<pre><code>libvirt_images_type = rbd
+libvirt_images_rbd_pool = vms
+libvirt_images_rbd_ceph_conf = /etc/ceph/ceph.conf
+disk_cachemodes=&quot;network=writeback&quot;
+rbd_user = cinder
+rbd_secret_uuid = 457eb676-33da-42ec-9a8c-9293d545c337
+</code></pre>
+<p>禁用文件注入也是一个好习惯。在启动实例时，Nova 通常会尝试打开虚拟机的 rootfs。然后，Nova 将密码、ssh 密钥等值直接注入文件系统。但是，最好依靠元数据服务和 cloud-init.<br>在每个计算节点上，编辑&#x2F;etc&#x2F;nova&#x2F;nova.conf并添加：</p>
+<pre><code>libvirt_inject_password = false
+libvirt_inject_key = false
+libvirt_inject_partition = -2
+</code></pre>
+<p>为确保正确的实时迁移，请使用以下标志：</p>
+<pre><code>libvirt_live_migration_flag=&quot;VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST,VIR_MIGRATE_TUNNELLED&quot;
+</code></pre>
+<h3><span id="22-juno">2.2、JUNO</span></h3><p>在 Juno 中，Ceph 块设备被移到该[libvirt]部分下。在每个计算节点上，&#x2F;etc&#x2F;nova&#x2F;nova.conf在该[libvirt] 部分下进行编辑并添加：</p>
+<pre><code>[libvirt]
+images_type = rbd
+images_rbd_pool = vms
+images_rbd_ceph_conf = /etc/ceph/ceph.conf
+rbd_user = cinder
+rbd_secret_uuid = 457eb676-33da-42ec-9a8c-9293d545c337
+disk_cachemodes=&quot;network=writeback&quot;
+</code></pre>
+<p>禁用文件注入也是一个好习惯。在启动实例时，Nova 通常会尝试打开虚拟机的 rootfs。然后，Nova 将密码、ssh 密钥等值直接注入文件系统。但是，最好依靠元数据服务和 cloud-init.<br>在每个计算节点上，编辑&#x2F;etc&#x2F;nova&#x2F;nova.conf并在部分下添加以下内容[libvirt]：</p>
+<pre><code>inject_password = false
+inject_key = false
+inject_partition = -2
+</code></pre>
+<p>为确保正确的实时迁移，请使用以下标志（在[libvirt]部分下）：</p>
+<pre><code>live_migration_flag=&quot;VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST,VIR_MIGRATE_TUNNELLED&quot;
+</code></pre>
+<h3><span id="33-kilo">3.3、KILO</span></h3><p>启用对虚拟机临时根磁盘的丢弃支持：</p>
+<pre><code>[libvirt]
+...
+...
+hw_disk_discard = unmap # enable discard support (be careful of performance)
+</code></pre>
+<h2><span id="3-实践">3、实践</span></h2><pre><code>[root@controller ~(keystone_admin)]# openstack compute service list #查看nova服务
++----+----------------+-----------------------+----------+---------+-------+----------------------------+
+| ID | Binary         | Host                  | Zone     | Status  | State | Updated At                 |
++----+----------------+-----------------------+----------+---------+-------+----------------------------+
+|  2 | nova-conductor | localhost.localdomain | internal | enabled | up    | 2023-03-20T13:37:01.000000 |
+|  3 | nova-scheduler | localhost.localdomain | internal | enabled | up    | 2023-03-20T13:36:58.000000 |
+|  5 | nova-compute   | localhost.localdomain | nova     | enabled | up    | 2023-03-20T13:37:03.000000 |
++----+----------------+-----------------------+----------+---------+-------+----------------------------+
+[root@controller ~(keystone_admin)]# cat /etc/nova/nova.conf  | grep -v &quot;#&quot; | grep -v &quot;^$&quot; #修改配置文件
+[DEFAULT]
+instance_usage_audit_period=hour
+rootwrap_config=/etc/nova/rootwrap.conf
+compute_driver=libvirt.LibvirtDriver
+allow_resize_to_same_host=True
+vif_plugging_is_fatal=True
+vif_plugging_timeout=300
+force_raw_images=True
+reserved_host_memory_mb=512
+cpu_allocation_ratio=16.0
+ram_allocation_ratio=1.5
+instance_usage_audit=True
+heal_instance_info_cache_interval=60
+host=localhost.localdomain
+metadata_host=192.168.187.204
+ssl_only=False
+state_path=/var/lib/nova
+report_interval=10
+service_down_time=60
+enabled_apis=
+osapi_compute_listen=0.0.0.0
+osapi_compute_listen_port=8774
+osapi_compute_workers=4
+debug=False
+log_dir=/var/log/nova
+transport_url=rabbit://guest:guest@192.168.187.204:5672/
+volume_api_class=nova.volume.cinder.API
+[api]
+auth_strategy=keystone
+use_forwarded_for=False
+[api_database]
+connection=mysql+pymysql://nova_api:58a6947c5d08492f@192.168.187.204/nova_api
+[barbican]
+[cache]
+[cinder]
+[compute]
+[conductor]
+workers=4
+[console]
+[consoleauth]
+[cors]
+[database]
+connection=mysql+pymysql://nova:58a6947c5d08492f@192.168.187.204/nova
+[devices]
+[ephemeral_storage_encryption]
+[filter_scheduler]
+host_subset_size=1
+max_io_ops_per_host=8
+max_instances_per_host=50
+available_filters=nova.scheduler.filters.all_filters
+enabled_filters=RetryFilter,AvailabilityZoneFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter
+weight_classes=nova.scheduler.weights.all_weighers
+[glance]
+api_servers=http://192.168.187.204:9292
+[guestfs]
+[healthcheck]
+[hyperv]
+[ironic]
+[key_manager]
+backend=nova.keymgr.conf_key_mgr.ConfKeyManager
+[keystone]
+[keystone_authtoken]
+www_authenticate_uri=http://192.168.187.204:5000/
+auth_type=password
+auth_url=http://192.168.187.204:5000
+username=nova
+password=1ccc1cc150394fc5
+user_domain_name=Default
+project_name=services
+project_domain_name=Default
+[libvirt]
+virt_type=kvm #虚拟化类型，可写qemu
+inject_password=False #注入相关
+inject_key=False #注入相关
+inject_partition=-2
+live_migration_uri=qemu+ssh://nova_migration@%s/system?keyfile=/etc/nova/migration/identity #热迁移相关
+cpu_mode=none #CPU模式
+images_type=rbd #镜像类型
+images_rbd_pool=vms #ceph的存储池
+images_rbd_ceph_conf = /etc/ceph/ceph.conf
+ #ceph的配置文件
+rbd_user=cinder #使用的用户
+rbd_secret_uuid=617ac927-1a98-444f-b3b4-1f682d7bfd7a
+ #密钥
+[metrics]
+[mks]
+[neutron]
+ovs_bridge=br-int
+default_floating_pool=public
+extension_sync_interval=600
+service_metadata_proxy=True
+metadata_proxy_shared_secret=7c8ad972562c4094
+timeout=30
+auth_type=v3password
+auth_url=http://192.168.187.204:5000/v3
+project_name=services
+project_domain_name=Default
+username=neutron
+user_domain_name=Default
+password=84633da1829243ef
+region_name=RegionOne
+[notifications]
+notify_on_state_change=vm_and_task_state
+[osapi_v21]
+[oslo_concurrency]
+lock_path=/var/lib/nova/tmp
+[oslo_messaging_amqp]
+[oslo_messaging_kafka]
+[oslo_messaging_notifications]
+driver=messagingv2
+[oslo_messaging_rabbit]
+ssl=False
+[oslo_middleware]
+[oslo_policy]
+policy_file=/etc/nova/policy.json
+[pci]
+[placement]
+auth_type=password
+auth_url=http://192.168.187.204:5000/v3
+project_name=services
+project_domain_name=Default
+username=placement
+user_domain_name=Default
+password=1ccc1cc150394fc5
+region_name=RegionOne
+[powervm]
+[privsep]
+[profiler]
+[quota]
+[rdp]
+[remote_debug]
+[scheduler]
+driver=filter_scheduler
+max_attempts=3
+workers=2
+[serial_console]
+[service_user]
+[spice]
+enabled=False
+[upgrade_levels]
+[vault]
+[vendordata_dynamic_auth]
+project_domain_name=Default
+user_domain_name=Default
+[vmware]
+[vnc]
+enabled=True
+server_listen=0.0.0.0
+server_proxyclient_address=192.168.187.204
+novncproxy_base_url=http://192.168.187.204:6080/vnc_auto.html
+novncproxy_host=0.0.0.0
+novncproxy_port=6080
+auth_schemes=none
+[workarounds]
+enable_numa_live_migration=False
+[wsgi]
+api_paste_config=api-paste.ini
+[xenserver]
+[xvp]
+[zvm]
+[root@controller ~(keystone_admin)]# systemctl restart openstack-nova-compute
+
+[root@controller ~(keystone_admin)]# systemctl status  openstack-nova-compute
+● openstack-nova-compute.service - OpenStack Nova Compute Server
+   Loaded: loaded (/usr/lib/systemd/system/openstack-nova-compute.service; enabled; vendor preset: disabled)
+   Active: active (running) since Mon 2023-03-20 09:46:53 EDT; 6s ago
+ Main PID: 33330 (nova-compute)
+    Tasks: 22
+   CGroup: /system.slice/openstack-nova-compute.service
+           └─33330 /usr/bin/python2 /usr/bin/nova-compute
+
+Mar 20 09:46:48 controller systemd[1]: Starting OpenStack Nova Compute Server...
+Mar 20 09:46:53 controller systemd[1]: Started OpenStack Nova Compute Server.
+[root@controller ~(keystone_admin)]# tail -n 40 /var/log/nova/nova-compute.log 
+  &lt;guest&gt;
+    &lt;os_type&gt;hvm&lt;/os_type&gt;
+    &lt;arch name=&#39;x86_64&#39;&gt;
+      &lt;wordsize&gt;64&lt;/wordsize&gt;
+      &lt;emulator&gt;/usr/libexec/qemu-kvm&lt;/emulator&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;pc-i440fx-rhel7.6.0&lt;/machine&gt;
+      &lt;machine canonical=&#39;pc-i440fx-rhel7.6.0&#39; maxCpus=&#39;240&#39;&gt;pc&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;pc-i440fx-rhel7.0.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;384&#39;&gt;pc-q35-rhel7.6.0&lt;/machine&gt;
+      &lt;machine canonical=&#39;pc-q35-rhel7.6.0&#39; maxCpus=&#39;384&#39;&gt;q35&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;rhel6.3.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;rhel6.4.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;rhel6.0.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;pc-i440fx-rhel7.5.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;pc-i440fx-rhel7.1.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;pc-i440fx-rhel7.2.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;255&#39;&gt;pc-q35-rhel7.3.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;rhel6.5.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;384&#39;&gt;pc-q35-rhel7.4.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;rhel6.6.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;rhel6.1.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;rhel6.2.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;pc-i440fx-rhel7.3.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;240&#39;&gt;pc-i440fx-rhel7.4.0&lt;/machine&gt;
+      &lt;machine maxCpus=&#39;384&#39;&gt;pc-q35-rhel7.5.0&lt;/machine&gt;
+      &lt;domain type=&#39;qemu&#39;/&gt;
+    &lt;/arch&gt;
+    &lt;features&gt;
+      &lt;cpuselection/&gt;
+      &lt;deviceboot/&gt;
+      &lt;disksnapshot default=&#39;on&#39; toggle=&#39;no&#39;/&gt;
+      &lt;acpi default=&#39;on&#39; toggle=&#39;yes&#39;/&gt;
+      &lt;apic default=&#39;on&#39; toggle=&#39;no&#39;/&gt;
+    &lt;/features&gt;
+  &lt;/guest&gt;
+
+&lt;/capabilities&gt;
+
+2023-03-20 09:46:53.684 33330 INFO nova.compute.manager [req-a4053d12-7bbf-44a5-987c-45f93434df6d - - - - -] Looking for unclaimed instances stuck in BUILDING status for nodes managed by this host
+2023-03-20 09:46:57.288 33330 INFO nova.virt.libvirt.host [req-a4053d12-7bbf-44a5-987c-45f93434df6d - - - - -] kernel doesn&#39;t support AMD SEV
+</code></pre>
+<h1><span id="十-nova和ceph对接测试">十、Nova和Ceph对接测试</span></h1><pre><code>[root@controller ~(keystone_admin)]# ll
+total 20804
+-rw-------. 1 root root     1260 Mar 19 19:03 anaconda-ks.cfg
+-rw-r--r--  1 root root 21233664 Mar 20 09:54 cirros-0.6.1-x86_64-disk.img
+-rw-r--r--  1 root root       40 Mar 19 22:24 client.cinder.key
+-rw-------  1 root root      375 Mar 19 11:30 keystonerc_admin
+-rw-------  1 root root      320 Mar 19 11:30 keystonerc_demo
+-rw-------  1 root root    51811 Mar 19 11:25 train-for-ceph.txt
+[root@controller ~(keystone_admin)]# file cirros-0.6.1-x86_64-disk.img 
+cirros-0.6.1-x86_64-disk.img: QEMU QCOW Image (v3), 117440512 bytes
+[root@controller ~(keystone_admin)]# qemu-img info cirros-0.6.1-x86_64-disk.img 
+image: cirros-0.6.1-x86_64-disk.img
+file format: qcow2
+virtual size: 112M (117440512 bytes)
+disk size: 20M
+cluster_size: 65536
+Format specific information:
+    compat: 1.1
+    lazy refcounts: false
+    refcount bits: 16
+    corrupt: false
+[root@controller ~(keystone_admin)]# qemu-img convert -f qcow2 -O raw cirros-0.6.1-x86_64-disk.img cirros-0.6.1-x86_64-disk.raw
+[root@controller ~(keystone_admin)]# ll
+total 42388
+-rw-------. 1 root root      1260 Mar 19 19:03 anaconda-ks.cfg
+-rw-r--r--  1 root root  21233664 Mar 20 09:54 cirros-0.6.1-x86_64-disk.img
+-rw-r--r--  1 root root 117440512 Mar 20 09:56 cirros-0.6.1-x86_64-disk.raw
+-rw-r--r--  1 root root        40 Mar 19 22:24 client.cinder.key
+-rw-------  1 root root       375 Mar 19 11:30 keystonerc_admin
+-rw-------  1 root root       320 Mar 19 11:30 keystonerc_demo
+-rw-------  1 root root     51811 Mar 19 11:25 train-for-ceph.txt
+[root@controller ~(keystone_admin)]# qemu-img info cirros-0.6.1-x86_64-disk.raw 
+image: cirros-0.6.1-x86_64-disk.raw
+file format: raw
+virtual size: 112M (117440512 bytes)
+disk size: 21M
+[root@controller ~(keystone_admin)]# glance image-create --name cirros-0.6.1 --disk-format raw --container-format bare --file /root/cirros-0.6.1-x86_64-disk.raw --progress
+[=============================&gt;] 100%
++------------------+----------------------------------------------------------------------------------+
+| Property         | Value                                                                            |
++------------------+----------------------------------------------------------------------------------+
+| checksum         | 1352196d1db841ad1931906db5e76ff6                                                 |
+| container_format | bare                                                                             |
+| created_at       | 2023-03-20T13:58:37Z                                                             |
+| direct_url       | rbd://b8e58b30-4568-4032-a9f4-837ed3fa9529/images/e1d50811-668a-440b-            |
+|                  | b1b0-aa076ec74842/snap                                                           |
+| disk_format      | raw                                                                              |
+| id               | e1d50811-668a-440b-b1b0-aa076ec74842                                             |
+| min_disk         | 0                                                                                |
+| min_ram          | 0                                                                                |
+| name             | cirros-0.6.1                                                                     |
+| os_hash_algo     | sha512                                                                           |
+| os_hash_value    | 84914dd1e9d4b01d7411b716cab927eeaf5c33f61fe6b72d6cee453b825dbea96423966bedebe58d |
+|                  | d9a8e58adfad012fcde8cd26a4c74ec29b5c540d1a0b8c11                                 |
+| os_hidden        | False                                                                            |
+| owner            | 536255bf80df451ebcdf8277d214661d                                                 |
+| protected        | False                                                                            |
+| size             | 117440512                                                                        |
+| status           | active                                                                           |
+| tags             | []                                                                               |
+| updated_at       | 2023-03-20T13:58:41Z                                                             |
+| virtual_size     | Not available                                                                    |
+| visibility       | shared                                                                           |
++------------------+----------------------------------------------------------------------------------+
+</code></pre>
+<p><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/13.jpg"><br><img src="/images/Ceph/Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/14.jpg"></p>
+<pre><code>2023-03-25 17:35:27.694 22329 ERROR nova.compute.manager [req-0bdcfc1d-e805-465b-9a18-aad1bc069f62 f8d44636051f4156ba3c737866bebf9c 9332506b38f4449285df02e63ad1091d - default default] [instance: 1ed59506-a58a-4138-bc32-325aa67d4563] Failed to build and run instance: libvirtError: internal error: qemu unexpectedly closed the monitor: 2023-03-25T09:34:55.576543Z qemu-kvm: cannot set up guest memory &#39;pc.ram&#39;: Cannot allocate memory
+</code></pre>
+<blockquote>
+<p>KVM启动报错qemu-kvm: cannot set up guest memory ‘pc.ra</p>
+</blockquote>
+<pre><code>nova-conductor.log 报错：
+ERROR nova.scheduler.utils [req-9880cb62-7a70-41aa-b6c0-db4ec5333e98 53a1cf0ad2924532aa4b7b0750dec282 0ab2dbde4f754b699e22461426cd0774 - - -] [instance: 36bb1220-f295-4205-ba2e-6e41f8b134b9] Error from last host: xiandian (node xiandian): [u&#39;Traceback (most recent call last):\n&#39;, u&#39;  File &quot;/usr/lib/python2.7/site-packages/nova/compute/manager.py&quot;, line 1926, in _do_build_and_run_instance\n    filter_properties)\n&#39;, u&#39;  File &quot;/usr/lib/python2.7/site-packages/nova/compute/manager.py&quot;, line 2116, in _build_and_run_instance\n    instance_uuid=instance.uuid, reason=six.text_type(e))\n&#39;, u&quot;RescheduledException: Build of instance 36bb1220-f295-4205-ba2e-6e41f8b134b9 was re-scheduled: internal error: process exited while connecting to monitor: 2019-05-20T17:38:19.473598Z qemu-kvm: cannot set up guest memory &#39;pc.ram&#39;: Cannot allocate memory\n\n&quot;]
+错误信息：无法分配内存
+处理方法：1.增加计算节点内存 2.修改内核参数
+在这使用修改内核参数的方法：
+先看下主机可以分配多少内存
+[root@compute ~]# sysctl -a | grep overcommitvm.nr_overcommit_hugepages = 0vm.overcommit_kbytes = 0vm.overcommit_memory = 0vm.overcommit_ratio = 50 ### 内核参数overcommit_memory 它是 内存分配策略 可选值：0、1、2。0， 表示内核将检查是否有足够的可用内存供应用进程使用；如果有足够的可用内存，内存申请允许；否则，内存申请失败，并把错误返回给应用进程。1， 表示内核允许分配所有的物理内存，而不管当前的内存状态如何。2， 表示内核允许分配超过所有物理内存和交换空间总和的内存
+什么是Overcommit和OOM
+Linux对大部分申请内存的请求都回复&quot;yes&quot;，以便能跑更多更大的程序。因为申请内存后，并不会马上使用内存。这种技术叫做Overcommit。当linux发现内存不足时，会发生OOM killer(OOM=out-of-memory)。它会选择杀死一些进程(用户态进程，不是内核线程)，以便释放内存。
+当oom-killer发生时，linux会选择杀死哪些进程？选择进程的函数是oom_badness函数(在mm/oom_kill.c中)，该函数会计算每个进程的点数(0~1000)。点数越高，这个进程越有可能被杀死。每个进程的点数跟oom_score_adj有关，而且oom_score_adj可以被设置(-1000最低，1000最高)。
+解决方法
+三种方法：将vm.overcommit_memory 设为1即可
+1.编辑/etc/sysctl.conf ，改vm.overcommit_memory=1，然后sysctl -p 使配置文件生效
+2.sysctl vm.overcommit_memory=1
+3.echo 1 &gt; /proc/sys/vm/overcommit_memory
+转载于:https://blog.51cto.com/9103824/2397175
+</code></pre>
+<h1><span id="十一-重启-openstack">十一、重启 OPENSTACK</span></h1><p>要激活 Ceph 块设备驱动程序并将块设备池名称加载到配置中，您必须重新启动 OpenStack。因此，对于基于 Debian 的系统，在适当的节点上执行这些命令：</p>
+<pre><code>sudo glance-control api restart
+sudo service nova-compute restart
+sudo service cinder-volume restart
+sudo service cinder-backup restart
+</code></pre>
+<p>对于基于 Red Hat 的系统执行：</p>
+<pre><code>sudo service openstack-glance-api restart
+sudo service openstack-nova-compute restart
+sudo service openstack-cinder-volume restart
+sudo service openstack-cinder-backup restart
+</code></pre>
+<p>一旦 OpenStack 启动并运行，您应该能够创建一个卷并从中引导。</p>
+<h1><span id="十二-从块设备启动">十二、从块设备启动</span></h1><pre><code>cinder create --image-id &#123;id of image&#125; --display-name &#123;name of volume&#125; &#123;size of volume&#125;
+</code></pre>
+<p>请注意，图像必须是 RAW 格式。您可以使用qemu-img将一种格式转换为另一种格式。例如：</p>
+<pre><code>qemu-img convert -f &#123;source-format&#125; -O &#123;output-format&#125; &#123;source-filename&#125; &#123;output-filename&#125;
+qemu-img convert -f qcow2 -O raw precise-cloudimg.img precise-cloudimg.raw
+</code></pre>
+<p>当 Glance 和 Cinder 都使用 Ceph 块设备时，镜像是写时复制克隆，因此可以快速创建新卷。在 OpenStack 仪表板中，您可以通过执行以下步骤从该卷启动：</p>
+<ol>
+<li>启动一个新实例。</li>
+<li>选择与写时复制克隆关联的图像。</li>
+<li>选择“从卷启动”。</li>
+<li>选择您创建的卷。</li>
+</ol>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+        </article>
+
+        
+            
+  <div class="nexmoe-post-copyright">
+    <strong>Author：</strong>张博丞<br>
+    
+      <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
+    
+    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/16/Ceph/15,Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5/Ceph%E4%B8%8EOpenStack/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;16&#x2F;Ceph&#x2F;15,Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5&#x2F;Ceph%E4%B8%8EOpenStack&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;16&#x2F;Ceph&#x2F;15,Ceph%E4%B8%8EOpenStack%E5%AF%B9%E6%8E%A5&#x2F;Ceph%E4%B8%8EOpenStack&#x2F;</a><br>
+
+    
+      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+    
+  </div>
+
+
+        
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/">Ceph</a><a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/OpenStack/">OpenStack</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/OpenStack/" rel="tag">OpenStack</a>
+    
+</div>
+
+    <div class="nexmoe-post-footer">
+        <section class="nexmoe-comment">
+    <div class="valine"></div>
+<script src='https://lib.baomitu.com/valine/1.3.9/Valine.min.js'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'r5zxC0st0DDjPA9auXzMV7HY-gzGzoHsz',
+        appKey: '3bqCsovpyfTPHUzTHovd3V3V'
+    })
+</script>
+</section>
+    </div>
+</div>
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+        <div class="nexmoe-post-right">
+          
+            <div class="nexmoe-fixed">
+              <div class="nexmoe-tool">
+                <a href="#" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+              </div>
+            </div>
+          
+        </div>
+    </div>
+  </div>
+  <div id="nexmoe-pendant">
+    <div class="nexmoe-drawer mdui-drawer nexmoe-pd" id="drawer">
+        
+            <div class="nexmoe-pd-item">
+                <div class="clock">
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="needle" id="hours"></div>
+        <div class="needle" id="minutes"></div>
+        <div class="needle" id="seconds"></div>
+        <div class="clock_logo">
+
+        </div>
+
+    </div>
+<style>
+    .clock {
+        background-color: #ffffff;
+        width: 70vw;
+        height: 70vw;
+        max-width: 70vh;
+        max-height: 70vh;
+        border: solid 2.8vw #242424;
+        position: relative;
+        overflow: hidden;
+        border-radius: 50%;
+        box-sizing: border-box;
+        box-shadow: 0 1.4vw 2.8vw rgba(0, 0, 0, 0.8);
+        zoom:0.2
+    }
+
+    .memory {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    .memory:nth-child(1) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(0deg) translateY(-520%);
+    }
+
+    .memory:nth-child(2) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(6deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(3) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(12deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(4) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(18deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(5) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(24deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(6) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(30deg) translateY(-520%);
+    }
+
+    .memory:nth-child(7) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(36deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(8) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(42deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(9) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(48deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(10) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(54deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(11) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(60deg) translateY(-520%);
+    }
+
+    .memory:nth-child(12) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(66deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(13) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(72deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(14) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(78deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(15) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(84deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(16) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(90deg) translateY(-520%);
+    }
+
+    .memory:nth-child(17) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(96deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(18) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(102deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(19) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(108deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(20) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(114deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(21) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(120deg) translateY(-520%);
+    }
+
+    .memory:nth-child(22) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(126deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(23) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(132deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(24) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(138deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(25) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(144deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(26) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(150deg) translateY(-520%);
+    }
+
+    .memory:nth-child(27) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(156deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(28) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(162deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(29) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(168deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(30) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(174deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(31) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(180deg) translateY(-520%);
+    }
+
+    .memory:nth-child(32) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(186deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(33) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(192deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(34) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(198deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(35) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(204deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(36) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(210deg) translateY(-520%);
+    }
+
+    .memory:nth-child(37) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(216deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(38) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(222deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(39) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(228deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(40) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(234deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(41) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(240deg) translateY(-520%);
+    }
+
+    .memory:nth-child(42) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(246deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(43) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(252deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(44) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(258deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(45) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(264deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(46) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(270deg) translateY(-520%);
+    }
+
+    .memory:nth-child(47) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(276deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(48) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(282deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(49) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(288deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(50) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(294deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(51) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(300deg) translateY(-520%);
+    }
+
+    .memory:nth-child(52) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(306deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(53) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(312deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(54) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(318deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(55) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(324deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(56) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(330deg) translateY(-520%);
+    }
+
+    .memory:nth-child(57) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(336deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(58) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(342deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(59) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(348deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(60) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(354deg) translateY(-1461%);
+    }
+
+    .needle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    .needle#hours {
+        background-color: #1f1f1f;
+        width: 4%;
+        height: 30%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#hours.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#hours:after {
+        content: '';
+        background-color: #1f1f1f;
+        width: 4vw;
+        height: 4vw;
+        max-width: 4vh;
+        max-height: 4vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .needle#minutes {
+        background-color: #1f1f1f;
+        width: 2%;
+        height: 45%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#minutes.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#minutes:after {
+        content: '';
+        background-color: #1f1f1f;
+        width: 4vw;
+        height: 4vw;
+        max-width: 4vh;
+        max-height: 4vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .needle#seconds {
+        background-color: #cb2f2f;
+        width: 1%;
+        height: 50%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#seconds.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#seconds:after {
+        content: '';
+        background-color: #cb2f2f;
+        width: 2.5vw;
+        height: 2.5vw;
+        max-width: 2.5vh;
+        max-height: 2.5vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .clock_logo{
+        width: 10vw;
+        height: 10vw;
+        max-width: 10vh;
+        max-height: 10vh;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    @media (min-width: 100vh) {
+        .clock {
+            border: solid 2.8vh #242424;
+            box-shadow: 0 1.4vh 2.8vh rgba(0, 0, 0, 0.8);
+        }
+    }
+
+</style>
+
+
+
+
+
+            </div>
+        
+            <div class="nexmoe-pd-item">
+                <div class="qweather" >
+    <div id="he-plugin-standard"></div>
+    <div class="qweather-logo">
+
+    </div>
+
+</div>
+<style>
+    .qweather{
+        position: relative;
+    }
+    .qweather-logo{
+        position: absolute;
+        right: 0;
+        top: -15px;
+        width: 40px;
+        height: 40px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+</style>
+<script>
+  WIDGET = {
+    "CONFIG": {
+      "layout": "2",
+      "width": "260",
+      "height": "220",
+      "background": "5",
+      "dataColor": "e67249",
+      "borderRadius": "15",
+      "key": "f74d1e1690e6432d801e97fa2f05a162"
+    }
+  }
+</script>
+<script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
+
+            </div>
+        
+</div>
+<style>
+    .nexmoe-pd {
+        left: auto;
+        top: 40px;
+        right: 0;
+    }
+    .nexmoe-pd-item{
+       display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+</style>
+
+  </div>
+  <script src="https://lib.baomitu.com/lazysizes/5.1.0/lazysizes.min.js"></script>
+<script src="https://lib.baomitu.com/highlight.js/10.0.0/highlight.min.js"></script>
+<script src="https://lib.baomitu.com/mdui/0.4.3/js/mdui.min.js"></script>
+
+<script>
+	hljs.initHighlightingOnLoad();
+</script>
+
+<script src="https://lib.baomitu.com/jquery/3.5.1/jquery.slim.min.js"></script>
+<script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/app.js?v=1682237265598"></script>
+
+<script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+  
+
+
+
+
+
+<!-- hexo injector body_end start -->
+<script src="/js/clock.js"></script>
+
+<script src="https://lib.baomitu.com/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+<script src="/lib/codeBlock/codeBlockFuction.js"></script>
+
+<script src="/lib/codeBlock/codeLang.js"></script>
+
+<script src="/lib/codeBlock/codeCopy.js"></script>
+
+<script src="/lib/codeBlock/codeShrink.js"></script>
+
+<link rel="stylesheet" href="/lib/codeBlock/matery.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<script src="/js/search.js"></script>
+
+<script src="/js/webapp.js"></script>
+<!-- hexo injector body_end end --><script src="/live2D/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2D/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":true,"model":{"jsonPath":"/live2D/assets/xiaomai.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+<script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/5e784416.js","daovoice")</script>
+<script>
+  daovoice('init', {
+    app_id: "5e784416"
+  });
+  daovoice('update');
+</script>
+

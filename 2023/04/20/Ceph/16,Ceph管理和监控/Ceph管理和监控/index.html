@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  
+  <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
+  <title>Ceph管理和监控 - Hexo</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  
+  
+
+    <!-- Site Verification -->
+    <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
+
+  <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Ceph管理和监控">
+<meta property="og:url" content="https://zhangboc.github.io/2023/04/20/Ceph/16,Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/1.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/2.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/3.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/4.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/5.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/6.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/7.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/8.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/9.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/10.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/11.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/12.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/13.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/14.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/15.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/16.jpg">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/17.jpg">
+<meta property="article:published_time" content="2023-04-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-20T03:50:55.468Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Ceph">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/1.jpg">
+  <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
+  <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
+  <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
+  <link rel="stylesheet" href="/lib/fancybox/css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="https://lib.baomitu.com/justifiedGallery/3.8.1/css/justifiedGallery.min.css">
+  
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
+  
+  <link rel="stylesheet" href="/css/style.css?v=1682237265525">
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="mdui-drawer-body-left">
+  
+  <div id="nexmoe-background">
+    <div class="nexmoe-bg" style="background-image: url(/images/background/xiaomai.jpg)"></div>
+    <div class="nexmoe-small" style="background-image: url(/images/background/lihui.png)"></div>
+    <div class="mdui-appbar mdui-shadow-0">
+      <div class="mdui-toolbar">
+        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+        <div class="mdui-toolbar-spacer"></div>
+        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+        <a href="/" title="John Doe" class="mdui-btn mdui-btn-icon"><img src="/images/head/head.jpg" alt="John Doe"></a>
+       </div>
+    </div>
+  </div>
+  <div id="nexmoe-header">
+      <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="John Doe">
+            <img src="/images/head/head.jpg" alt="John Doe" alt="John Doe">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div class="nexmoe-count-item"><span>文章</span>26 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>标签</span>20<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+        <div class="nexmoe-count-item"><span>分类</span>7<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-meishi"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-hanbao1"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about/index.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-jiubei1"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/friend/index.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-cola"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/download/index.html" title="下载中心">
+            <i class="mdui-list-item-icon nexmoefont icon-tangguo"></i>
+            <div class="mdui-list-item-content">
+                下载中心
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+  
+  
+<!-- 站内搜索 -->
+
+<div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search" >
+        <form id="search-form">
+            <label><input type="text" id="local-search-input" name="q" results="0" placeholder="站内搜索" class="input form-control" autocomplete="off" autocorrect="off"/></label>
+            <!-- 清空/重置搜索框 -->
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+        </form>
+    </div>
+    <div id="local-search-result"></div> <!-- 搜索结果区 -->
+    <!-- <p class='no-result'></p> 无匹配时显示，注意在 CSS 中设置默认隐藏 -->
+</div>
+
+
+  
+  <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="http://wpa.qq.com/msgrd?v=3&uin=1605643129&Site=%E5%8C%97%E4%BA%ACSEO&Menu=yes" target="_blank" mdui-tooltip="{content: 'QQ'}" style="color: rgb(64, 196, 255);background-color: rgba(64, 196, 255, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="mailto:1605643129@qq.com" target="_blank" mdui-tooltip="{content: 'mail'}" style="color: rgb(249,8,8);background-color: rgba(249,8,8,.1);">
+            <i class="nexmoefont icon-mail-fill"></i>
+        </a><a class="mdui-ripple" href="https://blog.csdn.net/qq_40855827?type=blog" target="_blank" mdui-tooltip="{content: 'CSDN'}" style="color: rgb(199,29,35);background-color: rgba(199,29,35,.1);">
+            <i class="nexmoefont icon-csdn"></i>
+        </a><a class="mdui-ripple" href="https://home.cnblogs.com/u/1882665" target="_blank" mdui-tooltip="{content: '博客园'}" style="color: rgb(66, 214, 29);background-color: rgba(66, 214, 29, .1);">
+            <i class="nexmoefont icon-bokeyuan"></i>
+        </a><a class="mdui-ripple" href="https://github.com/zhangboc" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a><a class="mdui-ripple" href="https://gitee.com/with-the-wind-yue" target="_blank" mdui-tooltip="{content: 'gitee'}" style="color: rgb(255, 255, 255);background-color: rgb(199,29,35);">
+            <i class="nexmoefont icon-mayun"></i>
+        </a>
+    </div>
+</div>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/">Ceph</a>
+          <span class="category-list-count">19</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/KVM/">KVM</a>
+          <span class="category-list-count">7</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/Kubernetes/">Kubernetes</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/OpenStack/">OpenStack</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/SDK/">SDK</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/hexo/">hexo</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">Ceph守护进程</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/Cinder/" style="font-size: 10px;">Cinder</a> <a href="/tags/CrushMap/" style="font-size: 10px;">CrushMap</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Kubernetes/" style="font-size: 10px;">Kubernetes</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/OSD/" style="font-size: 10px;">OSD</a> <a href="/tags/OpenStack/" style="font-size: 12.5px;">OpenStack</a> <a href="/tags/RBD/" style="font-size: 12.5px;">RBD</a> <a href="/tags/RGW/" style="font-size: 12.5px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a> <a href="/tags/%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/" style="font-size: 10px;">集群测试</a>
+    </div>
+    
+  </div>
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">26</span></li></ul>
+    </div>
+  </div>
+
+
+<style>
+.nexmoe-widget .archive-list-count{
+	position : absolute;
+	right: 15px;
+	top:9px;
+	color: #DDD;
+}
+</style>
+
+  
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 John Doe
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/zhangboc/hexo.github.io/" target="_blank">ZhangboCheng</a><br/>
+        <a href="http://beian.miit.gov.cn" target="_blank">辽ICP备2021002341号</a><br/>
+        
+        <div style="font-size: 12px">
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            本站总访问量  <a id="busuanzi_value_site_pv"></a> 次<br />
+            本站访客数<a id="busuanzi_value_site_uv"></a>人次
+        </div>
+        <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+        <script>
+            var now = new Date(); 
+            function createtime() { 
+                var grt= new Date("08/10/2018 17:38:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+                now.setTime(now.getTime()+250); 
+                days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+                hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+                if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+                mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+                seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+                snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+                document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+                document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+
+
+        
+        
+    </div>
+
+</div><!-- .nexmoe-drawer -->
+
+  </div>
+  <div id="nexmoe-content">
+    <div class="nexmoe-primary">
+        <div class="nexmoe-post">
+    
+        <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
+            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph管理和监控" class="lazyload">
+            <h1>Ceph管理和监控</h1>
+        </div>
+    
+
+        <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月20日</a>
+    <a><i class="nexmoefont icon-areachart"></i>2.9k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 16 分钟</a>
+</div>
+
+        <div class="nexmoe-post-right">
+            
+        </div>
+
+        <article>
+            <h1><span id></span></h1><span id="more"></span>
+
+<!-- toc -->
+
+<ul>
+<li><a href="#%E4%B8%80-mgr%E7%BB%84%E4%BB%B6%E6%A6%82%E8%BF%B0">一、MGR组件概述</a></li>
+<li><a href="#%E4%BA%8C-%E6%94%AF%E6%8C%81%E7%9A%84%E6%A8%A1%E5%9D%97">二、支持的模块</a></li>
+<li><a href="#%E4%B8%89-%E5%AE%89%E8%A3%85ceph-dashboard">三、安装Ceph-Dashboard</a></li>
+<li><a href="#%E5%9B%9B-%E5%90%AF%E5%8A%A8dashboard%E6%A8%A1%E5%9D%97">四、启动Dashboard模块</a></li>
+<li><a href="#%E4%BA%94-%E7%94%9F%E6%88%90%E8%87%AA%E7%AD%BE%E5%90%8D%E8%AF%81%E4%B9%A6">五、生成自签名证书</a></li>
+<li><a href="#%E5%85%AD-%E9%85%8D%E7%BD%AE%E7%9B%91%E5%90%AC%E7%AB%AF%E5%8F%A3%E5%92%8Cip">六、配置监听端口和IP</a></li>
+<li><a href="#%E4%B8%83-%E5%88%9B%E5%BB%BA%E7%AE%A1%E7%90%86%E5%91%98%E7%94%A8%E6%88%B7">七、创建管理员用户</a></li>
+<li><a href="#%E5%85%AB-%E7%99%BB%E5%BD%95%E6%8E%A7%E5%88%B6%E5%8F%B0">八、登录控制台</a></li>
+<li><a href="#%E4%B9%9D-%E4%BD%BF%E7%94%A8prometheus">九、使用PROMETHEUS</a><ul>
+<li><a href="#1-%E5%90%AF%E7%94%A8prometheus%E6%A8%A1%E5%9D%97">1、启用PROMETHEUS模块</a></li>
+<li><a href="#2-%E5%AE%89%E8%A3%85prometheus">2、安装PROMETHEUS</a></li>
+<li><a href="#3-%E4%BD%BF%E7%94%A8prometheus">3、使用PROMETHEUS</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81-%E4%BD%BF%E7%94%A8grafana%E8%BF%9B%E8%A1%8C%E5%9B%BE%E5%BD%A2%E5%B1%95%E7%A4%BA">十、使用Grafana进行图形展示</a><ul>
+<li><a href="#1-%E5%AE%89%E8%A3%85">1、安装</a></li>
+<li><a href="#2-%E7%99%BB%E5%BD%95">2、登录</a></li>
+<li><a href="#3-%E9%85%8D%E7%BD%AEdata-source">3、配置DATA-source</a></li>
+<li><a href="#4-%E8%B0%83%E7%94%A8ceph-grafana-dashboards%E8%87%AA%E5%B8%A6%E7%9A%84json%E6%96%87%E4%BB%B6">4、调用ceph-grafana-dashboards自带的JSON文件</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+<h1><span id="一-mgr组件概述">一、MGR组件概述</span></h1><p>Ceph Manager守护进程 (ceph-mgr) 与监控守护进程一起运行，为外部监控和管理系统提供额外的监控和接口。</p>
+<p>自 12.x ( luminous ) Ceph 发布以来，正常操作需要 ceph-mgr 守护进程。ceph-mgr 守护进程是 11.x ( kraken ) Ceph 版本中的一个可选组件。</p>
+<p>默认情况下，管理器守护进程不需要额外的配置，除了确保它正在运行。如果没有正在运行的 mgr 守护进程，您将看到一个健康警告，并且在启动mgr 之前， ceph 状态输出中的一些其他信息将丢失或过时。</p>
+<p>使用常规部署工具，例如 ceph-ansible 或 ceph-deploy，在每个 mon 节点上设置 ceph-mgr 守护进程。将 mgr 守护进程与 mons 放在相同的节点上不是强制性的，但它几乎总是明智的。</p>
+<pre><code>[root@node-1 ~]# ceph -s 
+  cluster:
+    id:     b8e58b30-4568-4032-a9f4-837ed3fa9529
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum node-1,node-2,node-3 (age 50m)
+    mgr: node-3(active, since 50m), standbys: node-1, node-2
+    mds: cephfs-demo:1 &#123;0=node-2=up:active&#125; 2 up:standby
+    osd: 6 osds: 6 up (since 49m), 6 in (since 49m)
+    rgw: 2 daemons active (node-1, node-2)
+ 
+  task status:
+ 
+  data:
+    pools:   11 pools, 264 pgs
+    objects: 1.05k objects, 2.5 GiB
+    usage:   14 GiB used, 46 GiB / 60 GiB avail
+    pgs:     264 active+clean
+ 
+  io:
+    client:   58 KiB/s rd, 0 B/s wr, 58 op/s rd, 38 op/s wr
+</code></pre>
+<h1><span id="二-支持的模块">二、支持的模块</span></h1><ol>
+<li>Installation and Configuration</li>
+<li>Writing modules</li>
+<li>Writing orchestrator plugins</li>
+<li>Dashboard module</li>
+<li>Alerts module #告警模块</li>
+<li>DiskPrediction module</li>
+<li>Local pool module</li>
+<li>RESTful module</li>
+<li>Zabbix module #zabbix模块</li>
+<li>Prometheus module #普罗米修斯监控模块</li>
+<li>Influx module</li>
+<li>Hello module</li>
+<li>Telegraf module</li>
+<li>Telemetry module</li>
+<li>Iostat module #实时展示集群的IO读写情况，需启用该模块</li>
+<li>Crash module #分析Crash 报错信息并上报</li>
+<li>Orchestrator CLI module</li>
+<li>Rook module</li>
+<li>DeepSea module</li>
+<li>Insights module #巡检模块，能够文字的输出当前集群的一些运行状态</li>
+<li>Ansible module #Ansible模块</li>
+<li>SSH orchestrator</li>
+</ol>
+<h1><span id="三-安装ceph-dashboard">三、安装Ceph-Dashboard</span></h1><pre><code>[root@node-1 ~]# yum install ceph-mgr-dashboard -y
+  正在安装    : python2-jwt-1.6.1-1.el7.noarch                                                                                         1/3 
+  正在安装    : 2:ceph-grafana-dashboards-14.2.22-0.el7.noarch                                                                         2/3 
+  正在安装    : 2:ceph-mgr-dashboard-14.2.22-0.el7.noarch                                                                              3/3 
+  验证中      : 2:ceph-grafana-dashboards-14.2.22-0.el7.noarch  #安装过程中自动安装了grafana的软件包                                                                       1/3 
+  验证中      : python2-jwt-1.6.1-1.el7.noarch                                                                                         2/3 
+  验证中      : 2:ceph-mgr-dashboard-14.2.22-0.el7.noarch                                                                              3/3 
+</code></pre>
+<h1><span id="四-启动dashboard模块">四、启动Dashboard模块</span></h1><pre><code>[root@node-1 ~]# ceph mgr module enable dashboard #启动失败
+Error ENOENT: all mgr daemons do not support module &#39;dashboard&#39;, pass --force to force enablement
+
+[root@node-1 ~]# ceph mgr module enable dashboard --force #根据报错信息重启启动
+[root@node-1 ~]# ceph mgr module ls |less #查看启动情况
+&#123;
+    &quot;always_on_modules&quot;: [
+        &quot;balancer&quot;,
+        &quot;crash&quot;,
+        &quot;devicehealth&quot;,
+        &quot;orchestrator_cli&quot;,
+        &quot;progress&quot;,
+        &quot;rbd_support&quot;,
+        &quot;status&quot;,
+        &quot;volumes&quot;
+    ],
+    &quot;enabled_modules&quot;: [
+        &quot;dashboard&quot;, #在这里显示说明已经成功启用
+        &quot;iostat&quot;,
+        &quot;restful&quot;
+    ],
+</code></pre>
+<h1><span id="五-生成自签名证书">五、生成自签名证书</span></h1><pre><code>[root@node-1 ~]# ceph dashboard create-self-signed-cert #如果执行失败，可重新执行ceph mgr module enable dashboard --force，确保mgr的主在当前节点
+Self-signed certificate created
+</code></pre>
+<h1><span id="六-配置监听端口和ip">六、配置监听端口和IP</span></h1><pre><code>[root@node-1 ~]# ceph config set mgr mgr/dashboard/server_addr 192.168.187.201 #根据当前ceph的Mon地址进行修改
+[root@node-1 ~]# ceph config set mgr mgr/dashboard/server_port 8080 #默认就是8080，可修改
+[root@node-1 ~]# ceph config set mgr mgr/dashboard/ssl_server_port 8443 #默认就是8443，可修改
+[root@node-1 ~]# ceph mgr services #查看运行情况
+&#123;
+    &quot;dashboard&quot;: &quot;https://node-1:8443/&quot;
+&#125;
+</code></pre>
+<h1><span id="七-创建管理员用户">七、创建管理员用户</span></h1><pre><code>[root@node-1 ~]# cat file-containing-password 
+980611
+[root@node-1 ~]# ceph dashboard ac-user-create ceph-admin -i file-containing-password administrator
+&#123;&quot;username&quot;: &quot;ceph-admin&quot;, &quot;lastUpdate&quot;: 1679209609, &quot;name&quot;: null, &quot;roles&quot;: [&quot;administrator&quot;], &quot;password&quot;: &quot;$2b$12$H7SV2apfmeA4fk7gZ.oTE.4bCmw9JucjwonB7wsRQp1lSQuOc2qHm&quot;, &quot;email&quot;: null&#125;
+</code></pre>
+<h1><span id="八-登录控制台">八、登录控制台</span></h1><p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/1.jpg"></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/604584571">汉化教程</a></p>
+</blockquote>
+<h1><span id="九-使用prometheus">九、使用PROMETHEUS</span></h1><h2><span id="1-启用prometheus模块">1、启用PROMETHEUS模块</span></h2><pre><code>[root@node-1 ~]# ceph mgr module enable prometheus
+您在 /var/spool/mail/root 中有新邮件
+[root@node-1 ~]# netstat -ntlp | grep 9283
+tcp6       0      0 :::9283                 :::*                    LISTEN      1481/ceph-mgr       
+</code></pre>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/2.jpg"></p>
+<h2><span id="2-安装prometheus">2、安装PROMETHEUS</span></h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.worldlink.com.cn/en/osdir/prometheus-rpm.html">参考文档</a></p>
+</blockquote>
+<pre><code>配置yum源：
+[root@node-1 ~]# cat /etc/yum.repos.d/prometheus.repo
+[prometheus]
+name=prometheus
+baseurl=https://packagecloud.io/prometheus-rpm/release/el/$releasever/$basearch
+repo_gpgcheck=1
+enabled=1
+gpgkey=https://packagecloud.io/prometheus-rpm/release/gpgkey
+       https://raw.githubusercontent.com/lest/prometheus-rpm/master/RPM-GPG-KEY-prometheus-rpm
+gpgcheck=0
+metadata_expire=300
+[root@node-1 ~]# yum makecache
+[root@node-1 ~]# yum install prometheus -y
+[root@node-1 ~]# systemctl restart prometheus
+[root@node-1 ~]# systemctl status prometheus
+● prometheus.service - The Prometheus monitoring system and time series database.
+   Loaded: loaded (/usr/lib/systemd/system/prometheus.service; enabled; vendor preset: disabled)
+   Active: active (running) since 日 2023-03-19 18:09:23 CST; 59s ago
+     Docs: https://prometheus.io
+ Main PID: 11713 (prometheus)
+   CGroup: /system.slice/prometheus.service
+           └─11713 /usr/bin/prometheus -config.file=/etc/prometheus/prometheus.yml -storage.local.path=/var/lib/prometheus/data -web.con...
+
+3月 19 18:09:23 node-1 systemd[1]: Started The Prometheus monitoring system and time series database..
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;Starting prometheus (version=1.8.2, b....go:87&quot;
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;Build context (go=go1.9.2, user=root@....go:88&quot;
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;Host details (Linux 3.10.0-1160.83.1.....go:89&quot;
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;Loading configuration file /etc/prome...go:254&quot;
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;Listening on :9090&quot; source=&quot;web.go:341&quot;
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;Loading series map and head chunks......go:428&quot;
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;0 series loaded.&quot; source=&quot;storage.go:439&quot;
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;Starting target manager...&quot; source=&quot;t....go:63&quot;
+3月 19 18:09:23 node-1 prometheus[11713]: time=&quot;2023-03-19T18:09:23+08:00&quot; level=info msg=&quot;Server is Ready to receive requests.&quot;...go:230&quot;
+Hint: Some lines were ellipsized, use -l to show in full.
+
+[root@node-1 ~]# systemctl enable prometheus
+Created symlink from /etc/systemd/system/multi-user.target.wants/prometheus.service to /usr/lib/systemd/system/prometheus.service.
+</code></pre>
+<h2><span id="3-使用prometheus">3、使用PROMETHEUS</span></h2><pre><code>[root@node-1 prometheus]# vim /etc/prometheus/prometheus.yml #修改配置文件，新增如下内容
+  - job_name: &#39;ceph-exporter&#39;
+    honor_labels: true
+    static_configs:
+    - targets: [&#39;192.168.187.201:9283&#39;]
+      labels:
+        instance: ceph-exporter
+[root@node-1 prometheus]# systemctl restart prometheus.service  #重启服务
+[root@node-1 prometheus]# tail -n 10 /var/log/messages #查看日志无报错内容
+Mar 19 18:22:01 node-1 prometheus: time=&quot;2023-03-19T18:22:01+08:00&quot; level=info msg=&quot;Host details (Linux 3.10.0-1160.83.1.el7.x86_64 #1 SMP Wed Jan 25 16:41:43 UTC 2023 x86_64 node-1 (none))&quot; source=&quot;main.go:89&quot;
+Mar 19 18:22:01 node-1 prometheus: time=&quot;2023-03-19T18:22:01+08:00&quot; level=info msg=&quot;Loading configuration file /etc/prometheus/prometheus.yml&quot; source=&quot;main.go:254&quot;
+Mar 19 18:22:01 node-1 prometheus: time=&quot;2023-03-19T18:22:01+08:00&quot; level=info msg=&quot;Listening on :9090&quot; source=&quot;web.go:341&quot;
+Mar 19 18:22:01 node-1 prometheus: time=&quot;2023-03-19T18:22:01+08:00&quot; level=info msg=&quot;Loading series map and head chunks...&quot; source=&quot;storage.go:428&quot;
+Mar 19 18:22:01 node-1 prometheus: time=&quot;2023-03-19T18:22:01+08:00&quot; level=info msg=&quot;558 series loaded.&quot; source=&quot;storage.go:439&quot;
+Mar 19 18:22:01 node-1 prometheus: time=&quot;2023-03-19T18:22:01+08:00&quot; level=info msg=&quot;Server is Ready to receive requests.&quot; source=&quot;main.go:230&quot;
+Mar 19 18:22:01 node-1 prometheus: time=&quot;2023-03-19T18:22:01+08:00&quot; level=info msg=&quot;Starting target manager...&quot; source=&quot;targetmanager.go:63&quot;
+Mar 19 18:22:12 node-1 ceph-mgr: ::ffff:192.168.187.201 - - [19/Mar/2023:18:22:12] &quot;GET /metrics HTTP/1.1&quot; 200 166317 &quot;&quot; &quot;Prometheus/1.8.2&quot;
+Mar 19 18:22:27 node-1 ceph-mgr: ::ffff:192.168.187.201 - - [19/Mar/2023:18:22:27] &quot;GET /metrics HTTP/1.1&quot; 200 166316 &quot;&quot; &quot;Prometheus/1.8.2&quot;
+Mar 19 18:22:42 node-1 ceph-mgr: ::ffff:192.168.187.201 - - [19/Mar/2023:18:22:42] &quot;GET /metrics HTTP/1.1&quot; 200 166320 &quot;&quot; &quot;Prometheus/1.8.2&quot;      
+[root@node-1 prometheus]# netstat -ntlp | grep prome #查看监听端口为9090，使用浏览器访问看下
+tcp6       0      0 :::9090                 :::*                    LISTEN      13315/prometheus
+</code></pre>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/3.jpg"><br><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/4.jpg"></p>
+<h1><span id="十-使用grafana进行图形展示">十、使用Grafana进行图形展示</span></h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/rpm/">官方文档</a><br><a target="_blank" rel="noopener" href="https://mirrors.cloud.tencent.com/grafana/yum/rpm/Packages/">腾讯云软件地址</a></p>
+</blockquote>
+<h2><span id="1-安装">1、安装</span></h2><pre><code>[root@node-1 prometheus]# yum install https://mirrors.cloud.tencent.com/grafana/yum/rpm/Packages/grafana-5.4.2-1.x86_64.rpm #安装
+[root@node-1 prometheus]# sudo /bin/systemctl enable grafana-server.service #配置开机启动
+Created symlink from /etc/systemd/system/multi-user.target.wants/grafana-server.service to /usr/lib/systemd/system/grafana-server.service.
+
+[root@node-1 prometheus]# sudo /bin/systemctl start grafana-server.service #启动服务
+[root@node-1 prometheus]# netstat -antupl | grep grafana #查看监听端口
+tcp        0      0 192.168.187.201:58338   34.120.177.193:443      ESTABLISHED 14849/grafana-serve 
+tcp6       0      0 :::3000                 :::*                    LISTEN      14849/grafana-serve 
+</code></pre>
+<h2><span id="2-登录">2、登录</span></h2><p><a target="_blank" rel="noopener" href="http://192.168.187.201:3000/?orgId=1">http://192.168.187.201:3000/?orgId=1</a><br>用户名密码默认都是：admin</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/5.jpg"></p>
+<p>强制修改密码后登录进入</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/6.jpg"></p>
+<h2><span id="3-配置data-source">3、配置DATA-source</span></h2><p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/7.jpg"></p>
+<p>点击添加</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/8.jpg"></p>
+<p>选择prometheus</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/9.jpg"></p>
+<p>点击保存并测试</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/10.jpg"></p>
+<p>返回上层目录可以看到创建成功</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/11.jpg"></p>
+<h2><span id="4-调用ceph-grafana-dashboards自带的json文件">4、调用ceph-grafana-dashboards自带的JSON文件</span></h2><pre><code>[root@node-1 prometheus]# rpm -ql ceph-grafana-dashboards #查看软件包自带的JSON文件
+/etc/grafana/dashboards/ceph-dashboard
+/etc/grafana/dashboards/ceph-dashboard/ceph-cluster.json
+/etc/grafana/dashboards/ceph-dashboard/cephfs-overview.json
+/etc/grafana/dashboards/ceph-dashboard/host-details.json
+/etc/grafana/dashboards/ceph-dashboard/hosts-overview.json
+/etc/grafana/dashboards/ceph-dashboard/osd-device-details.json
+/etc/grafana/dashboards/ceph-dashboard/osds-overview.json
+/etc/grafana/dashboards/ceph-dashboard/pool-detail.json
+/etc/grafana/dashboards/ceph-dashboard/pool-overview.json
+/etc/grafana/dashboards/ceph-dashboard/radosgw-detail.json
+/etc/grafana/dashboards/ceph-dashboard/radosgw-overview.json
+/etc/grafana/dashboards/ceph-dashboard/radosgw-sync-overview.json
+/etc/grafana/dashboards/ceph-dashboard/rbd-details.json
+/etc/grafana/dashboards/ceph-dashboard/rbd-overview.json
+/usr/share/doc/ceph-grafana-dashboards-14.2.22
+/usr/share/doc/ceph-grafana-dashboards-14.2.22/README
+/usr/share/doc/ceph-grafana-dashboards-14.2.22/README.md
+[root@node-1 ceph-dashboard]# pwd 进入目录
+/etc/grafana/dashboards/ceph-dashboard
+[root@node-1 ceph-dashboard]# ll #将下面的json文件导出到本地电脑
+总用量 248
+-rw-r----- 1 root grafana 29577 6月  30 2021 ceph-cluster.json
+-rw-r----- 1 root grafana  6414 6月  30 2021 cephfs-overview.json
+-rw-r----- 1 root grafana 33133 6月  30 2021 host-details.json
+-rw-r----- 1 root grafana 22126 6月  30 2021 hosts-overview.json
+-rw-r----- 1 root grafana 19493 6月  30 2021 osd-device-details.json
+-rw-r----- 1 root grafana 21210 6月  30 2021 osds-overview.json
+-rw-r----- 1 root grafana 15029 6月  30 2021 pool-detail.json
+-rw-r----- 1 root grafana 17174 6月  30 2021 pool-overview.json
+-rw-r----- 1 root grafana 11655 6月  30 2021 radosgw-detail.json
+-rw-r----- 1 root grafana 14377 6月  30 2021 radosgw-overview.json
+-rw-r----- 1 root grafana  9399 6月  30 2021 radosgw-sync-overview.json
+-rw-r----- 1 root grafana  9379 6月  30 2021 rbd-details.json
+-rw-r----- 1 root grafana 15879 6月  30 2021 rbd-overview.json
+
+[root@node-1 ceph-dashboard]# zip ceph-json.zip ./*
+  adding: ceph-cluster.json (deflated 87%)
+  adding: cephfs-overview.json (deflated 78%)
+  adding: host-details.json (deflated 88%)
+  adding: hosts-overview.json (deflated 87%)
+  adding: osd-device-details.json (deflated 90%)
+  adding: osds-overview.json (deflated 86%)
+  adding: pool-detail.json (deflated 85%)
+  adding: pool-overview.json (deflated 88%)
+  adding: radosgw-detail.json (deflated 84%)
+  adding: radosgw-overview.json (deflated 87%)
+  adding: radosgw-sync-overview.json (deflated 85%)
+  adding: rbd-details.json (deflated 85%)
+  adding: rbd-overview.json (deflated 88%)
+[root@node-1 ceph-dashboard]# sz ceph-json.zip #使用sz命令导出，如没有此命令可安装lrzsz软件包
+</code></pre>
+<p>查看已经全部下载到电脑本地</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/12.jpg"></p>
+<p>将所有json文件上传</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/13.jpg"></p>
+<p>上传完成后可以看到全部文件，随意点击即可获取数值，目前看有个别的json文件有问题，无法获取数据，可以自行查找原因</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/14.jpg"></p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/15.jpg"></p>
+<p>可以使用第三方的模板，例如：<a target="_blank" rel="noopener" href="https://grafana.com/grafana/dashboards/917-ceph-cluster/">https://grafana.com/grafana/dashboards/917-ceph-cluster/</a></p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/16.jpg"></p>
+<p>有网络的情况可以直接使用ID进行导入，没有网络可下载JSON文件，离线导入即可<br>输入：917后即可导入，需修改名称，防止重复</p>
+<p><img src="/images/Ceph/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/17.jpg"></p>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+        </article>
+
+        
+            
+  <div class="nexmoe-post-copyright">
+    <strong>Author：</strong>张博丞<br>
+    
+      <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
+    
+    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/20/Ceph/16,Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;20&#x2F;Ceph&#x2F;16,Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7&#x2F;Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;20&#x2F;Ceph&#x2F;16,Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7&#x2F;Ceph%E7%AE%A1%E7%90%86%E5%92%8C%E7%9B%91%E6%8E%A7&#x2F;</a><br>
+
+    
+      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+    
+  </div>
+
+
+        
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/">Ceph</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a>
+    
+</div>
+
+    <div class="nexmoe-post-footer">
+        <section class="nexmoe-comment">
+    <div class="valine"></div>
+<script src='https://lib.baomitu.com/valine/1.3.9/Valine.min.js'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'r5zxC0st0DDjPA9auXzMV7HY-gzGzoHsz',
+        appKey: '3bqCsovpyfTPHUzTHovd3V3V'
+    })
+</script>
+</section>
+    </div>
+</div>
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+        <div class="nexmoe-post-right">
+          
+            <div class="nexmoe-fixed">
+              <div class="nexmoe-tool">
+                <a href="#" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+              </div>
+            </div>
+          
+        </div>
+    </div>
+  </div>
+  <div id="nexmoe-pendant">
+    <div class="nexmoe-drawer mdui-drawer nexmoe-pd" id="drawer">
+        
+            <div class="nexmoe-pd-item">
+                <div class="clock">
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="needle" id="hours"></div>
+        <div class="needle" id="minutes"></div>
+        <div class="needle" id="seconds"></div>
+        <div class="clock_logo">
+
+        </div>
+
+    </div>
+<style>
+    .clock {
+        background-color: #ffffff;
+        width: 70vw;
+        height: 70vw;
+        max-width: 70vh;
+        max-height: 70vh;
+        border: solid 2.8vw #242424;
+        position: relative;
+        overflow: hidden;
+        border-radius: 50%;
+        box-sizing: border-box;
+        box-shadow: 0 1.4vw 2.8vw rgba(0, 0, 0, 0.8);
+        zoom:0.2
+    }
+
+    .memory {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    .memory:nth-child(1) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(0deg) translateY(-520%);
+    }
+
+    .memory:nth-child(2) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(6deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(3) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(12deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(4) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(18deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(5) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(24deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(6) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(30deg) translateY(-520%);
+    }
+
+    .memory:nth-child(7) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(36deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(8) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(42deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(9) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(48deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(10) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(54deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(11) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(60deg) translateY(-520%);
+    }
+
+    .memory:nth-child(12) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(66deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(13) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(72deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(14) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(78deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(15) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(84deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(16) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(90deg) translateY(-520%);
+    }
+
+    .memory:nth-child(17) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(96deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(18) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(102deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(19) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(108deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(20) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(114deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(21) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(120deg) translateY(-520%);
+    }
+
+    .memory:nth-child(22) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(126deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(23) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(132deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(24) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(138deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(25) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(144deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(26) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(150deg) translateY(-520%);
+    }
+
+    .memory:nth-child(27) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(156deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(28) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(162deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(29) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(168deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(30) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(174deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(31) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(180deg) translateY(-520%);
+    }
+
+    .memory:nth-child(32) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(186deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(33) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(192deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(34) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(198deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(35) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(204deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(36) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(210deg) translateY(-520%);
+    }
+
+    .memory:nth-child(37) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(216deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(38) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(222deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(39) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(228deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(40) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(234deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(41) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(240deg) translateY(-520%);
+    }
+
+    .memory:nth-child(42) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(246deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(43) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(252deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(44) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(258deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(45) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(264deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(46) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(270deg) translateY(-520%);
+    }
+
+    .memory:nth-child(47) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(276deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(48) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(282deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(49) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(288deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(50) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(294deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(51) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(300deg) translateY(-520%);
+    }
+
+    .memory:nth-child(52) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(306deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(53) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(312deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(54) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(318deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(55) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(324deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(56) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(330deg) translateY(-520%);
+    }
+
+    .memory:nth-child(57) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(336deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(58) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(342deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(59) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(348deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(60) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(354deg) translateY(-1461%);
+    }
+
+    .needle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    .needle#hours {
+        background-color: #1f1f1f;
+        width: 4%;
+        height: 30%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#hours.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#hours:after {
+        content: '';
+        background-color: #1f1f1f;
+        width: 4vw;
+        height: 4vw;
+        max-width: 4vh;
+        max-height: 4vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .needle#minutes {
+        background-color: #1f1f1f;
+        width: 2%;
+        height: 45%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#minutes.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#minutes:after {
+        content: '';
+        background-color: #1f1f1f;
+        width: 4vw;
+        height: 4vw;
+        max-width: 4vh;
+        max-height: 4vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .needle#seconds {
+        background-color: #cb2f2f;
+        width: 1%;
+        height: 50%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#seconds.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#seconds:after {
+        content: '';
+        background-color: #cb2f2f;
+        width: 2.5vw;
+        height: 2.5vw;
+        max-width: 2.5vh;
+        max-height: 2.5vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .clock_logo{
+        width: 10vw;
+        height: 10vw;
+        max-width: 10vh;
+        max-height: 10vh;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    @media (min-width: 100vh) {
+        .clock {
+            border: solid 2.8vh #242424;
+            box-shadow: 0 1.4vh 2.8vh rgba(0, 0, 0, 0.8);
+        }
+    }
+
+</style>
+
+
+
+
+
+            </div>
+        
+            <div class="nexmoe-pd-item">
+                <div class="qweather" >
+    <div id="he-plugin-standard"></div>
+    <div class="qweather-logo">
+
+    </div>
+
+</div>
+<style>
+    .qweather{
+        position: relative;
+    }
+    .qweather-logo{
+        position: absolute;
+        right: 0;
+        top: -15px;
+        width: 40px;
+        height: 40px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+</style>
+<script>
+  WIDGET = {
+    "CONFIG": {
+      "layout": "2",
+      "width": "260",
+      "height": "220",
+      "background": "5",
+      "dataColor": "e67249",
+      "borderRadius": "15",
+      "key": "f74d1e1690e6432d801e97fa2f05a162"
+    }
+  }
+</script>
+<script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
+
+            </div>
+        
+</div>
+<style>
+    .nexmoe-pd {
+        left: auto;
+        top: 40px;
+        right: 0;
+    }
+    .nexmoe-pd-item{
+       display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+</style>
+
+  </div>
+  <script src="https://lib.baomitu.com/lazysizes/5.1.0/lazysizes.min.js"></script>
+<script src="https://lib.baomitu.com/highlight.js/10.0.0/highlight.min.js"></script>
+<script src="https://lib.baomitu.com/mdui/0.4.3/js/mdui.min.js"></script>
+
+<script>
+	hljs.initHighlightingOnLoad();
+</script>
+
+<script src="https://lib.baomitu.com/jquery/3.5.1/jquery.slim.min.js"></script>
+<script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/app.js?v=1682237265530"></script>
+
+<script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+  
+
+
+
+
+
+<!-- hexo injector body_end start -->
+<script src="/js/clock.js"></script>
+
+<script src="https://lib.baomitu.com/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+<script src="/lib/codeBlock/codeBlockFuction.js"></script>
+
+<script src="/lib/codeBlock/codeLang.js"></script>
+
+<script src="/lib/codeBlock/codeCopy.js"></script>
+
+<script src="/lib/codeBlock/codeShrink.js"></script>
+
+<link rel="stylesheet" href="/lib/codeBlock/matery.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<script src="/js/search.js"></script>
+
+<script src="/js/webapp.js"></script>
+<!-- hexo injector body_end end --><script src="/live2D/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2D/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":true,"model":{"jsonPath":"/live2D/assets/xiaomai.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+<script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/5e784416.js","daovoice")</script>
+<script>
+  daovoice('init', {
+    app_id: "5e784416"
+  });
+  daovoice('update');
+</script>
+

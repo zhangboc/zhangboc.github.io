@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  
+  <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
+  <title>Ceph集群运维 - Hexo</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  
+  
+
+    <!-- Site Verification -->
+    <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
+
+  <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Ceph集群运维">
+<meta property="og:url" content="https://zhangboc.github.io/2023/04/19/Ceph/8.Ceph%E9%9B%86%E7%BE%A4%E8%BF%90%E7%BB%B4/Ceph%E9%9B%86%E7%BE%A4%E8%BF%90%E7%BB%B4/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-04-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-19T06:18:51.499Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="Ceph守护进程">
+<meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
+  <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
+  <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
+  <link rel="stylesheet" href="/lib/fancybox/css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="https://lib.baomitu.com/justifiedGallery/3.8.1/css/justifiedGallery.min.css">
+  
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
+  
+  <link rel="stylesheet" href="/css/style.css?v=1682237265578">
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="mdui-drawer-body-left">
+  
+  <div id="nexmoe-background">
+    <div class="nexmoe-bg" style="background-image: url(/images/background/xiaomai.jpg)"></div>
+    <div class="nexmoe-small" style="background-image: url(/images/background/lihui.png)"></div>
+    <div class="mdui-appbar mdui-shadow-0">
+      <div class="mdui-toolbar">
+        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+        <div class="mdui-toolbar-spacer"></div>
+        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+        <a href="/" title="John Doe" class="mdui-btn mdui-btn-icon"><img src="/images/head/head.jpg" alt="John Doe"></a>
+       </div>
+    </div>
+  </div>
+  <div id="nexmoe-header">
+      <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="John Doe">
+            <img src="/images/head/head.jpg" alt="John Doe" alt="John Doe">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div class="nexmoe-count-item"><span>文章</span>26 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>标签</span>20<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+        <div class="nexmoe-count-item"><span>分类</span>7<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-meishi"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-hanbao1"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about/index.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-jiubei1"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/friend/index.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-cola"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/download/index.html" title="下载中心">
+            <i class="mdui-list-item-icon nexmoefont icon-tangguo"></i>
+            <div class="mdui-list-item-content">
+                下载中心
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+  
+  
+<!-- 站内搜索 -->
+
+<div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search" >
+        <form id="search-form">
+            <label><input type="text" id="local-search-input" name="q" results="0" placeholder="站内搜索" class="input form-control" autocomplete="off" autocorrect="off"/></label>
+            <!-- 清空/重置搜索框 -->
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+        </form>
+    </div>
+    <div id="local-search-result"></div> <!-- 搜索结果区 -->
+    <!-- <p class='no-result'></p> 无匹配时显示，注意在 CSS 中设置默认隐藏 -->
+</div>
+
+
+  
+  <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="http://wpa.qq.com/msgrd?v=3&uin=1605643129&Site=%E5%8C%97%E4%BA%ACSEO&Menu=yes" target="_blank" mdui-tooltip="{content: 'QQ'}" style="color: rgb(64, 196, 255);background-color: rgba(64, 196, 255, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="mailto:1605643129@qq.com" target="_blank" mdui-tooltip="{content: 'mail'}" style="color: rgb(249,8,8);background-color: rgba(249,8,8,.1);">
+            <i class="nexmoefont icon-mail-fill"></i>
+        </a><a class="mdui-ripple" href="https://blog.csdn.net/qq_40855827?type=blog" target="_blank" mdui-tooltip="{content: 'CSDN'}" style="color: rgb(199,29,35);background-color: rgba(199,29,35,.1);">
+            <i class="nexmoefont icon-csdn"></i>
+        </a><a class="mdui-ripple" href="https://home.cnblogs.com/u/1882665" target="_blank" mdui-tooltip="{content: '博客园'}" style="color: rgb(66, 214, 29);background-color: rgba(66, 214, 29, .1);">
+            <i class="nexmoefont icon-bokeyuan"></i>
+        </a><a class="mdui-ripple" href="https://github.com/zhangboc" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a><a class="mdui-ripple" href="https://gitee.com/with-the-wind-yue" target="_blank" mdui-tooltip="{content: 'gitee'}" style="color: rgb(255, 255, 255);background-color: rgb(199,29,35);">
+            <i class="nexmoefont icon-mayun"></i>
+        </a>
+    </div>
+</div>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/">Ceph</a>
+          <span class="category-list-count">19</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/KVM/">KVM</a>
+          <span class="category-list-count">7</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/Kubernetes/">Kubernetes</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/OpenStack/">OpenStack</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/SDK/">SDK</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/hexo/">hexo</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">Ceph守护进程</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/Cinder/" style="font-size: 10px;">Cinder</a> <a href="/tags/CrushMap/" style="font-size: 10px;">CrushMap</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Kubernetes/" style="font-size: 10px;">Kubernetes</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/OSD/" style="font-size: 10px;">OSD</a> <a href="/tags/OpenStack/" style="font-size: 12.5px;">OpenStack</a> <a href="/tags/RBD/" style="font-size: 12.5px;">RBD</a> <a href="/tags/RGW/" style="font-size: 12.5px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a> <a href="/tags/%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/" style="font-size: 10px;">集群测试</a>
+    </div>
+    
+  </div>
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">26</span></li></ul>
+    </div>
+  </div>
+
+
+<style>
+.nexmoe-widget .archive-list-count{
+	position : absolute;
+	right: 15px;
+	top:9px;
+	color: #DDD;
+}
+</style>
+
+  
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 John Doe
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/zhangboc/hexo.github.io/" target="_blank">ZhangboCheng</a><br/>
+        <a href="http://beian.miit.gov.cn" target="_blank">辽ICP备2021002341号</a><br/>
+        
+        <div style="font-size: 12px">
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            本站总访问量  <a id="busuanzi_value_site_pv"></a> 次<br />
+            本站访客数<a id="busuanzi_value_site_uv"></a>人次
+        </div>
+        <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+        <script>
+            var now = new Date(); 
+            function createtime() { 
+                var grt= new Date("08/10/2018 17:38:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+                now.setTime(now.getTime()+250); 
+                days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+                hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+                if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+                mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+                seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+                snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+                document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+                document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+
+
+        
+        
+    </div>
+
+</div><!-- .nexmoe-drawer -->
+
+  </div>
+  <div id="nexmoe-content">
+    <div class="nexmoe-primary">
+        <div class="nexmoe-post">
+    
+        <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
+            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="Ceph集群运维" class="lazyload">
+            <h1>Ceph集群运维</h1>
+        </div>
+    
+
+        <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月19日</a>
+    <a><i class="nexmoefont icon-areachart"></i>12.9k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 59 分钟</a>
+</div>
+
+        <div class="nexmoe-post-right">
+            
+        </div>
+
+        <article>
+            <h1><span id></span></h1><span id="more"></span>
+
+<!-- toc -->
+
+<ul>
+<li><a href="#%E4%B8%80-ceph%E5%AE%88%E6%8A%A4%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86">一、Ceph守护服务管理</a><ul>
+<li><a href="#1-%E7%90%86%E8%AE%BA">1、理论</a><ul>
+<li><a href="#11-%E5%90%AF%E5%8A%A8%E6%89%80%E6%9C%89%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.1、启动所有守护进程</a></li>
+<li><a href="#12-%E5%81%9C%E6%AD%A2%E6%89%80%E6%9C%89%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.2 、停止所有守护进程</a></li>
+<li><a href="#13-%E6%8C%89%E7%B1%BB%E5%9E%8B%E5%90%AF%E5%8A%A8%E6%89%80%E6%9C%89%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.3、按类型启动所有守护进程</a></li>
+<li><a href="#14-%E6%8C%89%E7%B1%BB%E5%9E%8B%E5%81%9C%E6%AD%A2%E6%89%80%E6%9C%89%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.4 按类型停止所有守护进程</a></li>
+<li><a href="#15-%E5%90%AF%E5%8A%A8%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.5、启动守护进程</a></li>
+<li><a href="#16-%E5%81%9C%E6%AD%A2%E6%89%80%E6%9C%89%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.6、停止所有守护进程</a></li>
+<li><a href="#17-%E6%8C%89%E7%B1%BB%E5%9E%8B%E5%90%AF%E5%8A%A8%E6%89%80%E6%9C%89%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.7、按类型启动所有守护进程</a></li>
+<li><a href="#18-%E6%8C%89%E7%B1%BB%E5%9E%8B%E5%81%9C%E6%AD%A2%E6%89%80%E6%9C%89%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.8、按类型停止所有守护进程</a></li>
+<li><a href="#19-%E5%90%AF%E5%8A%A8%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">1.9、启动守护进程</a></li>
+<li><a href="#2-%E5%81%9C%E6%AD%A2%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">2、停止守护进程</a></li>
+</ul>
+</li>
+<li><a href="#2-%E8%BF%90%E8%A1%8C-ceph">2、运行 CEPH</a></li>
+<li><a href="#3-%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">3、查看所有守护进程</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-ceph%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90">二、Ceph日志分析</a><ul>
+<li><a href="#1%E8%BF%90%E8%A1%8C%E6%97%B6">1.运行时</a></li>
+<li><a href="#2%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4">2.启动时间</a></li>
+<li><a href="#3%E5%8A%A0%E9%80%9F%E6%97%A5%E5%BF%97%E8%BD%AE%E6%8D%A2">3.加速日志轮换</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E9%9B%86%E7%BE%A4%E7%8A%B6%E6%80%81%E7%9B%91%E6%8E%A7">三、集群状态监控</a><ul>
+<li><a href="#1%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C">1.使用命令行</a><ul>
+<li><a href="#11-%E4%BA%A4%E4%BA%92%E6%A8%A1%E5%BC%8F">1.1 交互模式</a></li>
+<li><a href="#12-%E9%9D%9E%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84">1.2 非默认路径</a></li>
+</ul>
+</li>
+<li><a href="#2%E6%A3%80%E6%9F%A5%E9%9B%86%E7%BE%A4%E7%8A%B6%E6%80%81">2.检查集群状态</a></li>
+<li><a href="#3%E8%A7%82%E5%AF%9F%E9%9B%86%E7%BE%A4">3.观察集群</a></li>
+<li><a href="#4%E7%9B%91%E6%8E%A7%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5">4.监控健康检查</a></li>
+<li><a href="#5%E7%BD%91%E7%BB%9C%E6%80%A7%E8%83%BD%E6%A3%80%E6%9F%A5">5.网络性能检查</a></li>
+<li><a href="#6%E9%9D%99%E9%9F%B3%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5">6.静音健康检查</a></li>
+<li><a href="#7%E6%A3%80%E6%9F%A5%E9%9B%86%E7%BE%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E7%BB%9F%E8%AE%A1">7.检查集群的使用统计</a></li>
+<li><a href="#8%E6%A3%80%E6%9F%A5-osd-%E7%8A%B6%E6%80%81">8.检查 OSD 状态</a></li>
+<li><a href="#9%E6%A3%80%E6%9F%A5%E7%9B%91%E8%A7%86%E5%99%A8%E7%8A%B6%E6%80%81">9.检查监视器状态</a></li>
+<li><a href="#10%E6%A3%80%E6%9F%A5-mds-%E7%8A%B6%E6%80%81">10.检查 MDS 状态</a></li>
+<li><a href="#11%E6%A3%80%E6%9F%A5%E5%BD%92%E7%BD%AE%E7%BB%84%E7%8A%B6%E6%80%81">11.检查归置组状态</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-pg%E7%BB%84">四、PG组</a><ul>
+<li><a href="#1%E8%87%AA%E5%8A%A8%E7%BC%A9%E6%94%BEpg%E7%BB%84">1.自动缩放PG组</a><ul>
+<li><a href="#1%E6%9F%A5%E7%9C%8Bpg%E7%BC%A9%E6%94%BE%E5%BB%BA%E8%AE%AE">1.查看PG缩放建议</a></li>
+<li><a href="#2%E8%87%AA%E5%8A%A8%E7%BC%A9%E6%94%BE">2.自动缩放</a></li>
+<li><a href="#3%E6%8C%87%E5%AE%9A%E9%A2%84%E6%9C%9F%E6%B1%A0%E5%A4%A7%E5%B0%8F">3.指定预期池大小</a></li>
+<li><a href="#4%E6%8C%87%E5%AE%9A%E6%B1%A0%E7%9A%84pg%E8%BE%B9%E7%95%8C">4.指定池的PG边界</a></li>
+</ul>
+</li>
+<li><a href="#2pg_num%E7%9A%84%E9%A2%84%E9%80%89">2.PG_NUM的预选</a></li>
+<li><a href="#3%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8pg%E7%BB%84">3.如何使用PG组</a></li>
+<li><a href="#4pg%E7%BB%84%E6%9D%83%E8%A1%A1">4.PG组权衡</a><ul>
+<li><a href="#1%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96">1.数据持久化</a></li>
+<li><a href="#2%E6%B1%A0%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%88%86%E5%B8%83">2.池中的对象分布</a></li>
+<li><a href="#3%E5%86%85%E5%AD%98-cpu%E5%92%8C%E7%BD%91%E7%BB%9C%E4%BD%BF%E7%94%A8">3.内存、CPU和网络使用</a></li>
+</ul>
+</li>
+<li><a href="#5%E9%80%89%E6%8B%A9pg%E7%BB%84%E7%9A%84%E6%95%B0%E9%87%8F">5.选择PG组的数量</a></li>
+<li><a href="#6%E8%AE%BE%E7%BD%AEpg%E7%BB%84%E7%9A%84%E6%95%B0%E9%87%8F">6.设置PG组的数量</a></li>
+<li><a href="#7%E8%8E%B7%E5%8F%96pg%E7%BB%84%E7%9A%84%E6%95%B0%E9%87%8F">7.获取PG组的数量</a></li>
+<li><a href="#8%E8%8E%B7%E5%8F%96%E9%9B%86%E7%BE%A4%E7%9A%84pg%E7%BB%9F%E8%AE%A1%E4%BF%A1%E6%81%AF">8.获取集群的PG统计信息</a></li>
+<li><a href="#9%E8%8E%B7%E5%8F%96%E5%8D%A1%E4%BD%8Fpg%E7%9A%84%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE">9.获取卡住PG的统计数据</a></li>
+<li><a href="#10%E8%8E%B7%E5%8F%96pg%E5%9C%B0%E5%9B%BE">10.获取PG地图</a></li>
+<li><a href="#11%E8%8E%B7%E5%8F%96pg%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE">11.获取PG统计数据</a></li>
+<li><a href="#12%E6%B8%85%E7%90%86pg%E7%BB%84">12.清理PG组</a></li>
+<li><a href="#13%E4%BC%98%E5%85%88%E8%80%83%E8%99%91pg%E7%BB%84%E7%9A%84%E5%9B%9E%E5%A1%AB%E6%81%A2%E5%A4%8D">13.优先考虑PG组的回填&#x2F;恢复</a></li>
+<li><a href="#14%E6%81%A2%E5%A4%8D%E4%B8%A2%E5%A4%B1">14.恢复丢失</a></li>
+<li><a href="#15%E5%AE%9E%E6%93%8D">15.实操</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+<h1><span id="一-ceph守护服务管理">一、Ceph守护服务管理</span></h1><h2><span id="1-理论">1、理论</span></h2><p>对于支持 systemd 的所有发行版（CentOS 7、Fedora、Debian Jessie 8 及更高版本、SUSE），ceph 守护进程现在使用本机 systemd 文件而不是旧的 sysvinit 脚本进行管理。例如：</p>
+<pre><code>sudo systemctl start ceph.target       # start all daemons
+sudo systemctl status ceph-osd@12      # check status of osd.12
+</code></pre>
+<p>要列出节点上的 Ceph systemd 单元，请执行：</p>
+<p><code>sudo systemctl status ceph\*.service ceph\*.target</code></p>
+<h3><span id="11-启动所有守护进程">1.1、启动所有守护进程</span></h3><p>要在 Ceph 节点（无论类型如何）上启动所有守护进程，请执行以下命令：</p>
+<p><code>sudo systemctl start ceph.target</code></p>
+<h3><span id="12-停止所有守护进程">1.2 、停止所有守护进程</span></h3><p>要停止 Ceph 节点上的所有守护进程（无论类型如何），请执行以下命令：</p>
+<p><code>sudo systemctl stop ceph\*.service ceph\*.target</code></p>
+<h3><span id="13-按类型启动所有守护进程">1.3、按类型启动所有守护进程</span></h3><p>要在 Ceph 节点上启动特定类型的所有守护进程，请执行以下操作之一：</p>
+<pre><code>sudo systemctl start ceph-osd.target
+sudo systemctl start ceph-mon.target
+sudo systemctl start ceph-mds.target
+</code></pre>
+<h3><span id="14-按类型停止所有守护进程">1.4 按类型停止所有守护进程</span></h3><p>要停止 Ceph 节点上特定类型的所有守护进程，请执行以下操作之一：</p>
+<pre><code>sudo systemctl stop ceph-mon\*.service ceph-mon.target
+sudo systemctl stop ceph-osd\*.service ceph-osd.target
+sudo systemctl stop ceph-mds\*.service ceph-mds.target
+</code></pre>
+<h3><span id="15-启动守护进程">1.5、启动守护进程</span></h3><p>要在 Ceph 节点上启动特定的守护进程实例，请执行以下操作之一：</p>
+<pre><code>sudo systemctl start ceph-osd@&#123;id&#125;
+sudo systemctl start ceph-mon@&#123;hostname&#125;
+sudo systemctl start ceph-mds@&#123;hostname&#125;
+</code></pre>
+<p>例如：</p>
+<pre><code>systemctl start ceph-osd@1
+sudo systemctl start ceph-mon@ceph-server
+sudo systemctl start ceph-mds@ceph-server
+</code></pre>
+<h3><span id="16-停止所有守护进程">1.6、停止所有守护进程</span></h3><p>要停止 Ceph 节点上的所有守护进程（无论类型如何），请执行以下命令：</p>
+<p><code>sudo stop ceph-all</code></p>
+<h3><span id="17-按类型启动所有守护进程">1.7、按类型启动所有守护进程</span></h3><p>要在 Ceph 节点上启动特定类型的所有守护进程，请执行以下操作之一：</p>
+<pre><code>sudo start ceph-osd-all
+sudo start ceph-mon-all
+sudo start ceph-mds-all
+</code></pre>
+<h3><span id="18-按类型停止所有守护进程">1.8、按类型停止所有守护进程</span></h3><p>要停止 Ceph 节点上特定类型的所有守护进程，请执行以下操作之一：</p>
+<pre><code>sudo stop ceph-osd-all
+sudo stop ceph-mon-all
+sudo stop ceph-mds-all
+</code></pre>
+<h3><span id="19-启动守护进程">1.9、启动守护进程</span></h3><p>要在 Ceph 节点上启动特定的守护进程实例，请执行以下操作之一：</p>
+<pre><code>sudo start ceph-osd id=&#123;id&#125;
+sudo start ceph-mon id=&#123;hostname&#125;
+sudo start ceph-mds id=&#123;hostname&#125;
+</code></pre>
+<p>例如：</p>
+<pre><code>sudo start ceph-osd id=1
+sudo start ceph-mon id=ceph-server
+sudo start ceph-mds id=ceph-server
+</code></pre>
+<h3><span id="2-停止守护进程">2、停止守护进程</span></h3><p>要停止 Ceph 节点上的特定守护进程实例，请执行以下操作之一：</p>
+<pre><code>sudo stop ceph-osd id=&#123;id&#125;
+sudo stop ceph-mon id=&#123;hostname&#125;
+sudo stop ceph-mds id=&#123;hostname&#125;
+</code></pre>
+<p>例如：</p>
+<pre><code>sudo stop ceph-osd id=1
+sudo start ceph-mon id=ceph-server
+sudo start ceph-mds id=ceph-server
+</code></pre>
+<h2><span id="2-运行-ceph">2、运行 CEPH</span></h2><p>每次启动、重新启动和 停止Ceph 守护进程（或整个集群）时，您必须至少指定一个选项和一个命令。您还可以指定守护进程类型或守护进程实例。</p>
+<p><code>&#123;commandline&#125; [options] [commands] [daemons]</code></p>
+<p>选项ceph包括：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>捷径</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–verbose</td>
+<td>-v</td>
+<td>使用详细日志记录。</td>
+</tr>
+<tr>
+<td>–valgrind</td>
+<td>N&#x2F;A</td>
+<td>（仅限开发和 QA）使用Valgrind调试。</td>
+</tr>
+<tr>
+<td>–allhosts</td>
+<td>-a</td>
+<td>在 中的所有节点上执行ceph.conf. 否则，它只在 上执行localhost。</td>
+</tr>
+<tr>
+<td>–restart</td>
+<td>N&#x2F;A</td>
+<td>如果核心转储，自动重启守护进程。</td>
+</tr>
+<tr>
+<td>–norestart</td>
+<td>N&#x2F;A</td>
+<td>如果核心转储，请不要重新启动守护进程。</td>
+</tr>
+<tr>
+<td>–conf</td>
+<td>-c</td>
+<td>使用备用配置文件。</td>
+</tr>
+</tbody></table>
+<p>命令ceph包括：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>start</td>
+<td>启动守护进程。</td>
+</tr>
+<tr>
+<td>stop</td>
+<td>停止守护进程。</td>
+</tr>
+<tr>
+<td>forcestop</td>
+<td>强制守护进程停止。与…一样kill -9</td>
+</tr>
+<tr>
+<td>killall</td>
+<td>杀死特定类型的所有守护进程。</td>
+</tr>
+<tr>
+<td>cleanlogs</td>
+<td>清除日志目录。</td>
+</tr>
+<tr>
+<td>cleanalllogs</td>
+<td>清除日志目录中的所有内容。</td>
+</tr>
+</tbody></table>
+<p>对于子系统操作，ceph服务可以通过为选项添加特定的守护程序类型来针对特定的守护程序类型[daemons]。守护进程类型包括：</p>
+<ul>
+<li>mon</li>
+<li>osd</li>
+<li>mds</li>
+</ul>
+<h2><span id="3-查看所有守护进程">3、查看所有守护进程</span></h2><pre><code>[root@node-1 cephfs]# cd /usr/lib/systemd/system
+[root@node-1 system]# ls | grep ceph 
+ceph-crash.service
+ceph-fuse@.service
+ceph-fuse.target
+ceph-mds@.service
+ceph-mds.target
+ceph-mgr@.service
+ceph-mgr.target
+ceph-mon@.service
+ceph-mon.target
+ceph-osd@.service
+ceph-osd.target
+ceph-radosgw@.service
+ceph-radosgw.target
+ceph.target
+ceph-volume@.service
+</code></pre>
+<h1><span id="二-ceph日志分析">二、Ceph日志分析</span></h1><p>通常，当您向 Ceph 配置添加调试时，您会在运行时进行。如果您在启动集群时遇到问题，您还可以将 Ceph 调试日志记录添加到您的 Ceph 配置文件中。&#x2F;var&#x2F;log&#x2F;ceph 您可以在（默认位置）下查看 Ceph 日志文件。</p>
+<p>当调试输出减慢您的系统时，延迟可以隐藏竞争条件。<br>日志记录是资源密集型的。如果您在集群的特定区域遇到问题，请为该集群区域启用日志记录。例如，如果您的 OSD 运行良好，但您的元数据服务器运行不正常，您应该首先为给您带来麻烦的特定元数据服务器实例启用调试日志记录。根据需要为每个子系统启用日志记录。</p>
+<p>详细日志记录每小时可以生成超过 1GB的数据。如果您的操作系统磁盘达到其容量，节点将停止工作。<br>如果您启用或增加 Ceph日志记录的速率，请确保您的操作系统磁盘上有足够的磁盘空间。有关旋转日志文件的详细信息，请参阅加速日志旋转。当您的系统运行良好时，删除不必要的调试设置以确保您的集群以最佳状态运行。记录调试输出消息相对较慢，并且在操作集群时浪费资源。</p>
+<p>有关可用设置的详细信息，请参阅子系统、日志和调试设置。</p>
+<h2><span id="1运行时">1.运行时</span></h2><p>如果您想在运行时查看配置设置，您必须登录到运行守护进程的主机并执行以下命令：</p>
+<pre><code>ceph daemon &#123;daemon-name&#125; config show | less
+</code></pre>
+<p>例如，：</p>
+<pre><code>ceph daemon osd.0 config show | less
+</code></pre>
+<p>要在运行时激活 Ceph 的调试输出（即, dout()），请使用以下 命令将参数注入运行时配置：ceph tell</p>
+<pre><code>ceph tell &#123;daemon-type&#125;.&#123;daemon id or *&#125; config set &#123;name&#125; &#123;value&#125;
+</code></pre>
+<p>替换{daemon-type}为osd,mon或 之一mds。您可以使用 将运行时设置应用于特定类型的所有守护进程*，或指定特定守护进程的 ID。例如，要增加ceph-osd名为 的守护程序的调试日志记录osd.0，请执行以下命令：</p>
+<pre><code>ceph tell osd.0 config set debug_osd 0/5
+</code></pre>
+<p>命令通过监视器。如果您无法绑定到监视器，您仍然可以通过登录到您想要更改其配置的守护程序的主机来使用 进行更改。例如：ceph tellceph daemon</p>
+<pre><code>sudo ceph daemon osd.0 config set debug_osd 0/5
+</code></pre>
+<p>有关可用设置的详细信息，请参阅子系统、日志和调试设置。</p>
+<h2><span id="2启动时间">2.启动时间</span></h2><p>要在引导时激活 Ceph 的调试输出（即, ），您必须将设置添加到 Ceph 配置文件中。dout()每个守护进程共有的子系统可以在您的配置文件中设置[global]。特定守护进程的子系统在配置文件的守护进程部分下设置（例如，，，）。例如：[mon][osd][mds]</p>
+<pre><code>[global]
+        debug ms = 1/5
+
+[mon]
+        debug mon = 20
+        debug paxos = 1/5
+        debug auth = 2
+
+[osd]
+        debug osd = 1/5
+        debug filestore = 1/5
+        debug journal = 1
+        debug monc = 5/20
+
+[mds]
+        debug mds = 1
+        debug mds balancer = 1
+</code></pre>
+<h2><span id="3加速日志轮换">3.加速日志轮换</span></h2><p>如果你的 OS 磁盘比较满，你可以通过修改位于&#x2F;etc&#x2F;logrotate.d&#x2F;ceph. 如果您的日志超过大小设置，则在轮换频率后添加大小设置以加速日志轮换（通过 cronjob）。例如，默认设置如下所示：</p>
+<pre><code>rotate 7
+weekly
+compress
+sharedscripts
+</code></pre>
+<p>通过添加size设置对其进行修改。</p>
+<pre><code>rotate 7
+weekly
+size 500M
+compress
+sharedscripts
+</code></pre>
+<p>然后，为您的用户空间启动 crontab 编辑器。<br>crontab -e</p>
+<p>最后，添加一个条目来检查etc&#x2F;logrotate.d&#x2F;ceph文件。</p>
+<pre><code>30 * * * * /usr/sbin/logrotate /etc/logrotate.d/ceph &gt;/dev/null 2&gt;&amp;1
+</code></pre>
+<p>前面的示例etc&#x2F;logrotate.d&#x2F;ceph每 30 分钟检查一次文件。</p>
+<h1><span id="三-集群状态监控">三、集群状态监控</span></h1><p>一旦您有一个正在运行的集群，您就可以使用该ceph工具来监控您的集群。监控集群通常包括检查 OSD 状态、监视器状态、归置组状态和元数据服务器状态。</p>
+<h2><span id="1使用命令行">1.使用命令行</span></h2><h3><span id="11-交互模式">1.1 交互模式</span></h3><p>ceph要以交互模式运行该工具，请ceph在命令行中键入不带参数的内容。例如：</p>
+<pre><code>ceph
+ceph&gt; health
+ceph&gt; status
+ceph&gt; quorum_status
+ceph&gt; mon stat
+</code></pre>
+<h3><span id="12-非默认路径">1.2 非默认路径</span></h3><p>如果您为配置或密钥环指定了非默认位置，则可以指定它们的位置：</p>
+<pre><code>ceph -c /path/to/conf -k /path/to/keyring health
+</code></pre>
+<h2><span id="2检查集群状态">2.检查集群状态</span></h2><p>启动集群后，在开始读取和&#x2F;或写入数据之前，请先检查集群的状态。<br>要检查集群的状态，请执行以下命令：</p>
+<pre><code>ceph status
+</code></pre>
+<p>或者：</p>
+<pre><code>ceph -s
+</code></pre>
+<p>在交互模式下，键入status并按Enter 键。<br><code>ceph&gt; status</code></p>
+<p>Ceph 将打印集群状态。例如，一个带有每个服务的小型 Ceph 演示集群可能会打印以下内容：</p>
+<pre><code>cluster:
+  id:     477e46f1-ae41-4e43-9c8f-72c918ab0a20
+  health: HEALTH_OK
+
+services:
+  mon: 3 daemons, quorum a,b,c
+  mgr: x(active)
+  mds: cephfs_a-1/1/1 up  &#123;0=a=up:active&#125;, 2 up:standby
+  osd: 3 osds: 3 up, 3 in
+
+data:
+  pools:   2 pools, 16 pgs
+  objects: 21 objects, 2.19K
+  usage:   546 GB used, 384 GB / 931 GB avail
+  pgs:     16 active+clean
+</code></pre>
+<p>Ceph 如何计算数据使用量<br>该usage值反映了实际使用的原始存储量。该 值表示集群整体存储容量的可用量（较小的数字）。名义数量反映了存储数据在被复制、克隆或快照之前的大小。因此，实际存储的数据量通常会超过名义上存储的数据量，因为 Ceph 会创建数据的副本，并且还可能使用存储容量进行克隆和快照。xxx GB &#x2F; xxx GB</p>
+<h2><span id="3观察集群">3.观察集群</span></h2><p>除了每个守护进程的本地日志记录外，Ceph 集群还维护一个集群日志，记录有关整个系统的高级事件。这被记录到监视器服务器上的磁盘（&#x2F;var&#x2F;log&#x2F;ceph&#x2F;ceph.log默认情况下），但也可以通过命令行进行监视。<br>要跟踪集群日志，请使用以下命令</p>
+<pre><code>ceph -w
+</code></pre>
+<p>Ceph 将打印系统状态，然后是发出的每条日志消息。例如：</p>
+<pre><code>cluster:
+  id:     477e46f1-ae41-4e43-9c8f-72c918ab0a20
+  health: HEALTH_OK
+
+services:
+  mon: 3 daemons, quorum a,b,c
+  mgr: x(active)
+  mds: cephfs_a-1/1/1 up  &#123;0=a=up:active&#125;, 2 up:standby
+  osd: 3 osds: 3 up, 3 in
+
+data:
+  pools:   2 pools, 16 pgs
+  objects: 21 objects, 2.19K
+  usage:   546 GB used, 384 GB / 931 GB avail
+  pgs:     16 active+clean
+
+
+2017-07-24 08:15:11.329298 mon.a mon.0 172.21.9.34:6789/0 23 : cluster [INF] osd.0 172.21.9.34:6806/20527 boot
+2017-07-24 08:15:14.258143 mon.a mon.0 172.21.9.34:6789/0 39 : cluster [INF] Activating manager daemon x
+2017-07-24 08:15:15.446025 mon.a mon.0 172.21.9.34:6789/0 47 : cluster [INF] Manager daemon x is now available
+</code></pre>
+<p>除了用于在发出日志行时打印它们之外，还用于查看集群日志中的最新行。<code>ceph -wceph log last [n]n</code></p>
+<h2><span id="4监控健康检查">4.监控健康检查</span></h2><p>Ceph 不断地针对自身状态运行各种健康检查。当健康检查失败时，这会反映在(or )的输出中。此外，消息会发送到集群日志以指示检查何时失败以及集群何时恢复。ceph statusceph health<br>例如，当 OSD 关闭时，health状态输出部分可能会更新如下：</p>
+<pre><code>health: HEALTH_WARN
+        1 osds down
+        Degraded data redundancy: 21/63 objects degraded (33.333%), 16 pgs unclean, 16 pgs degraded
+</code></pre>
+<p>这个时候也会发出集群日志消息来记录健康检查的失败：</p>
+<pre><code>2017-07-25 10:08:58.265945 mon.a mon.0 172.21.9.34:6789/0 91 : cluster [WRN] Health check failed: 1 osds down (OSD_DOWN)
+2017-07-25 10:09:01.302624 mon.a mon.0 172.21.9.34:6789/0 94 : cluster [WRN] Health check failed: Degraded data redundancy: 21/63 objects degraded (33.333%), 16 pgs unclean, 16 pgs degraded (PG_DEGRADED)
+</code></pre>
+<p>当 OSD 重新上线时，集群日志记录集群恢复到健康状态：</p>
+<pre><code>2017-07-25 10:11:11.526841 mon.a mon.0 172.21.9.34:6789/0 109 : cluster [WRN] Health check update: Degraded data redundancy: 2 pgs unclean, 2 pgs degraded, 2 pgs undersized (PG_DEGRADED)
+2017-07-25 10:11:13.535493 mon.a mon.0 172.21.9.34:6789/0 110 : cluster [INF] Health check cleared: PG_DEGRADED (was: Degraded data redundancy: 2 pgs unclean, 2 pgs degraded, 2 pgs undersized)
+2017-07-25 10:11:13.535577 mon.a mon.0 172.21.9.34:6789/0 111 : cluster [INF] Cluster is now healthy
+</code></pre>
+<h2><span id="5网络性能检查">5.网络性能检查</span></h2><p>Ceph OSD 在它们之间发送心跳 ping 消息来监控守护进程的可用性。我们还使用响应时间来监控网络性能。虽然繁忙的 OSD 可能会延迟 ping 响应，但我们可以假设，如果网络切换失败，将在不同的 OSD 对之间检测到多个延迟。<br>默认情况下，我们会警告超过 1 秒（1000 毫秒）的 ping 时间。</p>
+<pre><code>HEALTH_WARN Slow OSD heartbeats on back (longest 1118.001ms)
+</code></pre>
+<p>运行状况详细信息将添加 OSD 的组合看到的延迟以及延迟的程度。有 10 个明细行项目的限制。</p>
+<pre><code>[WRN] OSD_SLOW_PING_TIME_BACK: Slow OSD heartbeats on back (longest 1118.001ms)
+    Slow OSD heartbeats on back from osd.0 [dc1,rack1] to osd.1 [dc1,rack1] 1118.001 msec possibly improving
+    Slow OSD heartbeats on back from osd.0 [dc1,rack1] to osd.2 [dc1,rack2] 1030.123 msec
+    Slow OSD heartbeats on back from osd.2 [dc1,rack2] to osd.1 [dc1,rack1] 1015.321 msec
+    Slow OSD heartbeats on back from osd.1 [dc1,rack1] to osd.0 [dc1,rack1] 1010.456 msec
+</code></pre>
+<p>要查看更多详细信息和网络性能信息的完整转储，dump_osd_network可以使用该命令。通常，这将被发送到一个 mgr，但它可以通过将它发布到任何 OSD 来限制特定 OSD 的交互。默认为 1 秒（1000 毫秒）的当前阈值可以作为以毫秒为单位的参数被覆盖。<br>以下命令将通过指定阈值 0 并发送到 mgr 来显示所有收集的网络性能数据。</p>
+<pre><code>$ ceph daemon /var/run/ceph/ceph-mgr.x.asok dump_osd_network 0
+&#123;
+    &quot;threshold&quot;: 0,
+    &quot;entries&quot;: [
+        &#123;
+            &quot;last update&quot;: &quot;Wed Sep  4 17:04:49 2019&quot;,
+            &quot;stale&quot;: false,
+            &quot;from osd&quot;: 2,
+            &quot;to osd&quot;: 0,
+            &quot;interface&quot;: &quot;front&quot;,
+            &quot;average&quot;: &#123;
+                &quot;1min&quot;: 1.023,
+                &quot;5min&quot;: 0.860,
+                &quot;15min&quot;: 0.883
+            &#125;,
+            &quot;min&quot;: &#123;
+                &quot;1min&quot;: 0.818,
+                &quot;5min&quot;: 0.607,
+                &quot;15min&quot;: 0.607
+            &#125;,
+            &quot;max&quot;: &#123;
+                &quot;1min&quot;: 1.164,
+                &quot;5min&quot;: 1.173,
+                &quot;15min&quot;: 1.544
+            &#125;,
+            &quot;last&quot;: 0.924
+        &#125;,
+        &#123;
+            &quot;last update&quot;: &quot;Wed Sep  4 17:04:49 2019&quot;,
+            &quot;stale&quot;: false,
+            &quot;from osd&quot;: 2,
+            &quot;to osd&quot;: 0,
+            &quot;interface&quot;: &quot;back&quot;,
+            &quot;average&quot;: &#123;
+                &quot;1min&quot;: 0.968,
+                &quot;5min&quot;: 0.897,
+                &quot;15min&quot;: 0.830
+            &#125;,
+            &quot;min&quot;: &#123;
+                &quot;1min&quot;: 0.860,
+                &quot;5min&quot;: 0.563,
+                &quot;15min&quot;: 0.502
+            &#125;,
+            &quot;max&quot;: &#123;
+                &quot;1min&quot;: 1.171,
+                &quot;5min&quot;: 1.216,
+                &quot;15min&quot;: 1.456
+            &#125;,
+            &quot;last&quot;: 0.845
+        &#125;,
+        &#123;
+            &quot;last update&quot;: &quot;Wed Sep  4 17:04:48 2019&quot;,
+            &quot;stale&quot;: false,
+            &quot;from osd&quot;: 0,
+            &quot;to osd&quot;: 1,
+            &quot;interface&quot;: &quot;front&quot;,
+            &quot;average&quot;: &#123;
+                &quot;1min&quot;: 0.965,
+                &quot;5min&quot;: 0.811,
+                &quot;15min&quot;: 0.850
+            &#125;,
+            &quot;min&quot;: &#123;
+                &quot;1min&quot;: 0.650,
+                &quot;5min&quot;: 0.488,
+                &quot;15min&quot;: 0.466
+            &#125;,
+            &quot;max&quot;: &#123;
+                &quot;1min&quot;: 1.252,
+                &quot;5min&quot;: 1.252,
+                &quot;15min&quot;: 1.362
+            &#125;,
+        &quot;last&quot;: 0.791
+    &#125;,
+    ...
+</code></pre>
+<h2><span id="6静音健康检查">6.静音健康检查</span></h2><p>健康检查可以静音，这样它们就不会影响集群的整体报告状态。使用健康检查代码指定警报（请参阅健康检查）：</p>
+<pre><code>ceph health mute &lt;code&gt;
+</code></pre>
+<p>例如，如果有健康警告，将其静音将使集群报告整体状态为HEALTH_OK. 例如，要使OSD_DOWN警报静音：</p>
+<pre><code>ceph health mute OSD_DOWN
+</code></pre>
+<p>静音被报告为命令的短格式和长格式的一部分。例如，在上面的场景中，集群会报告：ceph health</p>
+<pre><code>$ ceph health
+HEALTH_OK (muted: OSD_DOWN)
+$ ceph health detail
+HEALTH_OK (muted: OSD_DOWN)
+(MUTED) OSD_DOWN 1 osds down
+    osd.1 is down
+</code></pre>
+<p>可以通过以下方式显式删除静音：</p>
+<pre><code>ceph health unmute &lt;code&gt;
+</code></pre>
+<p>例如，：</p>
+<pre><code>ceph health unmute OSD_DOWN
+</code></pre>
+<p>健康检查静音可以选择关联一个 TTL（生存时间），这样静音将在指定的时间段过去后自动过期。TTL 被指定为可选的持续时间参数，例如：</p>
+<pre><code>ceph health mute OSD_DOWN 4h    # mute for 4 hours
+ceph health mute MON_DOWN 15m   # mute for 15  minutes
+</code></pre>
+<p>通常，如果解决了静音健康警报（例如，在上面的示例中，OSD 重新启动），静音就会消失。如果警报稍后返回，将以通常的方式报告。<br>可以将静音设置为“粘性”，这样即使警报清除，静音也会保留。例如，：</p>
+<pre><code>ceph health mute OSD_DOWN 1h --sticky   # ignore any/all down OSDs for next hour
+</code></pre>
+<p>如果警报的程度变得更糟，大多数健康静音也会消失。例如，如果有一个 OSD 宕机，并且警报被静音，如果一个或多个其他 OSD 宕机，则静音将消失。对于任何涉及指示有多少触发警告或错误的事物的计数的健康警报都是如此。<br>检测配置问题<br>除了 Ceph 根据自身状态持续运行的健康检查之外，还有一些配置问题可能只能由外部工具检测到。<br>使用ceph-medic工具对 Ceph 集群的配置运行这些附加检查。</p>
+<h2><span id="7检查集群的使用统计">7.检查集群的使用统计</span></h2><p>要检查集群的数据使用情况和池之间的数据分布，您可以使用该df选项。它类似于 Linux df。执行以下操作：</p>
+<pre><code>ceph df
+</code></pre>
+<p>输出的RAW STORAGE部分概述了集群管理的存储量。</p>
+<ul>
+<li>CLASS： OSD 设备的类别（或集群的总类别）</li>
+<li>SIZE：集群管理的存储容量。</li>
+<li>AVAIL：集群中可用的空闲空间量。</li>
+<li>USED：用户数据消耗的原始存储量。</li>
+<li>RAW USED：用户数据、内部开销或保留容量消耗的原始存储量。</li>
+<li>%RAW USED：使用的原始存储的百分比。将此数字与和结合使用，以确保您没有达到集群的容量。有关更多详细信息，请参阅存储容量。full rationear full ratio</li>
+<li>输出的POOLS部分提供了一个池列表和每个池的名义用途。此部分的输出不反映副本、克隆或快照。例如，如果您存储一个包含 1MB 数据的对象，则名义使用量将为 1MB，但实际使用量可能为 2MB 或更多，具体取决于副本、克隆和快照的数量。</li>
+<li>名称：池的名称。</li>
+<li>ID：池 ID。</li>
+<li>USED​​：以千字节为单位存储的名义数据量，除非数字附加M表示兆字节或G表示千兆字节。</li>
+<li>%USED：每个池使用的存储的名义百分比。</li>
+<li>MAX AVAIL：对可以写入此池的名义数据量的估计。</li>
+<li>OBJECTS：每个池存储的对象的名义数量。</li>
+<li>QUOTA OBJECTS：配额对象的数量。</li>
+<li>QUOTA BYTES：配额对象中的字节数。</li>
+<li>DIRTY：缓存池中已写入缓存池但尚未刷新到基础池的对象数。此字段仅在使用缓存分层时可用。</li>
+<li>USED​​ COMPR：为压缩数据分配的空间量（即这包括压缩数据加上所有分配、复制和纠删码开销）。</li>
+<li>UNDER COMPR：通过压缩传递的数据量（对所有副本求和）并且足以以压缩形式存储。</li>
+</ul>
+<p>POOLS部分中的数字是名义上的。它们不包括副本、快照或克隆的数量。因此，USED和%USED金额的总和不会加到 输出的RAW部分中的USED和%USED金额。</p>
+<p>MAX AVAIL值是使用的复制或擦除代码、将存储映射到设备的 CRUSH 规则、这些设备的利用率以及配置的 mon_osd_full_ratio 的复杂函数。</p>
+<h2><span id="8检查-osd-状态">8.检查 OSD 状态</span></h2><p>您可以通过执行以下命令来检查 OSD 以确保它们是up正确的in：</p>
+<pre><code>ceph osd stat
+</code></pre>
+<p>或者：</p>
+<pre><code>ceph osd dump
+</code></pre>
+<p>您还可以根据视图 OSD 在 CRUSH 图中的位置来检查它们。</p>
+<pre><code>ceph osd tree
+</code></pre>
+<p>Ceph 将打印出一个 CRUSH 树，其中包含一个主机、它的 OSD、它们是否启动以及它们的权重。</p>
+<pre><code>#ID CLASS WEIGHT  TYPE NAME             STATUS REWEIGHT PRI-AFF
+ -1       3.00000 pool default
+ -3       3.00000 rack mainrack
+ -2       3.00000 host osd-host
+  0   ssd 1.00000         osd.0             up  1.00000 1.00000
+  1   ssd 1.00000         osd.1             up  1.00000 1.00000
+  2   ssd 1.00000         osd.2             up  1.00000 1.00000
+</code></pre>
+<h2><span id="9检查监视器状态">9.检查监视器状态</span></h2><p>如果您的集群有多个监视器（可能），您应该在启动集群之后和读取和&#x2F;或写入数据之前检查监视器仲裁状态。当多个监视器正在运行时，必须存在法定人数。您还应该定期检查监视器状态以确保它们正在运行。<br>要查看显示监视器图，请执行以下命令：</p>
+<pre><code>ceph mon stat
+</code></pre>
+<p>或者：</p>
+<pre><code>ceph mon dump
+</code></pre>
+<p>要检查监视器集群的仲裁状态，请执行以下命令：</p>
+<pre><code>ceph quorum_status
+</code></pre>
+<p>Ceph 将返回仲裁状态。例如，由三个监视器组成的 Ceph 集群可能会返回以下内容：</p>
+<pre><code>&#123; &quot;election_epoch&quot;: 10,
+  &quot;quorum&quot;: [
+        0,
+        1,
+        2],
+  &quot;quorum_names&quot;: [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;],
+  &quot;quorum_leader_name&quot;: &quot;a&quot;,
+  &quot;monmap&quot;: &#123; &quot;epoch&quot;: 1,
+      &quot;fsid&quot;: &quot;444b489c-4f16-4b75-83f0-cb8097468898&quot;,
+      &quot;modified&quot;: &quot;2011-12-12 13:28:27.505520&quot;,
+      &quot;created&quot;: &quot;2011-12-12 13:28:27.505520&quot;,
+      &quot;features&quot;: &#123;&quot;persistent&quot;: [
+                        &quot;kraken&quot;,
+                        &quot;luminous&quot;,
+                        &quot;mimic&quot;],
+        &quot;optional&quot;: []
+      &#125;,
+      &quot;mons&quot;: [
+            &#123; &quot;rank&quot;: 0,
+              &quot;name&quot;: &quot;a&quot;,
+              &quot;addr&quot;: &quot;127.0.0.1:6789/0&quot;,
+              &quot;public_addr&quot;: &quot;127.0.0.1:6789/0&quot;&#125;,
+            &#123; &quot;rank&quot;: 1,
+              &quot;name&quot;: &quot;b&quot;,
+              &quot;addr&quot;: &quot;127.0.0.1:6790/0&quot;,
+              &quot;public_addr&quot;: &quot;127.0.0.1:6790/0&quot;&#125;,
+            &#123; &quot;rank&quot;: 2,
+              &quot;name&quot;: &quot;c&quot;,
+              &quot;addr&quot;: &quot;127.0.0.1:6791/0&quot;,
+              &quot;public_addr&quot;: &quot;127.0.0.1:6791/0&quot;&#125;
+           ]
+  &#125;
+&#125;
+</code></pre>
+<h2><span id="10检查-mds-状态">10.检查 MDS 状态</span></h2><p>元数据服务器为 CephFS 提供元数据服务。元数据服务器有两组状态：和。为确保您的元数据服务器是和，请执行以下操作：up | downactive | inactiveupactive</p>
+<pre><code>ceph mds stat
+</code></pre>
+<p>要显示元数据集群的详细信息，请执行以下命令：</p>
+<pre><code>ceph fs dump
+</code></pre>
+<h2><span id="11检查归置组状态">11.检查归置组状态</span></h2><p>归置组将对象映射到 OSD。当您监控归置组时，您会希望它们是active和clean。有关详细讨论，请参阅监控 OSD 和归置组。<br>使用管理套接字<br>Ceph 管理套接字允许您通过套接字接口查询守护进程。默认情况下，Ceph 套接字位于&#x2F;var&#x2F;run&#x2F;ceph. 要通过管理套接字访问守护进程，登录到运行守护进程的主机并使用以下命令：</p>
+<pre><code>ceph daemon &#123;daemon-name&#125;
+ceph daemon &#123;path-to-socket-file&#125;
+</code></pre>
+<p>例如，以下是等效的：</p>
+<pre><code>ceph daemon osd.0 foo
+ceph daemon /var/run/ceph/ceph-osd.0.asok foo
+</code></pre>
+<p>要查看可用的管理套接字命令，请执行以下命令：</p>
+<pre><code>ceph daemon &#123;daemon-name&#125; help
+</code></pre>
+<p>admin socket 命令使您能够在运行时显示和设置您的配置。有关详细信息，请参阅在运行时查看配置。<br>此外，您可以在运行时直接设置配置值（即，管理套接字绕过监视器，不像，它依赖于监视器但不需要您直接登录到有问题的主机）。ceph tell {daemon-type}.{id} config set</p>
+<h1><span id="四-pg组">四、PG组</span></h1><h2><span id="1自动缩放pg组">1.自动缩放PG组</span></h2><p>归置组 (PG) 是 Ceph 如何分发数据的内部实现细节。您可以通过启用pg-autoscaling允许集群根据集群的使用方式提出建议或自动调整 PG 。<br>系统中的每个池都有一个pg_autoscale_mode可以设置为off、on或 的属性warn。</p>
+<ul>
+<li>off：禁用此池的自动缩放。管理员可以为每个池选择合适的 PG 编号。有关详细信息，请参阅选择归置组的数量。</li>
+<li>on：启用给定池的 PG 计数的自动调整。</li>
+<li>warn: 当应该调整 PG 计数时发出健康警报</li>
+</ul>
+<p>要为现有池设置自动缩放模式，请：</p>
+<pre><code>ceph osd pool set &lt;pool-name&gt; pg_autoscale_mode &lt;mode&gt;
+</code></pre>
+<p>例如，要在 pool 上启用自动缩放foo，：</p>
+<pre><code>ceph osd pool set foo pg_autoscale_mode on
+</code></pre>
+<p>pg_autoscale_mode您还可以配置应用于将来创建的任何池的默认值：</p>
+<pre><code>ceph config set global osd_pool_default_pg_autoscale_mode &lt;mode&gt;
+</code></pre>
+<h3><span id="1查看pg缩放建议">1.查看PG缩放建议</span></h3><p>您可以使用以下命令查看每个池、其相对利用率以及对 PG 计数的任何建议更改：</p>
+<pre><code>ceph osd pool autoscale-status
+</code></pre>
+<p>输出将类似于：</p>
+<pre><code>POOL    SIZE  TARGET SIZE  RATE  RAW CAPACITY   RATIO  TARGET RATIO  EFFECTIVE RATIO PG_NUM  NEW PG_NUM  AUTOSCALE
+a     12900M                3.0        82431M  0.4695                                     8         128  warn
+c         0                 3.0        82431M  0.0000        0.2000           0.9884      1          64  warn
+b         0        953.6M   3.0        82431M  0.0347                                     8              warn
+</code></pre>
+<ul>
+<li>SIZE是池中存储的数据量。</li>
+<li>TARGET SIZE（如果存在）是管理员指定的他们希望最终存储在此池中的数据量。系统使用两个值中较大的一个进行计算。</li>
+<li>RATE是池的乘数，决定消耗了多少原始存储容量。例如，一个 3 副本池的比率为 3.0，而 ak&#x3D;4,m&#x3D;2 纠删码池的比率为 1.5。</li>
+<li>RAW CAPACITY是 OSD 上负责存储该池（可能还有其他池）数据的原始存储容量总量。 RATIO是该池消耗的总容量的比率（即，比率 &#x3D; 大小 * 速率 &#x2F; 原始容量）。</li>
+<li>TARGET RATIO（如果存在）是管理员指定的存储比率，他们希望此池相对于设置了目标比率的其他池消耗。如果指定了目标大小字节和比率，则比率优先。</li>
+<li>EFFECTIVE RATIO是经过两种方式调整后的目标比率：<ul>
+<li>减去设置了目标大小的池预期使用的任何容量</li>
+<li>使用目标比率集对池之间的目标比率进行标准化，以便它们共同瞄准其余空间。</li>
+<li>例如，target_ratio 为 1.0 的 4 个池的有效比率为 0.25。</li>
+<li>系统使用实际比率和有效比率中的较大者进行计算。</li>
+</ul>
+</li>
+<li>PG_NUM是池的当前 PG 数量（或者如果正在进行更改，则池正在努力的 PG 的当前数量pg_num ）。 NEW PG_NUM（如果存在）是系统认为池pg_num应该更改为的值。它始终是 2 的幂，只有当“理想”值与当前值的差异超过 3 倍时才会出现。</li>
+<li>AUTOSCALE是 pool pg_autoscale_mode，将是on、off或warn。</li>
+</ul>
+<h3><span id="2自动缩放">2.自动缩放</span></h3><p>允许集群根据使用情况自动扩展 PG 是最简单的方法。Ceph 会查看整个系统的可用存储总量和目标 PG 数量，查看每个池中存储了多少数据，并尝试相应地分配 PG。该系统的方法相对保守，仅当当前 PG 数量 ( pg_num) 与其认为应有的数量相差 3 倍以上时才对池进行更改。<br>每个 OSD 的目标 PG 数量基于 mon_target_pg_per_osd可配置的（默认值：100），可以通过以下方式进行调整：</p>
+<pre><code>ceph config set global mon_target_pg_per_osd 100
+</code></pre>
+<p>自动缩放器分析池并在每个子树的基础上进行调整。因为每个池可能映射到不同的 CRUSH 规则，并且每个规则可能将数据分布在不同的设备上，所以 Ceph 将独立地考虑层次结构中每个子树的利用率。例如，一个映射到ssd类 OSD 的池和一个映射到hdd类 OSD 的池将各自具有最佳的 PG 计数，这取决于各自设备类型的数量。</p>
+<h3><span id="3指定预期池大小">3.指定预期池大小</span></h3><p>首次创建集群或池时，它将消耗集群总容量的一小部分，并且在系统看来似乎只需要少量归置组。但是，在大多数情况下，集群管理员很清楚哪些池预计会随着时间的推移消耗大部分系统容量。pg_num通过向 Ceph 提供此信息，可以从一开始就使用更合适数量的 PG，从而防止在进行这些调整时进行后续更改 以及与移动数据相关的开销。<br>池的目标大小可以通过两种方式指定：根据池的绝对大小（即字节），或者作为相对于具有集合的其他池的权重target_size_ratio。<br>例如，：</p>
+<pre><code>ceph osd pool set mypool target_size_bytes 100T
+</code></pre>
+<p>将告诉系统mypool预计会消耗 100 TiB 的空间。或者，：</p>
+<pre><code>ceph osd pool set mypool target_size_ratio 1.0
+</code></pre>
+<p>将告诉系统mypool预计将消耗 1.0 相对于target_size_ratio设置的其他池。如果mypool是集群中唯一的池，这意味着预期使用总容量的 100%。如果有第二个池为target_size_ratio 1.0，则两个池都将使用 50% 的集群容量。</p>
+<p>您还可以在创建时使用命令的可选参数或参数设置池的目标大小。–target-size-bytes <bytes>–target-size-ratio <ratio>ceph osd pool create</ratio></bytes></p>
+<p>请注意，如果指定了不可能的目标大小值（例如，容量大于整个集群），则会POOL_TARGET_SIZE_BYTES_OVERCOMMITTED发出健康警告 ( )。</p>
+<p>如果同时为池指定了target_size_ratio和target_size_bytes，则只考虑比率，并POOL_HAS_TARGET_SIZE_BYTES_AND_RATIO发出健康警告 ( )。</p>
+<h3><span id="4指定池的pg边界">4.指定池的PG边界</span></h3><p>也可以为池指定最小 PG 数。这对于建立客户端在执行 IO 时将看到的并行度数量的下限很有用，即使池几乎是空的。设置下限可防止 Ceph 将 PG 数量减少（或建议您减少）配置数量以下。<br>你可以为一个池设置 PG 的最小数量：</p>
+<pre><code>ceph osd pool set &lt;pool-name&gt; pg_num_min &lt;num&gt;
+</code></pre>
+<p>您还可以使用命令的可选参数指定池创建时的最小 PG 计数。–pg-num-min <num>ceph osd pool create</num></p>
+<h2><span id="2pg_num的预选">2.PG_NUM的预选</span></h2><p>使用以下命令创建新池时：</p>
+<pre><code>ceph osd pool create &#123;pool-name&#125; pg_num
+</code></pre>
+<p>必须选择 的值，pg_num因为它不能（当前）自动计算。下面是一些常用的值：<br>少于 5 个 OSD 设置pg_num为 128<br>5 到 10 个 OSD 设置pg_num为 512<br>10 到 50 个 OSD 设置pg_num为 1024</p>
+<p>如果你有超过 50 个 OSD，你需要了解权衡以及如何pg_num自己计算价值</p>
+<p>pg_num自己计算值，请借助pgcalc工具<br>随着 OSD 数量的增加，为 pg_num 选择正确的值变得更加重要，因为它对集群的行为以及出现问题时数据的持久性有重大影响（即灾难性事件导致的概率）数据丢失）。</p>
+<h2><span id="3如何使用pg组">3.如何使用PG组</span></h2><p>归置组 (PG) 聚合池中的对象，因为在每个对象的基础上跟踪对象放置和对象元数据在计算上是昂贵的——即，具有数百万个对象的系统实际上无法在每个对象的基础上跟踪放置。</p>
+<p>Ceph 客户端将计算一个对象应该在哪个归置组中。它通过散列对象 ID 并根据定义的池中 PG 的数量和池的 ID 应用操作来实现这一点。有关详细信息，请参阅将 PG 映射到 OSD。</p>
+<p>归置组中对象的内容存储在一组 OSD 中。例如，在一个大小为 2 的复制池中，每个归置组将对象存储在两个 OSD 上，如下所示。</p>
+<p>如果 OSD #2 失败，另一个将被分配到 Placement Group #1 并填充 OSD #1 中所有对象的副本。如果池大小从 2 变为 3，一个额外的 OSD将被分配给归置组，并将接收归置组中所有对象的副本。</p>
+<p>归置组不拥有 OSD；他们与来自同一池甚至其他池的其他归置组共享它。如果 OSD #2 失败，归置组 #2 也必须使用 OSD #3 恢复对象的副本。</p>
+<p>当归置组数量增加时，新的归置组将被分配 OSD。CRUSH 函数的结果也会发生变化，一些来自以前的归置组的对象将被复制到新的归置组并从旧的归置组中删除。</p>
+<h2><span id="4pg组权衡">4.PG组权衡</span></h2><p>数据持久化和在所有 OSD 之间的均匀分布需要更多的归置组，但它们的数量应该减少到最少以节省 CPU 和内存。</p>
+<h3><span id="1数据持久化">1.数据持久化</span></h3><p>OSD 发生故障后，数据丢失的风险会增加，直到它包含的数据被完全恢复。让我们想象一个在单个归置组中导致永久数据丢失的场景：</p>
+<p>OSD 失败，它包含的对象的所有副本都丢失了。对于归置组中的所有对象，副本的数量突然从三个减少到两个。</p>
+<p>Ceph 通过选择一个新的 OSD 重新创建所有对象的第三个副本来开始恢复这个归置组。</p>
+<p>同一归置组中的另一个 OSD 在新 OSD 完全填充第三个副本之前发生故障。一些对象将只有一个幸存的副本。</p>
+<p>Ceph 选择另一个 OSD 并不断复制对象以恢复所需的副本数。</p>
+<p>同一归置组中的第三个 OSD 在恢复完成之前发生故障。如果此 OSD 包含对象的唯一剩余副本，则它会永久丢失。</p>
+<p>在一个包含 10 个 OSD 的集群中，在一个三副本池中有 512 个归置组，CRUSH 会给每个归置组三个 OSD。最后，每个 OSD 将托管 (512 * 3) &#x2F; 10 &#x3D; ~150 个归置组。当第一个 OSD 发生故障时，上述场景将因此同时开始对所有 150 个归置组进行恢复。</p>
+<p>正在恢复的 150 个归置组很可能均匀分布在剩余的 9 个 OSD 上。因此，每个剩余的 OSD 可能会向所有其他 OSD 发送对象的副本，并且还会接收一些要存储的新对象，因为它们成为新归置组的一部分。</p>
+<p>完成此恢复所需的时间完全取决于 Ceph 集群的架构。假设每个 OSD 都由一台机器上的 1TB SSD 托管，并且所有 OSD 都连接到一个 10Gb&#x2F;s 交换机，并且单个 OSD 的恢复在 M 分钟内完成。如果每台机器有两个 OSD 使用没有 SSD 日志和 1Gb&#x2F;s 交换机的旋转器，它至少会慢一个数量级。</p>
+<p>在这种规模的集群中，归置组的数量对数据持久性几乎没有影响。它可能是 128 或 8192，恢复不会更慢或更快。</p>
+<p>然而，将同一个 Ceph 集群增加到 20 个 OSD 而不是 10 个 OSD 可能会加快恢复速度，从而显着提高数据持久性。每个 OSD 现在只参与大约 75 个归置组，而不是当时只有 10 个 OSD 时的大约 150 个，并且它仍然需要所有 19 个剩余的 OSD 执行相同数量的对象副本才能恢复。但是 10 个 OSD 每个必须复制大约 100GB，现在它们每个必须复制 50GB。如果网络是瓶颈，恢复速度将提高一倍。换句话说，当 OSD 的数量增加时，恢复会更快。</p>
+<p>如果这个集群增长到 40 个 OSD，每个 OSD 将只托管大约 35 个归置组。如果一个 OSD 死了，恢复将继续进行得更快，除非它被另一个瓶颈阻塞。然而，如果这个集群增长到 200 个 OSD，每个 OSD 将只托管 ~7 个归置组。如果一个 OSD 挂掉，恢复将发生在这些归置组中最多约 21 (7 * 3) 个 OSD 之间：恢复将比有 40 个 OSD 时花费更长的时间，这意味着应该增加归置组的数量。</p>
+<p>无论恢复时间有多短，第二个 OSD 在执行过程中都有可能失败。在上面描述的 10 个 OSD 集群中，如果其中任何一个发生故障，那么大约 17 个归置组（即大约 150 &#x2F; 9 个归置组正在恢复）将只有一个幸存的副本。如果剩下的 8 个 OSD 中的任何一个失败，两个归置组的最后一个对象很可能会丢失（即大约 17 &#x2F; 8 个归置组，只有一个剩余副本被恢复）。</p>
+<p>当集群规模增长到 20 个 OSD 时，由于丢失三个 OSD 而损坏的归置组数量下降。第二个 OSD 丢失将降级 ~4（即 ~75 &#x2F; 19 个归置组被恢复）而不是 ~17 并且第三个丢失的 OSD 仅当它是包含幸存副本的四个 OSD 之一时才会丢失数据。换句话说，如果在恢复时间范围内丢失一个 OSD 的概率为 0.0001%，则它从具有 10 个 OSD 的集群中的 17 * 10 * 0.0001% 变为具有 20 个 OSD 的集群中的 4 * 20 * 0.0001%。</p>
+<p>简而言之，更多的 OSD 意味着更快的恢复和更低的级联故障导致归置组永久丢失的风险。就数据持久性而言，拥有 512 或 4096 个归置组大致相当于少于 50 个 OSD 的集群。</p>
+<p>注意：添加到集群的新 OSD 可能需要很长时间才能填充分配给它的归置组。但是，任何对象都不会降级，并且不会影响集群中包含的数据的持久性。</p>
+<h3><span id="2池中的对象分布">2.池中的对象分布</span></h3><p>理想情况下，对象均匀分布在每个归置组中。由于 CRUSH 会为每个对象计算归置组，但实际上并不知道该归置组内每个 OSD 中存储了多少数据，归置组数量与 OSD 数量之间的比例可能会显着影响数据的分布。</p>
+<p>例如，如果在一个三副本池中有一个用于十个 OSD 的归置组，则只会使用三个 OSD，因为 CRUSH 别无选择。当有更多归置组可用时，对象更有可能在其中均匀分布。CRUSH 还尽一切努力在所有现有的归置组中均匀分布 OSD。</p>
+<p>只要归置组比 OSD 多一到两个数量级，分布就应该是均匀的。例如，3 个 OSD 有 256 个归置组，10 个 OSD 有 512 或 1024 个归置组等。</p>
+<p>数据分布不均可能是由 OSD 和归置组之间的比例以外的因素引起的。由于 CRUSH 不考虑对象的大小，一些非常大的对象可能会造成不平衡。</p>
+<p>假设一百万个 4K 对象（总计 4GB）平均分布在 10 个 OSD 上的 1024 个归置组中。他们将在每个 OSD 上使用 4GB &#x2F; 10 &#x3D; 400MB。如果将一个 400MB 的对象添加到池中，则支持放置该对象的归置组的三个 OSD 将被 400MB + 400MB &#x3D; 800MB 填充，而其他七个 OSD 将仅占用 400MB。</p>
+<h3><span id="3内存-cpu和网络使用">3.内存、CPU和网络使用</span></h3><p>对于每个归置组，OSD 和 MON 始终需要内存、网络和 CPU，在恢复期间甚至需要更多。通过在归置组中集群对象来分担这种开销是它们存在的主要原因之一。<br>最大限度地减少归置组的数量可以节省大量资源。</p>
+<h2><span id="5选择pg组的数量">5.选择PG组的数量</span></h2><p>如果您有超过 50 个 OSD，我们建议每个 OSD 大约有 50-100 个归置组，以平衡资源使用、数据持久性和分布。如果您的 OSD 少于 50 个，最好在上面的预选中进行选择。对于单个对象池，您可以使用以下公式来获取基线：</p>
+<pre><code>             (OSDs * 100)
+Total PGs =  ------------
+              pool size
+</code></pre>
+<p>其中池大小是复制池的副本数或纠删码池的 K+M 总和（由ceph osd erasure-code-profile get返回）。 </p>
+<p>然后，您应该检查结果是否符合您设计 Ceph 集群的方式，以最大化数据持久性、 对象分布和最小化资源使用。</p>
+<p>结果应始终四舍五入为最接近的 2 的幂。</p>
+<p>只有 2 的幂才能平均平衡放置组中的对象数量。其他值将导致 OSD 之间的数据分布不均匀。它们的使用应仅限于从 2 的一个幂递增到另一个。<br>例如，对于具有 200 个 OSD 和池大小为 3 个副本的集群，您可以按如下方式估算 PG 的数量：</p>
+<pre><code>(200 * 100)
+----------- = 6667. Nearest power of 2: 8192
+     3
+</code></pre>
+<p>当使用多个数据池存储对象时，您需要确保平衡每个池的归置组数量与每个 OSD 的归置组数量，以便获得合理的归置组总数，从而为每个 OSD 提供合理的低方差无需占用系统资源或使对等过程太慢。</p>
+<p>例如，一个由 10 个池组成的集群，每个池在 10 个 OSD 上有 512 个归置组，总共有 5,120 个归置组分布在 10 个 OSD 上，即每个 OSD 有 512 个归置组。那不会使用太多资源。但是，如果创建了 1,000 个池，每个池有 512 个归置组，每个 OSD 将处理大约 50,000 个归置组，这将需要更多的资源和时间来进行对等。</p>
+<h2><span id="6设置pg组的数量">6.设置PG组的数量</span></h2><p>要设置池中归置组的数量，您必须在创建池时指定归置组的数量。有关详细信息，请参阅创建池。即使在创建池之后，您也可以通过以下方式更改归置组的数量：</p>
+<pre><code>ceph osd pool set &#123;pool-name&#125; pg_num &#123;pg_num&#125;
+</code></pre>
+<p>增加归置组数量后，您还必须增加归置组 ( ) 的数量，pgp_num然后集群才会重新平衡。这pgp_num将是 CRUSH 算法将考虑放置的放置组的数量。增加pg_num拆分放置组，但数据不会迁移到较新的放置组，直到放置组用于放置，即。pgp_num增加。应该pgp_num 等于pg_num。要增加放置组的数量，请执行以下操作：</p>
+<pre><code>ceph osd pool set &#123;pool-name&#125; pgp_num &#123;pgp_num&#125;
+</code></pre>
+<p>当减少 PG 的数量时，pgp_num会自动为您调整。</p>
+<h2><span id="7获取pg组的数量">7.获取PG组的数量</span></h2><p>要获取池中归置组的数量，请执行以下命令：</p>
+<pre><code>ceph osd pool get &#123;pool-name&#125; pg_num
+</code></pre>
+<h2><span id="8获取集群的pg统计信息">8.获取集群的PG统计信息</span></h2><p>要获取集群中归置组的统计信息，请执行以下命令：</p>
+<pre><code>ceph pg dump [--format &#123;format&#125;]
+</code></pre>
+<p>有效格式为plain（默认）和json.</p>
+<h2><span id="9获取卡住pg的统计数据">9.获取卡住PG的统计数据</span></h2><p>要获取所有卡在指定状态的归置组的统计信息，请执行以下命令：</p>
+<pre><code>mt &lt;format&gt;] [-t|--threshold &lt;seconds&gt;]
+</code></pre>
+<p>Inactive归置组无法处理读取或写入，因为它们正在等待具有最新数据的 OSD 出现和进入。</p>
+<p>Unclean Placement 组包含未复制所需次数的对象。他们应该正在康复。</p>
+<p>Stale归置组处于未知状态 - 托管它们的 OSD 有一段时间没有向监视器集群报告（由配置mon_osd_report_timeout）。</p>
+<p>有效格式为plain（默认）和json. 阈值定义归置组在包含在返回的统计信息之前被卡住的最小秒数（默认 300 秒）。</p>
+<h2><span id="10获取pg地图">10.获取PG地图</span></h2><p>要获取特定归置组的归置组映射，请执行以下命令：</p>
+<pre><code>ceph pg map &#123;pg-id&#125;
+</code></pre>
+<p>例如：</p>
+<pre><code>ceph pg map 1.6c
+</code></pre>
+<p>Ceph 将返回归置组图、归置组和 OSD 状态：</p>
+<pre><code>osdmap e13 pg 1.6c (1.6c) -&gt; up [1,0] acting [1,0]
+</code></pre>
+<h2><span id="11获取pg统计数据">11.获取PG统计数据</span></h2><p>要检索特定归置组的统计信息，请执行以下命令：</p>
+<pre><code>ceph pg &#123;pg-id&#125; query
+</code></pre>
+<h2><span id="12清理pg组">12.清理PG组</span></h2><p>要清理归置组，请执行以下命令：</p>
+<pre><code>ceph pg scrub &#123;pg-id&#125;
+</code></pre>
+<p>Ceph 检查主节点和任何副本节点，生成归置组中所有对象的目录并进行比较以确保没有对象丢失或不匹配，并且它们的内容是一致的。假设副本全部匹配，最后的语义扫描确保所有与快照相关的对象元数据是一致的。通过日志报告错误。<br>要清除特定池中的所有归置组，请执行以下操作：</p>
+<pre><code>ceph osd pool scrub &#123;pool-name&#125;
+</code></pre>
+<h2><span id="13优先考虑pg组的回填x2f恢复">13.优先考虑PG组的回填&#x2F;恢复</span></h2><p>您可能会遇到这样一种情况，即一堆归置组需要恢复和&#x2F;或回填，并且某些特定组保存的数据比其他组更重要（例如，那些 PG 可能保存正在运行的机器使用的图像的数据，而其他 PG 可能是由不活动的机器&#x2F;不太相关的数据使用）。在这种情况下，您可能希望优先恢复这些组，以便更早地恢复存储在这些组上的数据的性能和&#x2F;或可用性。为此（在回填或恢复期间将特定归置组标记为优先级），执行以下命令：</p>
+<pre><code>ceph pg force-recovery &#123;pg-id&#125; [&#123;pg-id #2&#125;] [&#123;pg-id #3&#125; ...]
+ceph pg force-backfill &#123;pg-id&#125; [&#123;pg-id #2&#125;] [&#123;pg-id #3&#125; ...]
+</code></pre>
+<p>这将导致 Ceph 在其他归置组之前先对指定的归置组执行恢复或回填。这不会中断当前正在进行的回填或恢复，但会导致尽快处理指定的 PG。如果您改变主意或优先考虑错误的群体，请使用：</p>
+<pre><code>ceph pg cancel-force-recovery &#123;pg-id&#125; [&#123;pg-id #2&#125;] [&#123;pg-id #3&#125; ...]
+ceph pg cancel-force-backfill &#123;pg-id&#125; [&#123;pg-id #2&#125;] [&#123;pg-id #3&#125; ...]
+</code></pre>
+<p>这将从这些 PG 中删除“force”标志，它们将按默认顺序处理。同样，这不会影响当前处理的归置组，只会影响仍在排队的归置组。<br>“强制”标志在恢复或组回填完成后自动清除。<br>同样，你可以使用以下命令强制 Ceph 先从指定池中对所有归置组执行恢复或回填：</p>
+<pre><code>ceph osd pool force-recovery &#123;pool-name&#125;
+ceph osd pool force-backfill &#123;pool-name&#125;
+</code></pre>
+<p>或者：</p>
+<pre><code>ceph osd pool cancel-force-recovery &#123;pool-name&#125;
+ceph osd pool cancel-force-backfill &#123;pool-name&#125;
+</code></pre>
+<p>如果您改变主意，可以恢复到默认的恢复或回填优先级。<br>请注意，这些命令可能会破坏 Ceph 内部优先级计算的顺序，因此请谨慎使用！特别是，如果您有多个当前共享相同底层 OSD 的池，并且某些特定池持有比其他池更重要的数据，我们建议您使用以下命令以更好的顺序重新安排所有池的恢复&#x2F;回填优先级：</p>
+<pre><code>ceph osd pool set &#123;pool-name&#125; recovery_priority &#123;value&#125;
+</code></pre>
+<p>例如，如果您有 10 个池，您可以将最重要的一个设置为 10，下一个为 9，等等。或者您可以不理会大多数池，并假设 3 个重要的池的优先级分别为 1 或优先级 3、2、1。</p>
+<h2><span id="14恢复丢失">14.恢复丢失</span></h2><p>如果集群丢失了一个或多个对象，并且您决定放弃搜索丢失的数据，则必须将未找到的对象标记为lost。<br>如果已经查询了所有可能的位置并且对象仍然丢失，您可能不得不放弃丢失的对象。这是可能的，因为异常的故障组合允许集群了解在写入本身被恢复之前执行的写入。<br>目前唯一支持的选项是“还原”，它将回滚到对象的先前版本或者（如果它是一个新对象）完全忘记它。要将“未找到”对象标记为“丢失”，请执行以下命令：</p>
+<pre><code>ceph pg &#123;pg-id&#125; mark_unfound_lost revert|delete
+</code></pre>
+<blockquote>
+<p>请谨慎使用此功能，因为它可能会混淆期望对象存在的应用程序。</p>
+</blockquote>
+<h2><span id="15实操">15.实操</span></h2><pre><code>删除pool ，重启mon后失效
+[root@node-1 ceph-1]# ceph osd pool rm ceph-demo-3 ceph-demo-3 --yes-i-really-really-mean-it #尝试删除pool
+Error EPERM: pool deletion is disabled; you must first set the mon_allow_pool_delete config option to true before you can destroy a pool
+[root@node-1 ceph-1]# ceph --admin-daemon /var/run/ceph/ceph-mon.node-1.asok config show | grep mon_allow_pool_delete #查看mon_allow_pool_delete参数
+    &quot;mon_allow_pool_delete&quot;: &quot;false&quot;,
+You have new mail in /var/spool/mail/root
+[root@node-1 ceph-1]# ceph --admin-daemon /var/run/ceph/ceph-mon.node-1.asok config set  mon_allow_pool_delete true #修改mon_allow_pool_delete参数
+&#123;
+    &quot;success&quot;: &quot;mon_allow_pool_delete = &#39;true&#39; &quot;
+&#125;
+[root@node-1 ceph-1]# ceph osd pool rm ceph-demo-3 ceph-demo-3 --yes-i-really-really-mean-it #删除成功
+pool &#39;ceph-demo-3&#39; removed
+永久生效
+[root@node-1 my-cluster]# cat /opt/my-cluster/ceph.conf #查看配置文件
+[global]
+fsid = b8e58b30-4568-4032-a9f4-837ed3fa9529
+public_network = 192.168.187.0/24
+cluster_network = 192.168.199.0/24
+mon_initial_members = node-1
+mon_host = 192.168.187.201
+auth_cluster_required = cephx
+auth_service_required = cephx
+auth_client_required = cephx
+
+mon_allow_pool_delete = true #可手动删除pool
+
+[root@node-1 my-cluster]# ceph-deploy --overwrite-conf config push node-1 node-2 node-3  #将配置文件推送到所有mon节点中
+[ceph_deploy.conf][DEBUG ] found configuration file at: /root/.cephdeploy.conf
+[ceph_deploy.cli][INFO  ] Invoked (2.0.1): /usr/bin/ceph-deploy --overwrite-conf config push node-1 node-2 node-3
+[ceph_deploy.cli][INFO  ] ceph-deploy options:
+[ceph_deploy.cli][INFO  ]  username                      : None
+[ceph_deploy.cli][INFO  ]  verbose                       : False
+[ceph_deploy.cli][INFO  ]  overwrite_conf                : True
+[ceph_deploy.cli][INFO  ]  subcommand                    : push
+[ceph_deploy.cli][INFO  ]  quiet                         : False
+[ceph_deploy.cli][INFO  ]  cd_conf                       : &lt;ceph_deploy.conf.cephdeploy.Conf instance at 0x7f048853b878&gt;
+[ceph_deploy.cli][INFO  ]  cluster                       : ceph
+[ceph_deploy.cli][INFO  ]  client                        : [&#39;node-1&#39;, &#39;node-2&#39;, &#39;node-3&#39;]
+[ceph_deploy.cli][INFO  ]  func                          : &lt;function config at 0x7f04880aa938&gt;
+[ceph_deploy.cli][INFO  ]  ceph_conf                     : None
+[ceph_deploy.cli][INFO  ]  default_release               : False
+[ceph_deploy.config][DEBUG ] Pushing config to node-1
+[node-1][DEBUG ] connected to host: node-1 
+[node-1][DEBUG ] detect platform information from remote host
+[node-1][DEBUG ] detect machine type
+[node-1][DEBUG ] write cluster configuration to /etc/ceph/&#123;cluster&#125;.conf
+[ceph_deploy.config][DEBUG ] Pushing config to node-2
+[node-2][DEBUG ] connected to host: node-2 
+[node-2][DEBUG ] detect platform information from remote host
+[node-2][DEBUG ] detect machine type
+[node-2][DEBUG ] write cluster configuration to /etc/ceph/&#123;cluster&#125;.conf
+[ceph_deploy.config][DEBUG ] Pushing config to node-3
+[node-3][DEBUG ] connected to host: node-3 
+[node-3][DEBUG ] detect platform information from remote host
+[node-3][DEBUG ] detect machine type
+[node-3][DEBUG ] write cluster configuration to /etc/ceph/&#123;cluster&#125;.conf
+
+
+[root@node-1 my-cluster]# for i in &#123;1..3&#125;;do ssh node-$&#123;i&#125; systemctl restart ceph-mon.target;done #重启所有节点mon服务
+
+[root@node-1 my-cluster]# ceph --admin-daemon /var/run/ceph/ceph-mon.node-1.asok config show | grep mon_allow_pool_delete  #查看生效
+    &quot;mon_allow_pool_delete&quot;: &quot;true&quot;,
+</code></pre>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+        </article>
+
+        
+            
+  <div class="nexmoe-post-copyright">
+    <strong>Author：</strong>张博丞<br>
+    
+      <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
+    
+    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/19/Ceph/8.Ceph%E9%9B%86%E7%BE%A4%E8%BF%90%E7%BB%B4/Ceph%E9%9B%86%E7%BE%A4%E8%BF%90%E7%BB%B4/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;19&#x2F;Ceph&#x2F;8.Ceph%E9%9B%86%E7%BE%A4%E8%BF%90%E7%BB%B4&#x2F;Ceph%E9%9B%86%E7%BE%A4%E8%BF%90%E7%BB%B4&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;19&#x2F;Ceph&#x2F;8.Ceph%E9%9B%86%E7%BE%A4%E8%BF%90%E7%BB%B4&#x2F;Ceph%E9%9B%86%E7%BE%A4%E8%BF%90%E7%BB%B4&#x2F;</a><br>
+
+    
+      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+    
+  </div>
+
+
+        
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/">Ceph</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" rel="tag">Ceph守护进程</a>
+    
+</div>
+
+    <div class="nexmoe-post-footer">
+        <section class="nexmoe-comment">
+    <div class="valine"></div>
+<script src='https://lib.baomitu.com/valine/1.3.9/Valine.min.js'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'r5zxC0st0DDjPA9auXzMV7HY-gzGzoHsz',
+        appKey: '3bqCsovpyfTPHUzTHovd3V3V'
+    })
+</script>
+</section>
+    </div>
+</div>
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+        <div class="nexmoe-post-right">
+          
+            <div class="nexmoe-fixed">
+              <div class="nexmoe-tool">
+                <a href="#" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+              </div>
+            </div>
+          
+        </div>
+    </div>
+  </div>
+  <div id="nexmoe-pendant">
+    <div class="nexmoe-drawer mdui-drawer nexmoe-pd" id="drawer">
+        
+            <div class="nexmoe-pd-item">
+                <div class="clock">
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="needle" id="hours"></div>
+        <div class="needle" id="minutes"></div>
+        <div class="needle" id="seconds"></div>
+        <div class="clock_logo">
+
+        </div>
+
+    </div>
+<style>
+    .clock {
+        background-color: #ffffff;
+        width: 70vw;
+        height: 70vw;
+        max-width: 70vh;
+        max-height: 70vh;
+        border: solid 2.8vw #242424;
+        position: relative;
+        overflow: hidden;
+        border-radius: 50%;
+        box-sizing: border-box;
+        box-shadow: 0 1.4vw 2.8vw rgba(0, 0, 0, 0.8);
+        zoom:0.2
+    }
+
+    .memory {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    .memory:nth-child(1) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(0deg) translateY(-520%);
+    }
+
+    .memory:nth-child(2) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(6deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(3) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(12deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(4) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(18deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(5) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(24deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(6) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(30deg) translateY(-520%);
+    }
+
+    .memory:nth-child(7) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(36deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(8) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(42deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(9) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(48deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(10) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(54deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(11) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(60deg) translateY(-520%);
+    }
+
+    .memory:nth-child(12) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(66deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(13) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(72deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(14) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(78deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(15) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(84deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(16) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(90deg) translateY(-520%);
+    }
+
+    .memory:nth-child(17) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(96deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(18) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(102deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(19) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(108deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(20) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(114deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(21) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(120deg) translateY(-520%);
+    }
+
+    .memory:nth-child(22) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(126deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(23) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(132deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(24) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(138deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(25) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(144deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(26) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(150deg) translateY(-520%);
+    }
+
+    .memory:nth-child(27) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(156deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(28) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(162deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(29) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(168deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(30) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(174deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(31) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(180deg) translateY(-520%);
+    }
+
+    .memory:nth-child(32) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(186deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(33) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(192deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(34) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(198deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(35) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(204deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(36) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(210deg) translateY(-520%);
+    }
+
+    .memory:nth-child(37) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(216deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(38) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(222deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(39) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(228deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(40) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(234deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(41) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(240deg) translateY(-520%);
+    }
+
+    .memory:nth-child(42) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(246deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(43) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(252deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(44) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(258deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(45) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(264deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(46) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(270deg) translateY(-520%);
+    }
+
+    .memory:nth-child(47) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(276deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(48) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(282deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(49) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(288deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(50) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(294deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(51) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(300deg) translateY(-520%);
+    }
+
+    .memory:nth-child(52) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(306deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(53) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(312deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(54) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(318deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(55) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(324deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(56) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(330deg) translateY(-520%);
+    }
+
+    .memory:nth-child(57) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(336deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(58) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(342deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(59) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(348deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(60) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(354deg) translateY(-1461%);
+    }
+
+    .needle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    .needle#hours {
+        background-color: #1f1f1f;
+        width: 4%;
+        height: 30%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#hours.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#hours:after {
+        content: '';
+        background-color: #1f1f1f;
+        width: 4vw;
+        height: 4vw;
+        max-width: 4vh;
+        max-height: 4vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .needle#minutes {
+        background-color: #1f1f1f;
+        width: 2%;
+        height: 45%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#minutes.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#minutes:after {
+        content: '';
+        background-color: #1f1f1f;
+        width: 4vw;
+        height: 4vw;
+        max-width: 4vh;
+        max-height: 4vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .needle#seconds {
+        background-color: #cb2f2f;
+        width: 1%;
+        height: 50%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#seconds.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#seconds:after {
+        content: '';
+        background-color: #cb2f2f;
+        width: 2.5vw;
+        height: 2.5vw;
+        max-width: 2.5vh;
+        max-height: 2.5vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .clock_logo{
+        width: 10vw;
+        height: 10vw;
+        max-width: 10vh;
+        max-height: 10vh;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    @media (min-width: 100vh) {
+        .clock {
+            border: solid 2.8vh #242424;
+            box-shadow: 0 1.4vh 2.8vh rgba(0, 0, 0, 0.8);
+        }
+    }
+
+</style>
+
+
+
+
+
+            </div>
+        
+            <div class="nexmoe-pd-item">
+                <div class="qweather" >
+    <div id="he-plugin-standard"></div>
+    <div class="qweather-logo">
+
+    </div>
+
+</div>
+<style>
+    .qweather{
+        position: relative;
+    }
+    .qweather-logo{
+        position: absolute;
+        right: 0;
+        top: -15px;
+        width: 40px;
+        height: 40px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+</style>
+<script>
+  WIDGET = {
+    "CONFIG": {
+      "layout": "2",
+      "width": "260",
+      "height": "220",
+      "background": "5",
+      "dataColor": "e67249",
+      "borderRadius": "15",
+      "key": "f74d1e1690e6432d801e97fa2f05a162"
+    }
+  }
+</script>
+<script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
+
+            </div>
+        
+</div>
+<style>
+    .nexmoe-pd {
+        left: auto;
+        top: 40px;
+        right: 0;
+    }
+    .nexmoe-pd-item{
+       display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+</style>
+
+  </div>
+  <script src="https://lib.baomitu.com/lazysizes/5.1.0/lazysizes.min.js"></script>
+<script src="https://lib.baomitu.com/highlight.js/10.0.0/highlight.min.js"></script>
+<script src="https://lib.baomitu.com/mdui/0.4.3/js/mdui.min.js"></script>
+
+<script>
+	hljs.initHighlightingOnLoad();
+</script>
+
+<script src="https://lib.baomitu.com/jquery/3.5.1/jquery.slim.min.js"></script>
+<script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/app.js?v=1682237265584"></script>
+
+<script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+  
+
+
+
+
+
+<!-- hexo injector body_end start -->
+<script src="/js/clock.js"></script>
+
+<script src="https://lib.baomitu.com/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+<script src="/lib/codeBlock/codeBlockFuction.js"></script>
+
+<script src="/lib/codeBlock/codeLang.js"></script>
+
+<script src="/lib/codeBlock/codeCopy.js"></script>
+
+<script src="/lib/codeBlock/codeShrink.js"></script>
+
+<link rel="stylesheet" href="/lib/codeBlock/matery.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<script src="/js/search.js"></script>
+
+<script src="/js/webapp.js"></script>
+<!-- hexo injector body_end end --><script src="/live2D/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2D/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":true,"model":{"jsonPath":"/live2D/assets/xiaomai.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+<script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/5e784416.js","daovoice")</script>
+<script>
+  daovoice('init', {
+    app_id: "5e784416"
+  });
+  daovoice('update');
+</script>
+

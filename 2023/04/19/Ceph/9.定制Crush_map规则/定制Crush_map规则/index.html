@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  
+  <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
+  <title>定制Crush Map规则 - Hexo</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  
+  
+
+    <!-- Site Verification -->
+    <meta name="baidu-site-verification" content="code-J1Qg17G6wT" />
+
+  <link rel="shortcut icon" href="/images/head/head.jpg" type="image/png" />
+  <meta property="og:type" content="article">
+<meta property="og:title" content="定制Crush Map规则">
+<meta property="og:url" content="https://zhangboc.github.io/2023/04/19/Ceph/9.%E5%AE%9A%E5%88%B6Crush_map%E8%A7%84%E5%88%99/%E5%AE%9A%E5%88%B6Crush_map%E8%A7%84%E5%88%99/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangboc.github.io/images/Ceph/%E5%AE%9A%E5%88%B6CrushMap%E8%A7%84%E5%88%99/1.jpg">
+<meta property="article:published_time" content="2023-04-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-19T07:05:17.080Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="CrushMap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangboc.github.io/images/Ceph/%E5%AE%9A%E5%88%B6CrushMap%E8%A7%84%E5%88%99/1.jpg">
+  <link rel="stylesheet" href="https://lib.baomitu.com/highlight.js/9.15.8/styles/atom-one-dark.min.css" crossorigin>
+  <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css">
+  <link rel="stylesheet" href="/lib/iconfont/iconfont.css">
+  <link rel="stylesheet" href="/lib/fancybox/css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="https://lib.baomitu.com/justifiedGallery/3.8.1/css/justifiedGallery.min.css">
+  
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_2421060_8z08qcz5sq3.css">
+  
+  <link rel="stylesheet" href="/css/style.css?v=1682237265585">
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="mdui-drawer-body-left">
+  
+  <div id="nexmoe-background">
+    <div class="nexmoe-bg" style="background-image: url(/images/background/xiaomai.jpg)"></div>
+    <div class="nexmoe-small" style="background-image: url(/images/background/lihui.png)"></div>
+    <div class="mdui-appbar mdui-shadow-0">
+      <div class="mdui-toolbar">
+        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+        <div class="mdui-toolbar-spacer"></div>
+        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+        <a href="/" title="John Doe" class="mdui-btn mdui-btn-icon"><img src="/images/head/head.jpg" alt="John Doe"></a>
+       </div>
+    </div>
+  </div>
+  <div id="nexmoe-header">
+      <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="John Doe">
+            <img src="/images/head/head.jpg" alt="John Doe" alt="John Doe">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div class="nexmoe-count-item"><span>文章</span>26 <div class="item-radius"></div><div class="item-radius item-right"></div> </div>
+        <div class="nexmoe-count-item"><span>标签</span>20<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+        <div class="nexmoe-count-item"><span>分类</span>7<div class="item-radius"></div><div class="item-radius item-right"></div></div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-meishi"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-hanbao1"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about/index.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-jiubei1"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/friend/index.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-cola"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/download/index.html" title="下载中心">
+            <i class="mdui-list-item-icon nexmoefont icon-tangguo"></i>
+            <div class="mdui-list-item-content">
+                下载中心
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+  
+  
+<!-- 站内搜索 -->
+
+<div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search" >
+        <form id="search-form">
+            <label><input type="text" id="local-search-input" name="q" results="0" placeholder="站内搜索" class="input form-control" autocomplete="off" autocorrect="off"/></label>
+            <!-- 清空/重置搜索框 -->
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+        </form>
+    </div>
+    <div id="local-search-result"></div> <!-- 搜索结果区 -->
+    <!-- <p class='no-result'></p> 无匹配时显示，注意在 CSS 中设置默认隐藏 -->
+</div>
+
+
+  
+  <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="http://wpa.qq.com/msgrd?v=3&uin=1605643129&Site=%E5%8C%97%E4%BA%ACSEO&Menu=yes" target="_blank" mdui-tooltip="{content: 'QQ'}" style="color: rgb(64, 196, 255);background-color: rgba(64, 196, 255, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="mailto:1605643129@qq.com" target="_blank" mdui-tooltip="{content: 'mail'}" style="color: rgb(249,8,8);background-color: rgba(249,8,8,.1);">
+            <i class="nexmoefont icon-mail-fill"></i>
+        </a><a class="mdui-ripple" href="https://blog.csdn.net/qq_40855827?type=blog" target="_blank" mdui-tooltip="{content: 'CSDN'}" style="color: rgb(199,29,35);background-color: rgba(199,29,35,.1);">
+            <i class="nexmoefont icon-csdn"></i>
+        </a><a class="mdui-ripple" href="https://home.cnblogs.com/u/1882665" target="_blank" mdui-tooltip="{content: '博客园'}" style="color: rgb(66, 214, 29);background-color: rgba(66, 214, 29, .1);">
+            <i class="nexmoefont icon-bokeyuan"></i>
+        </a><a class="mdui-ripple" href="https://github.com/zhangboc" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a><a class="mdui-ripple" href="https://gitee.com/with-the-wind-yue" target="_blank" mdui-tooltip="{content: 'gitee'}" style="color: rgb(255, 255, 255);background-color: rgb(199,29,35);">
+            <i class="nexmoefont icon-mayun"></i>
+        </a>
+    </div>
+</div>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/">Ceph</a>
+          <span class="category-list-count">19</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/KVM/">KVM</a>
+          <span class="category-list-count">7</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/Kubernetes/">Kubernetes</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/OpenStack/">OpenStack</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ceph/SDK/">SDK</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/hexo/">hexo</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/Ceph/" style="font-size: 20px;">Ceph</a> <a href="/tags/CephFS/" style="font-size: 10px;">CephFS</a> <a href="/tags/Ceph%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">Ceph守护进程</a> <a href="/tags/Ceph%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">Ceph简介</a> <a href="/tags/Cinder/" style="font-size: 10px;">Cinder</a> <a href="/tags/CrushMap/" style="font-size: 10px;">CrushMap</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%81%E7%A7%BB/" style="font-size: 10px;">KVM虚拟机迁移</a> <a href="/tags/KVM%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">KVM虚拟网络高级配置</a> <a href="/tags/Kubernetes/" style="font-size: 10px;">Kubernetes</a> <a href="/tags/Linux-HA/" style="font-size: 15px;">Linux HA</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/OSD/" style="font-size: 10px;">OSD</a> <a href="/tags/OpenStack/" style="font-size: 12.5px;">OpenStack</a> <a href="/tags/RBD/" style="font-size: 12.5px;">RBD</a> <a href="/tags/RGW/" style="font-size: 12.5px;">RGW</a> <a href="/tags/chatjs/" style="font-size: 10px;">chatjs</a> <a href="/tags/%E5%9F%BA%E4%BA%8EiSCSI%E7%9A%84KVM%E7%BE%A4%E9%9B%86%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">基于iSCSI的KVM群集构建</a> <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">故障排查</a> <a href="/tags/%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/" style="font-size: 10px;">集群测试</a>
+    </div>
+    
+  </div>
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">26</span></li></ul>
+    </div>
+  </div>
+
+
+<style>
+.nexmoe-widget .archive-list-count{
+	position : absolute;
+	right: 15px;
+	top:9px;
+	color: #DDD;
+}
+</style>
+
+  
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 John Doe
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/zhangboc/hexo.github.io/" target="_blank">ZhangboCheng</a><br/>
+        <a href="http://beian.miit.gov.cn" target="_blank">辽ICP备2021002341号</a><br/>
+        
+        <div style="font-size: 12px">
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            本站总访问量  <a id="busuanzi_value_site_pv"></a> 次<br />
+            本站访客数<a id="busuanzi_value_site_uv"></a>人次
+        </div>
+        <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+        <script>
+            var now = new Date(); 
+            function createtime() { 
+                var grt= new Date("08/10/2018 17:38:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+                now.setTime(now.getTime()+250); 
+                days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+                hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+                if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+                mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+                seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+                snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+                document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+                document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+
+
+        
+        
+    </div>
+
+</div><!-- .nexmoe-drawer -->
+
+  </div>
+  <div id="nexmoe-content">
+    <div class="nexmoe-primary">
+        <div class="nexmoe-post">
+    
+        <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;">
+            <img data-src="https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" data-sizes="auto" alt="定制Crush Map规则" class="lazyload">
+            <h1>定制Crush Map规则</h1>
+        </div>
+    
+
+        <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月19日</a>
+    <a><i class="nexmoefont icon-areachart"></i>7.9k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 46 分钟</a>
+</div>
+
+        <div class="nexmoe-post-right">
+            
+        </div>
+
+        <article>
+            <h1><span id></span></h1><span id="more"></span>
+
+<!-- toc -->
+
+<ul>
+<li><a href="#%E9%9B%B6-%E6%9F%A5%E7%9C%8Bcrush-map-%E8%A7%84%E5%88%99">零、查看Crush Map 规则</a></li>
+<li><a href="#%E4%B8%80-%E6%89%8B%E5%8A%A8%E7%BC%96%E8%BE%91crush-map%E8%A7%84%E5%88%99">一、手动编辑Crush MAP规则</a><ul>
+<li><a href="#%E4%B8%80-%E8%8E%B7%E5%8F%96crush-map%E8%A7%84%E5%88%99">一、获取Crush map规则</a></li>
+<li><a href="#%E4%BA%8C-%E7%BC%96%E8%AF%91%E6%88%90txt%E6%96%87%E4%BB%B6">二、编译成Txt文件</a></li>
+<li><a href="#%E4%B8%89-%E4%BF%AE%E6%94%B9crush-map%E6%96%87%E4%BB%B6">三、修改Crush Map文件</a></li>
+<li><a href="#%E5%9B%9B-%E9%87%8D%E6%96%B0%E7%BC%96%E8%AF%91%E6%88%90%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6">四、重新编译成二进制文件</a></li>
+<li><a href="#%E4%BA%94-%E5%BA%94%E7%94%A8%E4%B8%8A%E4%BC%A0%E7%9A%84%E6%96%B0%E8%A7%84%E5%88%99">五、应用上传的新规则</a></li>
+<li><a href="#%E5%85%AD-%E5%88%9B%E5%BB%BApool%E8%B0%83%E7%94%A8%E6%96%B0%E7%9A%84crush-map">六、创建pool调用新的Crush Map</a></li>
+<li><a href="#%E4%B8%83-%E6%B5%8B%E8%AF%95crush-map%E8%A7%84%E5%88%99">七、测试Crush Map规则</a></li>
+<li><a href="#%E5%85%AB-%E6%B8%85%E7%90%86crush%E8%A7%84%E5%88%99%E6%81%A2%E5%A4%8D%E9%BB%98%E8%AE%A4">八、清理Crush规则，恢复默认</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%B0%83%E6%95%B4crush-map">二、命令行调整Crush Map</a><ul>
+<li><a href="#%E4%B8%80-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8Dcrush-map">一、查看当前Crush Map</a></li>
+<li><a href="#%E4%BA%8C-%E5%88%9B%E5%BB%BA%E6%A0%B9">二、创建根</a></li>
+<li><a href="#%E5%9B%9B-%E5%B0%86%E8%8A%82%E7%82%B9%E5%8A%A0%E5%85%A5%E5%88%B0ssd%E7%9A%84%E6%A0%B9%E4%B8%8B">四、将节点加入到ssd的根下</a></li>
+<li><a href="#%E5%9B%9B-%E5%B0%86osd%E5%8A%A0%E5%85%A5%E5%88%B0host%E4%B8%AD">四、将OSD加入到HOST中</a></li>
+<li><a href="#%E4%BA%94-%E4%BF%AE%E6%94%B9class">五、修改CLASS</a></li>
+<li><a href="#%E5%85%AD-%E5%88%9B%E5%BB%BA%E8%A7%84%E5%88%99%E7%BB%91%E5%AE%9Aroot">六、创建规则绑定root</a></li>
+<li><a href="#%E4%B8%83-%E5%BA%94%E7%94%A8%E8%A7%84%E5%88%99">七、应用规则</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">三、注意事项</a></li>
+</ul>
+<!-- tocstop -->
+
+<p><img src="/images/Ceph/%E5%AE%9A%E5%88%B6CrushMap%E8%A7%84%E5%88%99/1.jpg"></p>
+<p>CRUSH算法通过计算数据存储位置来决定如何存储和检索数据。 CRUSH使 Ceph 客户端能够直接与 OSD通信，而不是通过集中式服务器或代理。通过算法确定的存储和检索数据的方法，Ceph 避免了单点故障、性能瓶颈和可扩展性的物理限制。</p>
+<p>CRUSH需要集群的地图，并使用 CRUSH 地图伪随机地在 OSD 中存储和检索数据，并在整个集群中均匀分布数据。有关 CRUSH 的详细讨论，请参阅 CRUSH-受控的、可扩展的、分散的复制数据放置</p>
+<p>CRUSH 图包含OSD列表，用于将设备聚合到物理位置的“桶”列表，以及告诉 CRUSH 应如何在 Ceph集群的池中复制数据的规则列表。通过反映安装的底层物理组织，CRUSH可以建模——从而解决——相关设备故障的潜在来源。典型的来源包括物理距离、共享电源和共享网络。通过将此信息编码到集群映射中，CRUSH 放置策略可以在不同的故障域中分离对象副本，同时仍保持所需的分布。例如，为了解决并发故障的可能性，可能需要确保数据副本位于使用不同架子、机架、电源、控制器和&#x2F;或物理位置的设备上。</p>
+<p>当您部署 OSD 时，它们会自动放置在CRUSH映射中的一个 host节点下，该节点以运行它们的主机的主机名命名。这与默认的 CRUSH 故障域相结合，可确保副本或纠删码分片在主机之间分离，并且单个主机故障不会影响可用性。然而，对于较大的集群，管理员应该仔细考虑他们对故障域的选择。例如，跨机架分离副本对于大中型集群来说很常见。</p>
+<h1><span id="零-查看crush-map-规则">零、查看Crush Map 规则</span></h1><pre><code>[root@node-1 /]# ceph osd crush tree 
+ID CLASS WEIGHT  TYPE NAME       
+-1       0.05878 root default    
+-3       0.01959     host node-1 
+ 0   hdd 0.00980         osd.0   
+ 1   hdd 0.00980         osd.1   
+-5       0.01959     host node-2 
+ 2   hdd 0.00980         osd.2   
+ 3   hdd 0.00980         osd.3   
+-7       0.01959     host node-3 
+ 4   hdd 0.00980         osd.4   
+ 5   hdd 0.00980         osd.5   
+[root@node-1 /]# ceph osd crush dump #查看详细信息
+&#123;
+    &quot;devices&quot;: [
+#设备信息
+        &#123;
+            &quot;id&quot;: 0,
+ #OSD的ID号
+            &quot;name&quot;: &quot;osd.0&quot;,
+ #OSD名称
+            &quot;class&quot;: &quot;hdd&quot;
+#归类
+        &#125;,
+        &#123;
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;osd.1&quot;,
+            &quot;class&quot;: &quot;hdd&quot;
+        &#125;,
+        &#123;
+            &quot;id&quot;: 2,
+            &quot;name&quot;: &quot;osd.2&quot;,
+            &quot;class&quot;: &quot;hdd&quot;
+        &#125;,
+        &#123;
+            &quot;id&quot;: 3,
+            &quot;name&quot;: &quot;osd.3&quot;,
+            &quot;class&quot;: &quot;hdd&quot;
+        &#125;,
+        &#123;
+            &quot;id&quot;: 4,
+            &quot;name&quot;: &quot;osd.4&quot;,
+            &quot;class&quot;: &quot;hdd&quot;
+        &#125;,
+        &#123;
+            &quot;id&quot;: 5,
+            &quot;name&quot;: &quot;osd.5&quot;,
+            &quot;class&quot;: &quot;hdd&quot;
+        &#125;
+    ],
+    &quot;types&quot;: [ #定义的类型
+        &#123;
+            &quot;type_id&quot;: 0,
+            &quot;name&quot;: &quot;osd&quot; #硬盘
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 1,
+            &quot;name&quot;: &quot;host&quot;
+#主机
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 2,
+            &quot;name&quot;: &quot;chassis&quot; #主板/机箱
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 3,
+            &quot;name&quot;: &quot;rack&quot; #机架
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 4,
+            &quot;name&quot;: &quot;row&quot;
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 5,
+            &quot;name&quot;: &quot;pdu&quot;
+ #PDU电源
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 6,
+            &quot;name&quot;: &quot;pod&quot;
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 7, 
+            &quot;name&quot;: &quot;room&quot; #机房
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 8,
+            &quot;name&quot;: &quot;datacenter&quot;
+ #数据中心
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 9,
+            &quot;name&quot;: &quot;zone&quot;
+ #区域
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 10,
+            &quot;name&quot;: &quot;region&quot;
+        &#125;,
+        &#123;
+            &quot;type_id&quot;: 11,
+            &quot;name&quot;: &quot;root&quot;
+        &#125;
+    ],
+    &quot;buckets&quot;: [
+        &#123;
+            &quot;id&quot;: -1,
+            &quot;name&quot;: &quot;default&quot;,
+            &quot;type_id&quot;: 11,
+            &quot;type_name&quot;: &quot;root&quot;,
+            &quot;weight&quot;: 3852,
+            &quot;alg&quot;: &quot;straw2&quot;,
+            &quot;hash&quot;: &quot;rjenkins1&quot;,
+            &quot;items&quot;: [
+                &#123;
+                    &quot;id&quot;: -3,
+                    &quot;weight&quot;: 1284,
+                    &quot;pos&quot;: 0
+                &#125;,
+                &#123;
+                    &quot;id&quot;: -5,
+                    &quot;weight&quot;: 1284,
+                    &quot;pos&quot;: 1
+                &#125;,
+                &#123;
+                    &quot;id&quot;: -7,
+                    &quot;weight&quot;: 1284,
+                    &quot;pos&quot;: 2
+                &#125;
+            ]
+        &#125;,
+        &#123;
+            &quot;id&quot;: -2,
+            &quot;name&quot;: &quot;default~hdd&quot;,
+            &quot;type_id&quot;: 11,
+            &quot;type_name&quot;: &quot;root&quot;,
+            &quot;weight&quot;: 3852,
+            &quot;alg&quot;: &quot;straw2&quot;,
+            &quot;hash&quot;: &quot;rjenkins1&quot;,
+            &quot;items&quot;: [
+                &#123;
+                    &quot;id&quot;: -4,
+                    &quot;weight&quot;: 1284,
+                    &quot;pos&quot;: 0
+                &#125;,
+                &#123;
+                    &quot;id&quot;: -6,
+                    &quot;weight&quot;: 1284,
+                    &quot;pos&quot;: 1
+                &#125;,
+                &#123;
+                    &quot;id&quot;: -8,
+                    &quot;weight&quot;: 1284,
+                    &quot;pos&quot;: 2
+                &#125;
+            ]
+        &#125;,
+        &#123;
+            &quot;id&quot;: -3,
+            &quot;name&quot;: &quot;node-1&quot;,
+            &quot;type_id&quot;: 1,
+            &quot;type_name&quot;: &quot;host&quot;,
+            &quot;weight&quot;: 1284,
+            &quot;alg&quot;: &quot;straw2&quot;,
+            &quot;hash&quot;: &quot;rjenkins1&quot;,
+            &quot;items&quot;: [
+                &#123;
+                    &quot;id&quot;: 0,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 0
+                &#125;,
+                &#123;
+                    &quot;id&quot;: 1,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 1
+                &#125;
+            ]
+        &#125;,
+        &#123;
+            &quot;id&quot;: -4,
+            &quot;name&quot;: &quot;node-1~hdd&quot;,
+            &quot;type_id&quot;: 1,
+            &quot;type_name&quot;: &quot;host&quot;,
+            &quot;weight&quot;: 1284,
+            &quot;alg&quot;: &quot;straw2&quot;,
+            &quot;hash&quot;: &quot;rjenkins1&quot;,
+            &quot;items&quot;: [
+                &#123;
+                    &quot;id&quot;: 0,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 0
+                &#125;,
+                &#123;
+                    &quot;id&quot;: 1,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 1
+                &#125;
+            ]
+        &#125;,
+        &#123;
+            &quot;id&quot;: -5,
+            &quot;name&quot;: &quot;node-2&quot;,
+            &quot;type_id&quot;: 1,
+            &quot;type_name&quot;: &quot;host&quot;,
+            &quot;weight&quot;: 1284,
+            &quot;alg&quot;: &quot;straw2&quot;,
+            &quot;hash&quot;: &quot;rjenkins1&quot;,
+            &quot;items&quot;: [
+                &#123;
+                    &quot;id&quot;: 2,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 0
+                &#125;,
+                &#123;
+                    &quot;id&quot;: 3,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 1
+                &#125;
+            ]
+        &#125;,
+        &#123;
+            &quot;id&quot;: -6,
+            &quot;name&quot;: &quot;node-2~hdd&quot;,
+            &quot;type_id&quot;: 1,
+            &quot;type_name&quot;: &quot;host&quot;,
+            &quot;weight&quot;: 1284,
+            &quot;alg&quot;: &quot;straw2&quot;,
+            &quot;hash&quot;: &quot;rjenkins1&quot;,
+            &quot;items&quot;: [
+                &#123;
+                    &quot;id&quot;: 2,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 0
+                &#125;,
+                &#123;
+                    &quot;id&quot;: 3,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 1
+                &#125;
+            ]
+        &#125;,
+        &#123;
+            &quot;id&quot;: -7,
+            &quot;name&quot;: &quot;node-3&quot;,
+            &quot;type_id&quot;: 1,
+            &quot;type_name&quot;: &quot;host&quot;,
+            &quot;weight&quot;: 1284,
+            &quot;alg&quot;: &quot;straw2&quot;,
+            &quot;hash&quot;: &quot;rjenkins1&quot;,
+            &quot;items&quot;: [
+                &#123;
+                    &quot;id&quot;: 4,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 0
+                &#125;,
+                &#123;
+                    &quot;id&quot;: 5,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 1
+                &#125;
+            ]
+        &#125;,
+        &#123;
+            &quot;id&quot;: -8,
+            &quot;name&quot;: &quot;node-3~hdd&quot;,
+            &quot;type_id&quot;: 1,
+            &quot;type_name&quot;: &quot;host&quot;,
+            &quot;weight&quot;: 1284,
+            &quot;alg&quot;: &quot;straw2&quot;,
+            &quot;hash&quot;: &quot;rjenkins1&quot;,
+            &quot;items&quot;: [
+                &#123;
+                    &quot;id&quot;: 4,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 0
+                &#125;,
+                &#123;
+                    &quot;id&quot;: 5,
+                    &quot;weight&quot;: 642,
+                    &quot;pos&quot;: 1
+                &#125;
+            ]
+        &#125;
+    ],
+    &quot;rules&quot;: [
+        &#123;
+            &quot;rule_id&quot;: 0,
+            &quot;rule_name&quot;: &quot;replicated_rule&quot;,
+            &quot;ruleset&quot;: 0,
+            &quot;type&quot;: 1,
+            &quot;min_size&quot;: 1,
+            &quot;max_size&quot;: 10,
+            &quot;steps&quot;: [
+                &#123;
+                    &quot;op&quot;: &quot;take&quot;,
+                    &quot;item&quot;: -1,
+                    &quot;item_name&quot;: &quot;default&quot;
+                &#125;,
+                &#123;
+                    &quot;op&quot;: &quot;chooseleaf_firstn&quot;,
+                    &quot;num&quot;: 0,
+                    &quot;type&quot;: &quot;host&quot;
+                &#125;,
+                &#123;
+                    &quot;op&quot;: &quot;emit&quot;
+                &#125;
+            ]
+        &#125;
+    ],
+    &quot;tunables&quot;: &#123;
+        &quot;choose_local_tries&quot;: 0,
+        &quot;choose_local_fallback_tries&quot;: 0,
+        &quot;choose_total_tries&quot;: 50,
+        &quot;chooseleaf_descend_once&quot;: 1,
+        &quot;chooseleaf_vary_r&quot;: 1,
+        &quot;chooseleaf_stable&quot;: 1,
+        &quot;straw_calc_version&quot;: 1,
+        &quot;allowed_bucket_algs&quot;: 54,
+        &quot;profile&quot;: &quot;jewel&quot;,
+        &quot;optimal_tunables&quot;: 1,
+        &quot;legacy_tunables&quot;: 0,
+        &quot;minimum_required_version&quot;: &quot;jewel&quot;,
+        &quot;require_feature_tunables&quot;: 1,
+        &quot;require_feature_tunables2&quot;: 1,
+        &quot;has_v2_rules&quot;: 0,
+        &quot;require_feature_tunables3&quot;: 1,
+        &quot;has_v3_rules&quot;: 0,
+        &quot;has_v4_buckets&quot;: 1,
+        &quot;require_feature_tunables5&quot;: 1,
+        &quot;has_v5_rules&quot;: 0
+    &#125;,
+    &quot;choose_args&quot;: &#123;&#125;
+&#125;
+[root@node-3 ~]#  ceph osd crush rule ls 
+ #默认规则
+replicated_rule
+[root@node-3 ~]# ceph osd pool get ceph-demo crush_rule 
+#查看pool关联的规则
+crush_rule: replicated_rule
+</code></pre>
+<h1><span id="一-手动编辑crush-map规则">一、手动编辑Crush MAP规则</span></h1><h2><span id="一-获取crush-map规则">一、获取Crush map规则</span></h2><p>请将Crush Map文件进行保存，恢复时会需要，尽量不要在生产环境修改，风险太大，最好在规划阶段就完成</p>
+<pre><code>[root@node-1 /]# ceph osd getcrushmap -o crushmap.bin 
+13
+[root@node-1 /]# file crushmap.bin  #查看文件是个二进制文件
+crushmap.bin: MS Windows icon resource - 8 icons, 1-colors
+</code></pre>
+<h2><span id="二-编译成txt文件">二、编译成Txt文件</span></h2><pre><code>[root@node-1 my-cluster]# crushtool -d crushmap.bin -o crushmap.txt #将二进制文件编译成Txt文件
+</code></pre>
+<h2><span id="三-修改crush-map文件">三、修改Crush Map文件</span></h2><p>查看原文件：</p>
+<pre><code>[root@node-1 my-cluster]# cat crushmap.txt 
+# begin crush map
+tunable choose_local_tries 0
+tunable choose_local_fallback_tries 0
+tunable choose_total_tries 50
+tunable chooseleaf_descend_once 1
+tunable chooseleaf_vary_r 1
+tunable chooseleaf_stable 1
+tunable straw_calc_version 1
+tunable allowed_bucket_algs 54
+
+# devices
+device 0 osd.0 class hdd
+device 1 osd.1 class hdd
+device 2 osd.2 class hdd
+device 3 osd.3 class hdd
+device 4 osd.4 class hdd
+device 5 osd.5 class hdd
+
+# types
+type 0 osd
+type 1 host
+type 2 chassis
+type 3 rack
+type 4 row
+type 5 pdu
+type 6 pod
+type 7 room
+type 8 datacenter
+type 9 zone
+type 10 region
+type 11 root
+
+# buckets
+host node-1 &#123;
+    id -3        # do not change unnecessarily
+    id -4 class hdd        # do not change unnecessarily
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+    item osd.0 weight 0.010
+    item osd.1 weight 0.010
+&#125;
+host node-2 &#123;
+    id -5        # do not change unnecessarily
+    id -6 class hdd        # do not change unnecessarily
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+    item osd.2 weight 0.010
+    item osd.3 weight 0.010
+&#125;
+host node-3 &#123;
+    id -7        # do not change unnecessarily
+    id -8 class hdd        # do not change unnecessarily
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+    item osd.4 weight 0.010
+    item osd.5 weight 0.010
+&#125;
+root default &#123;
+    id -1        # do not change unnecessarily
+    id -2 class hdd        # do not change unnecessarily
+    # weight 0.059
+    alg straw2
+    hash 0    # rjenkins1
+    item node-1 weight 0.020
+    item node-2 weight 0.020
+    item node-3 weight 0.020
+&#125;
+
+# rules
+rule replicated_rule &#123;
+    id 0
+    type replicated
+    min_size 1
+    max_size 10
+    step take default
+    step chooseleaf firstn 0 type host
+    step emit
+&#125;
+
+# end crush map
+</code></pre>
+<p>查看修改后的文件</p>
+<pre><code>[root@node-1 my-cluster]# cat crushmap.txt 
+# begin crush map
+tunable choose_local_tries 0
+tunable choose_local_fallback_tries 0
+tunable choose_total_tries 50
+tunable chooseleaf_descend_once 1
+tunable chooseleaf_vary_r 1
+tunable chooseleaf_stable 1
+tunable straw_calc_version 1
+tunable allowed_bucket_algs 54
+
+# devices
+device 0 osd.0 class hdd
+device 1 osd.1 class ssd #设置此硬盘为ssd
+device 2 osd.2 class hdd
+device 3 osd.3 class ssd #设置此硬盘为ssd
+device 4 osd.4 class hdd
+device 5 osd.5 class ssd #设置此硬盘为ssd
+
+# types
+type 0 osd
+type 1 host
+type 2 chassis
+type 3 rack
+type 4 row
+type 5 pdu
+type 6 pod
+type 7 room
+type 8 datacenter
+type 9 zone
+type 10 region
+type 11 root
+
+# buckets
+host node-1 &#123;
+    id -3        # do not change unnecessarily
+    id -4 class hdd        # do not change unnecessarily
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+    item osd.0 weight 0.010 #删除OSD.1
+
+&#125;
+host node-2 &#123;
+    id -5        # do not change unnecessarily
+    id -6 class hdd        # do not change unnecessarily
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+    item osd.2 weight 0.010 #删除OSD.3
+
+&#125;
+host node-3 &#123;
+    id -7        # do not change unnecessarily
+    id -8 class hdd        # do not change unnecessarily
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+    item osd.4 weight 0.010 #删除OSD.5
+
+&#125;
+#新增SSD buckets
+#----------
+host node-1-ssd &#123;
+    id -9        # do not change unnecessarily
+    id -10 class ssd        # do not change unnecessarily
+
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+
+    item osd.1 weight 0.010
+&#125;
+host node-2-ssd &#123;
+    id -11        # do not change unnecessarily
+    id -12 class ssd        # do not change unnecessarily
+
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+
+    item osd.3 weight 0.010
+&#125;
+host node-3-ssd &#123;
+    id -13        # do not change unnecessarily
+    id -14 class ssd        # do not change unnecessarily
+
+    # weight 0.020
+    alg straw2
+    hash 0    # rjenkins1
+
+    item osd.5 weight 0.010
+&#125;
+#----------
+root default &#123;
+    id -1        # do not change unnecessarily
+    id -2 class hdd        # do not change unnecessarily
+    # weight 0.059
+    alg straw2
+    hash 0    # rjenkins1
+    item node-1 weight 0.010
+    item node-2 weight 0.010
+    item node-3 weight 0.010
+&#125;
+#新增根节点
+#----------
+root ssd &#123;
+    id -15        # do not change unnecessarily
+    id -16 class ssd        # do not change unnecessarily
+    # weight 0.059
+    alg straw2
+    hash 0    # rjenkins1
+    item node-1-ssd weight 0.010
+    item node-2-ssd weight 0.010
+    item node-3-ssd weight 0.010
+&#125;
+#----------
+# rules
+rule replicated_rule &#123;
+    id 0
+    type replicated
+    min_size 1
+    max_size 10
+    step take default
+    step chooseleaf firstn 0 type host
+    step emit
+&#125;
+#新增Demo_rule
+#----------
+rule Demo_rule &#123;
+    id 1
+    type replicated
+    min_size 1
+    max_size 10
+    step take ssd
+    step chooseleaf firstn 0 type host
+    step emit
+&#125;
+#----------
+# end crush map
+</code></pre>
+<h2><span id="四-重新编译成二进制文件">四、重新编译成二进制文件</span></h2><pre><code>[root@node-1 my-cluster]# crushtool -c crushmap.txt -o crushmap-new.bin
+</code></pre>
+<h2><span id="五-应用上传的新规则">五、应用上传的新规则</span></h2><p>查看当前结构</p>
+<pre><code>[root@node-2 log]# ceph osd tree 
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-1       0.05878 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-7       0.01959     host node-3                         
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+ 5   hdd 0.00980         osd.5       up  1.00000 1.00000 
+
+
+[root@node-1 my-cluster]# ceph -h |grep setcrush  #查看使用帮助
+osd setcrushmap &#123;&lt;int&gt;&#125;                                               set crush map from input file
+
+[root@node-1 my-cluster]# ceph osd setcrushmap -i crushmap-new.bin #应用规则
+14
+[root@node-2 log]# ceph osd tree #再次查看规则变化
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+-15       0.02998 root ssd                                    
+ -9       0.00999     host node-1-ssd                         
+  1   ssd 0.00999         osd.1           up  1.00000 1.00000 
+-11       0.00999     host node-2-ssd                         
+  3   ssd 0.00999         osd.3           up  1.00000 1.00000 
+-13       0.00999     host node-3-ssd                         
+  5   ssd 0.00999         osd.5           up  1.00000 1.00000 
+ -1       0.02998 root default                                
+ -3       0.00999     host node-1                             
+  0   hdd 0.00999         osd.0           up  1.00000 1.00000 
+ -5       0.00999     host node-2                             
+  2   hdd 0.00999         osd.2           up  1.00000 1.00000 
+ -7       0.00999     host node-3                             
+  4   hdd 0.00999         osd.4           up  1.00000 1.00000
+</code></pre>
+<h2><span id="六-创建pool调用新的crush-map">六、创建pool调用新的Crush Map</span></h2><pre><code>[root@node-1 my-cluster]# ceph osd lspools
+1 ceph-demo
+2 ceph-demo-2
+4 .rgw.root
+5 default.rgw.control
+6 default.rgw.meta
+7 default.rgw.log
+[root@node-1 my-cluster]# ceph osd pool get ceph-demo crush_rule  #查看ceph-demo调用的规则
+crush_rule: replicated_rule
+[root@node-1 my-cluster]# ceph osd crush rule  ls #查看当前ceph集群中的规则
+replicated_rule
+Demo_rule
+[root@node-1 my-cluster]# ceph osd pool set ceph-demo crush_rule Demo_rule  #修改规则
+set pool 1 crush_rule to Demo_rule
+
+[root@node-1 my-cluster]# ceph osd pool get ceph-demo crush_rule #查看修改成功
+crush_rule: Demo_rule
+</code></pre>
+<h2><span id="七-测试crush-map规则">七、测试Crush Map规则</span></h2><pre><code>[root@node-1 my-cluster]# rbd create ceph-demo/crush-demo.img --size 10G #创建一个块设备
+[root@node-1 my-cluster]# rbd ls ceph-demo #查看创建成功
+crush-demo.img
+rbd-demo.img
+[root@node-1 my-cluster]# ceph osd map ceph-demo crush-demo.img #查看OSD分布情况
+osdmap e59 pool &#39;ceph-demo&#39; (1) object &#39;crush-demo.img&#39; -&gt; pg 1.d267742c (1.2c) -&gt; up ([1,5,3], p1) acting ([1,5,3], p1)
+[root@node-1 my-cluster]# ceph osd tree  #看到此快设备落在了osd1.3.5上
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+-15       0.02998 root ssd                                    
+ -9       0.00999     host node-1-ssd                         
+  1   ssd 0.00999         osd.1           up  1.00000 1.00000 
+-11       0.00999     host node-2-ssd                         
+  3   ssd 0.00999         osd.3           up  1.00000 1.00000 
+-13       0.00999     host node-3-ssd                         
+  5   ssd 0.00999         osd.5           up  1.00000 1.00000 
+ -1       0.02998 root default                                
+ -3       0.00999     host node-1                             
+  0   hdd 0.00999         osd.0           up  1.00000 1.00000 
+ -5       0.00999     host node-2                             
+  2   hdd 0.00999         osd.2           up  1.00000 1.00000 
+ -7       0.00999     host node-3                             
+  4   hdd 0.00999         osd.4           up  1.00000 1.00000 
+[root@node-1 my-cluster]# ceph osd lspools #查看pool
+1 ceph-demo
+2 ceph-demo-2
+4 .rgw.root
+5 default.rgw.control
+6 default.rgw.meta
+7 default.rgw.log
+[root@node-1 my-cluster]# ceph osd pool get ceph-demo-2 crush_rule #查看此pool属于默认crush 规则
+crush_rule: replicated_rule
+
+[root@node-1 my-cluster]# rbd create ceph-demo-2/crush-map.img --size 3G #在ceph-demo-2的pool中创建一个快
+[root@node-1 my-cluster]# ceph osd map ceph-demo-2 crush-map.img 
+ #查看此块设备的数据存放在OSD0.2.4中
+osdmap e62 pool &#39;ceph-demo-2&#39; (2) object &#39;crush-map.img&#39; -&gt; pg 2.e23c3129 (2.29) -&gt; up ([2,0,4], p2) acting ([2,0,4], p2)
+</code></pre>
+<h2><span id="八-清理crush规则恢复默认">八、清理Crush规则，恢复默认</span></h2><pre><code>[root@node-1 my-cluster]# ceph osd crush rule ls  @查看默认规则名称
+replicated_rule #默认规则
+Demo_rule
+[root@node-1 my-cluster]# ceph osd pool set ceph-demo crush_rule replicated_rule #修改
+set pool 1 crush_rule to replicated_rule
+[root@node-1 my-cluster]# ceph osd setcrushmap -i crushmap.bin  #重新导入原有配置文件
+15
+[root@node-1 my-cluster]# ceph osd tree  #查看已经恢复
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-1       0.05878 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-7       0.01959     host node-3                         
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+ 5   hdd 0.00980         osd.5       up  1.00000 1.00000
+</code></pre>
+<h1><span id="二-命令行调整crush-map">二、命令行调整Crush Map</span></h1><h2><span id="一-查看当前crush-map">一、查看当前Crush Map</span></h2><pre><code>[root@node-1 my-cluster]# ceph osd tree 
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-1       0.05878 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-7       0.01959     host node-3                         
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+ 5   hdd 0.00980         osd.5       up  1.00000 1.00000
+</code></pre>
+<h2><span id="二-创建根">二、创建根</span></h2><pre><code>[root@node-1 my-cluster]# ceph osd crush add-bucket ssd root #ssd是名称 root是类型
+added bucket ssd type root to crush map
+[root@node-1 my-cluster]# ceph osd tree #查看SSD的bucket
+ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-9             0 root ssd                                
+-1       0.05878 root default                            
+-3       0.01959     host node-1                         
+ 0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+ 1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+-5       0.01959     host node-2                         
+ 2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+ 3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+-7       0.01959     host node-3                         
+ 4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+ 5   hdd 0.00980         osd.5       up  1.00000 1.00000 
+三、将节点加入到bucket
+[root@node-1 my-cluster]# ceph osd crush add-bucket node-1-ssd host #node-1-ssd是名称 host是类型
+added bucket node-1-ssd type host to crush map
+[root@node-1 my-cluster]# ceph osd crush add-bucket node-2-ssd host 
+added bucket node-2-ssd type host to crush map
+[root@node-1 my-cluster]# ceph osd crush add-bucket node-3-ssd host 
+added bucket node-3-ssd type host to crush map
+[root@node-1 my-cluster]# ceph osd tree 
+ID  CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF 
+-12             0 host node-3-ssd                         
+-11             0 host node-2-ssd                         
+-10             0 host node-1-ssd                         
+ -9             0 root ssd                                
+ -1       0.05878 root default                            
+ -3       0.01959     host node-1                         
+  0   hdd 0.00980         osd.0       up  1.00000 1.00000 
+  1   hdd 0.00980         osd.1       up  1.00000 1.00000 
+ -5       0.01959     host node-2                         
+  2   hdd 0.00980         osd.2       up  1.00000 1.00000 
+  3   hdd 0.00980         osd.3       up  1.00000 1.00000 
+ -7       0.01959     host node-3                         
+  4   hdd 0.00980         osd.4       up  1.00000 1.00000 
+  5   hdd 0.00980         osd.5       up  1.00000 1.00000
+</code></pre>
+<h2><span id="四-将节点加入到ssd的根下">四、将节点加入到ssd的根下</span></h2><pre><code>[root@node-1 my-cluster]# ceph osd crush move node-1-ssd root=ssd #将node-1-ssd加入到ssd的根下
+moved item id -10 name &#39;node-1-ssd&#39; to location &#123;root=ssd&#125; in crush map
+
+[root@node-1 my-cluster]# ceph osd crush move node-2-ssd root=ssd
+moved item id -11 name &#39;node-2-ssd&#39; to location &#123;root=ssd&#125; in crush map #将node-2-ssd加入到ssd的根下
+[root@node-1 my-cluster]# ceph osd crush move node-3-ssd root=ssd
+moved item id -12 name &#39;node-3-ssd&#39; to location &#123;root=ssd&#125; in crush map #将node-3-ssd加入到ssd的根下
+[root@node-1 my-cluster]# ceph osd tree  #查看加入情况
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9             0 root ssd                                    
+-10             0     host node-1-ssd                         
+-11             0     host node-2-ssd                         
+-12             0     host node-3-ssd                         
+ -1       0.05878 root default                                
+ -3       0.01959     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+  1   hdd 0.00980         osd.1           up  1.00000 1.00000 
+ -5       0.01959     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+  3   hdd 0.00980         osd.3           up  1.00000 1.00000 
+ -7       0.01959     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000 
+  5   hdd 0.00980         osd.5           up  1.00000 1.00000
+</code></pre>
+<h2><span id="四-将osd加入到host中">四、将OSD加入到HOST中</span></h2><pre><code>[root@node-1 my-cluster]# ceph osd crush move osd.1 host=node-1-ssd root=ssd
+moved item id 1 name &#39;osd.1&#39; to location &#123;host=node-1-ssd&#125; in crush map
+[root@node-1 my-cluster]# ceph osd crush move osd.3 host=node-2-ssd root=ssd
+moved item id 3 name &#39;osd.3&#39; to location &#123;host=node-2-ssd&#125; in crush map
+[root@node-1 my-cluster]# ceph osd crush move osd.5 host=node-3-ssd root=ssd
+moved item id 5 name &#39;osd.5&#39; to location &#123;host=node-3-ssd&#125; in crush map
+
+[root@node-1 my-cluster]# ceph osd tree 
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.02939 root ssd                                    
+-10       0.00980     host node-1-ssd                         
+  1   hdd 0.00980         osd.1           up  1.00000 1.00000 
+-11       0.00980     host node-2-ssd                         
+  3   hdd 0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5   hdd 0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.02939 root default                                
+ -3       0.00980     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000
+</code></pre>
+<h2><span id="五-修改class">五、修改CLASS</span></h2><pre><code>[root@node-1 my-cluster]# ceph -h | grep class #查看帮助文档
+osd crush class create &lt;class&gt;                                        create crush device class &lt;class&gt;
+osd crush class ls                                                    list all crush device classes
+osd crush class ls-osd &lt;class&gt;                                        list all osds belonging to the specific &lt;class&gt;
+osd crush class rename &lt;srcname&gt; &lt;dstname&gt;                            rename crush device class &lt;srcname&gt; to &lt;dstname&gt;
+osd crush class rm &lt;class&gt;                                            remove crush device class &lt;class&gt;
+osd crush get-device-class &lt;ids&gt; [&lt;ids&gt;...]                           get classes of specified osd(s) &lt;id&gt; [&lt;id&gt;...]
+osd crush rm-device-class &lt;ids&gt; [&lt;ids&gt;...]                            remove class of the osd(s) &lt;id&gt; [&lt;id&gt;...],or use &lt;all|any&gt; to remove 
+osd crush rule create-replicated &lt;name&gt; &lt;root&gt; &lt;type&gt; &#123;&lt;class&gt;&#125;       create crush rule &lt;name&gt; for replicated pool to start from &lt;root&gt;, 
+                                                                       &lt;class&gt; (ssd or hdd)
+osd crush rule ls-by-class &lt;class&gt;                                    list all crush rules that reference the same &lt;class&gt;
+osd crush set-device-class &lt;class&gt; &lt;ids&gt; [&lt;ids&gt;...]                   set the &lt;class&gt; of the osd(s) &lt;id&gt; [&lt;id&gt;...],or use &lt;all|any&gt; to set 
+osd df &#123;plain|tree&#125; &#123;class|name&#125; &#123;&lt;filter&gt;&#125;                           show OSD utilization
+[root@node-1 my-cluster]# ceph osd crush set-device-class hdd osd.1 #提示需要删除原来的ssd类型才可以重新赋值
+osd.0 already set to class hdd. set-device-class item id 0 name &#39;osd.1&#39; device_class &#39;hdd&#39;: no change. 
+
+[root@node-1 my-cluster]# ceph osd tree 
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.02939 root ssd                                    
+-10       0.00980     host node-1-ssd                         
+  1   hdd 0.00980         osd.1           up  1.00000 1.00000 
+-11       0.00980     host node-2-ssd                         
+  3   hdd 0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5   hdd 0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.02939 root default                                
+ -3       0.00980     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000 
+
+[root@node-1 my-cluster]# ceph osd crush rm-device-class osd.1 osd.3 osd.5
+done removing class of osd(s): 1,3,5
+[root@node-1 my-cluster]# ceph osd tree 
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.02939 root ssd                                    
+-10       0.00980     host node-1-ssd                         
+  1       0.00980         osd.1           up  1.00000 1.00000 
+-11       0.00980     host node-2-ssd                         
+  3       0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5       0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.02939 root default                                
+ -3       0.00980     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000 
+
+[root@node-1 my-cluster]# ceph osd crush set-device-class ssd osd.1
+set osd(s) 1 to class &#39;ssd&#39;
+[root@node-1 my-cluster]# ceph osd crush set-device-class ssd osd.3
+set osd(s) 3 to class &#39;ssd&#39;
+[root@node-1 my-cluster]# ceph osd crush set-device-class ssd osd.5
+set osd(s) 5 to class &#39;ssd&#39;
+[root@node-1 my-cluster]# ceph osd tree 
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.02939 root ssd                                    
+-10       0.00980     host node-1-ssd                         
+  1   ssd 0.00980         osd.1           up  1.00000 1.00000 
+-11       0.00980     host node-2-ssd                         
+  3   ssd 0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5   ssd 0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.02939 root default                                
+ -3       0.00980     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000
+</code></pre>
+<h2><span id="六-创建规则绑定root">六、创建规则绑定root</span></h2><pre><code>[root@node-1 my-cluster]# ceph -h |grep rule 
+osd crush rule create-erasure &lt;name&gt; &#123;&lt;profile&gt;&#125;                      create crush rule &lt;name&gt; for erasure coded pool created with 
+osd crush rule create-replicated &lt;name&gt; &lt;root&gt; &lt;type&gt; &#123;&lt;class&gt;&#125;       create crush rule &lt;name&gt; for replicated pool to start from &lt;root&gt;, 
+osd crush rule create-simple &lt;name&gt; &lt;root&gt; &lt;type&gt; &#123;firstn|indep&#125;      create crush rule &lt;name&gt; to start from &lt;root&gt;, replicate across 
+osd crush rule dump &#123;&lt;name&gt;&#125;                                          dump crush rule &lt;name&gt; (default all)
+osd crush rule ls                                                     list crush rules
+osd crush rule ls-by-class &lt;class&gt;                                    list all crush rules that reference the same &lt;class&gt;
+osd crush rule rename &lt;srcname&gt; &lt;dstname&gt;                             rename crush rule &lt;srcname&gt; to &lt;dstname&gt;
+osd crush rule rm &lt;name&gt;                                              remove crush rule &lt;name&gt;
+ erasure&#125; &#123;&lt;erasure_code_profile&gt;&#125; &#123;&lt;rule&gt;&#125; &#123;&lt;int&gt;&#125; &#123;&lt;int&gt;&#125; &#123;&lt;int[0-  
+osd pool get &lt;poolname&gt; size|min_size|pg_num|pgp_num|crush_rule|      get pool parameter &lt;var&gt;
+ crush_rule|hashpspool|nodelete|nopgchange|nosizechange|write_        
+[root@node-1 my-cluster]# ceph osd crush rule create-replicated #查看使用帮助
+Invalid command: missing required parameter name(&lt;string(goodchars [A-Za-z0-9-_.])&gt;)
+osd crush rule create-replicated &lt;name&gt; &lt;root&gt; &lt;type&gt; &#123;&lt;class&gt;&#125; :  create crush rule &lt;name&gt; for replicated pool to start from &lt;root&gt;, replicate across buckets of type &lt;type&gt;, use devices of type &lt;class&gt; (ssd or hdd)
+[root@node-1 my-cluster]# ceph osd crush rule create-replicated ssd-demo ssd host ssd #查看报错为没有ssd的类型
+
+[root@node-1 my-cluster]# ceph osd crush class ls #查看类型
+[
+    &quot;hdd&quot;
+]
+[root@node-1 my-cluster]# ceph osd crush class create ssd #添加ssd的类型
+created class ssd with id 1 to crush map
+[root@node-1 my-cluster]# ceph osd crush class ls #添加成功
+[
+    &quot;hdd&quot;,
+    &quot;ssd&quot;
+]
+[root@node-1 my-cluster]# ceph osd crush rule create-replicated ssd-demo ssd host ssd #查看报错信息，未找到原因，等待一段时间后重新执行就没问题了
+Error EINVAL: root ssd has no devices with class ssd
+[root@node-1 my-cluster]# ceph osd crush rule ls #查看创建成功
+replicated_rule
+ssd-demo
+[root@node-1 my-cluster]# ceph osd crush rule dump #查看创建规则的详细信息
+[
+    &#123;
+        &quot;rule_id&quot;: 0,
+        &quot;rule_name&quot;: &quot;replicated_rule&quot;,
+        &quot;ruleset&quot;: 0,
+        &quot;type&quot;: 1,
+        &quot;min_size&quot;: 1,
+        &quot;max_size&quot;: 10,
+        &quot;steps&quot;: [
+            &#123;
+                &quot;op&quot;: &quot;take&quot;,
+                &quot;item&quot;: -1,
+                &quot;item_name&quot;: &quot;default&quot;
+            &#125;,
+            &#123;
+                &quot;op&quot;: &quot;chooseleaf_firstn&quot;,
+                &quot;num&quot;: 0,
+                &quot;type&quot;: &quot;host&quot;
+            &#125;,
+            &#123;
+                &quot;op&quot;: &quot;emit&quot;
+            &#125;
+        ]
+    &#125;,
+    &#123;
+        &quot;rule_id&quot;: 1,
+        &quot;rule_name&quot;: &quot;ssd-demo&quot;,
+        &quot;ruleset&quot;: 1,
+        &quot;type&quot;: 1,
+        &quot;min_size&quot;: 1,
+        &quot;max_size&quot;: 10,
+        &quot;steps&quot;: [
+            &#123;
+                &quot;op&quot;: &quot;take&quot;,
+                &quot;item&quot;: -20,
+                &quot;item_name&quot;: &quot;ssd~ssd&quot;
+            &#125;,
+            &#123;
+                &quot;op&quot;: &quot;chooseleaf_firstn&quot;,
+                &quot;num&quot;: 0,
+                &quot;type&quot;: &quot;host&quot;
+            &#125;,
+            &#123;
+                &quot;op&quot;: &quot;emit&quot;
+            &#125;
+        ]
+    &#125;
+]
+</code></pre>
+<h2><span id="七-应用规则">七、应用规则</span></h2><pre><code>[root@node-1 my-cluster]# ceph osd pool set ceph-demo crush_rule ssd-demo  #应用到ceph-demo的pool中
+set pool 1 crush_rule to ssd-demo
+[root@node-1 my-cluster]# ceph osd pool get ceph-demo crush_rule #查看应用成功
+crush_rule: ssd-demo
+
+[root@node-1 my-cluster]# rbd -p ceph-demo ls 查看ceph-demo的块
+crush-demo.img
+rbd-demo.img
+[root@node-1 my-cluster]# rbd create ceph-demo/crush-map.img --size 3G  #创建一个块
+
+[root@node-1 my-cluster]# ceph osd map ceph-demo crush-demo.img#查看块在OSD中的分布情况
+osdmap e95 pool &#39;ceph-demo&#39; (1) object &#39;crush-demo.img&#39; -&gt; pg 1.d267742c (1.2c) -&gt; up ([5,3,1], p5) acting ([5,3,1], p5)
+</code></pre>
+<h1><span id="三-注意事项">三、注意事项</span></h1><ol>
+<li>做扩容或删除OSD的时候尽可能保存Crush_map的bin文件</li>
+<li>编辑Crush_map的bin文件之前也要备份</li>
+<li>做Crush_map的时候尽量要在初始化的时候去做，不要在已经运行的Ceph集群中去做</li>
+<li>做了Crush_map后一定要配置osd crush update on start &#x3D; false ，但是新增主机和OSD时需要手动配置Crush map</li>
+</ol>
+<blockquote>
+<p>重启OSD后，Crush Map状态会发生转变，由于下面配置，导致OSD添加的时候方便，但是写了Crush Map后此功能需注意，如果集群中有OSD重启或者故障后，会导致大量PG进行迁移</p>
+</blockquote>
+<p><code>osd crush update on start = false </code></p>
+<pre><code>[root@node-1 my-cluster]# ceph osd tree 
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.02939 root ssd                                    
+-10       0.00980     host node-1-ssd                         
+  1   ssd 0.00980         osd.1           up  1.00000 1.00000 
+-11       0.00980     host node-2-ssd                         
+  3   ssd 0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5   ssd 0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.02939 root default                                
+ -3       0.00980     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000 
+
+[root@node-1 my-cluster]# systemctl restart ceph-osd@1
+[root@node-1 my-cluster]# ceph osd tree 
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.01959 root ssd                                    
+-10             0     host node-1-ssd                         
+-11       0.00980     host node-2-ssd                         
+  3   ssd 0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5   ssd 0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.03918 root default                                
+ -3       0.01959     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+  1   ssd 0.00980         osd.1           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000 
+[root@node-1 my-cluster]# pwd
+/opt/my-cluster
+
+
+[root@node-1 my-cluster]# vim ceph.conf 
+[global]
+fsid = b8e58b30-4568-4032-a9f4-837ed3fa9529
+public_network = 192.168.187.0/24
+cluster_network = 192.168.199.0/24
+mon_initial_members = node-1
+mon_host = 192.168.187.201
+auth_cluster_required = cephx
+auth_service_required = cephx
+auth_client_required = cephx
+
+mon_allow_pool_delete = true #可手动删除pool
+
+[osd]
+osd crush update on start = false #加入这个参数
+                                                                                                                           
+&quot;ceph.conf&quot; 14L, 360C written                                                                                            
+
+[root@node-1 my-cluster]# ceph-deploy --overwrite-conf  config push node-1 node-2 node-3 #推送到其他节点
+[ceph_deploy.conf][DEBUG ] found configuration file at: /root/.cephdeploy.conf
+[ceph_deploy.cli][INFO  ] Invoked (2.0.1): /usr/bin/ceph-deploy --overwrite-conf config push node-1 node-2 node-3
+[ceph_deploy.cli][INFO  ] ceph-deploy options:
+[ceph_deploy.cli][INFO  ]  username                      : None
+[ceph_deploy.cli][INFO  ]  verbose                       : False
+[ceph_deploy.cli][INFO  ]  overwrite_conf                : True
+[ceph_deploy.cli][INFO  ]  subcommand                    : push
+[ceph_deploy.cli][INFO  ]  quiet                         : False
+[ceph_deploy.cli][INFO  ]  cd_conf                       : &lt;ceph_deploy.conf.cephdeploy.Conf instance at 0x7f5ee8345878&gt;
+[ceph_deploy.cli][INFO  ]  cluster                       : ceph
+[ceph_deploy.cli][INFO  ]  client                        : [&#39;node-1&#39;, &#39;node-2&#39;, &#39;node-3&#39;]
+[ceph_deploy.cli][INFO  ]  func                          : &lt;function config at 0x7f5ee7eb5938&gt;
+[ceph_deploy.cli][INFO  ]  ceph_conf                     : None
+[ceph_deploy.cli][INFO  ]  default_release               : False
+[ceph_deploy.config][DEBUG ] Pushing config to node-1
+[node-1][DEBUG ] connected to host: node-1 
+[node-1][DEBUG ] detect platform information from remote host
+[node-1][DEBUG ] detect machine type
+[node-1][DEBUG ] write cluster configuration to /etc/ceph/&#123;cluster&#125;.conf
+[ceph_deploy.config][DEBUG ] Pushing config to node-2
+[node-2][DEBUG ] connected to host: node-2 
+[node-2][DEBUG ] detect platform information from remote host
+[node-2][DEBUG ] detect machine type
+[node-2][DEBUG ] write cluster configuration to /etc/ceph/&#123;cluster&#125;.conf
+[ceph_deploy.config][DEBUG ] Pushing config to node-3
+[node-3][DEBUG ] connected to host: node-3 
+[node-3][DEBUG ] detect platform information from remote host
+[node-3][DEBUG ] detect machine type
+[node-3][DEBUG ] write cluster configuration to /etc/ceph/&#123;cluster&#125;.conf
+
+[root@node-1 my-cluster]# systemctl restart ceph-osd.target  #重启node1的所有osd
+
+[root@node-1 my-cluster]# ssh node-2 systemctl restart ceph-osd.target #重启node2的所有osd
+[root@node-1 my-cluster]# ssh node-3 systemctl restart ceph-osd.target #重启node3的所有osd
+[root@node-1 my-cluster]# ceph osd crush move osd.1 host=node-1-ssd #需要将刚刚测试的osd.1手动放到node-1-ssd下
+moved item id 1 name &#39;osd.1&#39; to location &#123;host=node-1-ssd&#125; in crush map
+
+[root@node-1 my-cluster]# ceph osd tree 
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.02939 root ssd                                    
+-10       0.00980     host node-1-ssd                         
+  1   ssd 0.00980         osd.1           up  1.00000 1.00000 
+-11       0.00980     host node-2-ssd                         
+  3   ssd 0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5   ssd 0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.02939 root default                                
+ -3       0.00980     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000 
+[root@node-1 my-cluster]# ceph osd tree #查看当前状态
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.02939 root ssd                                    
+-10       0.00980     host node-1-ssd                         
+  1   ssd 0.00980         osd.1           up  1.00000 1.00000 
+-11       0.00980     host node-2-ssd                         
+  3   ssd 0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5   ssd 0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.02939 root default                                
+ -3       0.00980     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000 
+[root@node-1 my-cluster]# systemctl restart ceph-osd@1 #再次重启，校验配置文件是否生效
+Job for ceph-osd@1.service failed because start of the service was attempted too often. See &quot;systemctl status ceph-osd@1.service&quot; and &quot;journalctl -xe&quot; for details.
+To force a start use &quot;systemctl reset-failed ceph-osd@1.service&quot; followed by &quot;systemctl start ceph-osd@1.service&quot; again.
+[root@node-1 my-cluster]# systemctl reset-failed ceph-osd@1.service #执行reset命令
+[root@node-1 my-cluster]# systemctl restart ceph-osd@1 #再次重启
+[root@node-1 my-cluster]# ceph osd tree #重启后osd没有出现漂移的问题
+ID  CLASS WEIGHT  TYPE NAME           STATUS REWEIGHT PRI-AFF 
+ -9       0.02939 root ssd                                    
+-10       0.00980     host node-1-ssd                         
+  1   ssd 0.00980         osd.1           up  1.00000 1.00000 
+-11       0.00980     host node-2-ssd                         
+  3   ssd 0.00980         osd.3           up  1.00000 1.00000 
+-12       0.00980     host node-3-ssd                         
+  5   ssd 0.00980         osd.5           up  1.00000 1.00000 
+ -1       0.02939 root default                                
+ -3       0.00980     host node-1                             
+  0   hdd 0.00980         osd.0           up  1.00000 1.00000 
+ -5       0.00980     host node-2                             
+  2   hdd 0.00980         osd.2           up  1.00000 1.00000 
+ -7       0.00980     host node-3                             
+  4   hdd 0.00980         osd.4           up  1.00000 1.00000 
+[root@node-1 my-cluster]# ceph daemon /var/run/ceph/ceph-osd.1.asok config show | grep &quot;osd_crush_update_on_start&quot; #可以看到配置已经生效
+    &quot;osd_crush_update_on_start&quot;: &quot;false&quot;,
+
+
+如果重启OSD报错可尝试下列命令
+systemctl reset-failed ceph-osd@1.service
+systemctl restart ceph-osd@1.service
+</code></pre>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+        </article>
+
+        
+            
+  <div class="nexmoe-post-copyright">
+    <strong>Author：</strong>张博丞<br>
+    
+      <strong>From：</strong><a href="/%E5%8E%9F%E5%88%9B" title="原创" target="_blank" rel="noopener">原创</a><br>
+    
+    <strong>Link：</strong><a href="https://zhangboc.github.io/2023/04/19/Ceph/9.%E5%AE%9A%E5%88%B6Crush_map%E8%A7%84%E5%88%99/%E5%AE%9A%E5%88%B6Crush_map%E8%A7%84%E5%88%99/" title="https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;19&#x2F;Ceph&#x2F;9.%E5%AE%9A%E5%88%B6Crush_map%E8%A7%84%E5%88%99&#x2F;%E5%AE%9A%E5%88%B6Crush_map%E8%A7%84%E5%88%99&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;zhangboc.github.io&#x2F;2023&#x2F;04&#x2F;19&#x2F;Ceph&#x2F;9.%E5%AE%9A%E5%88%B6Crush_map%E8%A7%84%E5%88%99&#x2F;%E5%AE%9A%E5%88%B6Crush_map%E8%A7%84%E5%88%99&#x2F;</a><br>
+
+    
+      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+    
+  </div>
+
+
+        
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Ceph/">Ceph</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Ceph/" rel="tag">Ceph</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/CrushMap/" rel="tag">CrushMap</a>
+    
+</div>
+
+    <div class="nexmoe-post-footer">
+        <section class="nexmoe-comment">
+    <div class="valine"></div>
+<script src='https://lib.baomitu.com/valine/1.3.9/Valine.min.js'></script>
+<script>
+    // 使用方法 https://valine.js.org/quickstart.html
+    new Valine({
+        el: '.valine',
+        appId: 'r5zxC0st0DDjPA9auXzMV7HY-gzGzoHsz',
+        appKey: '3bqCsovpyfTPHUzTHovd3V3V'
+    })
+</script>
+</section>
+    </div>
+</div>
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+        <div class="nexmoe-post-right">
+          
+            <div class="nexmoe-fixed">
+              <div class="nexmoe-tool">
+                <a href="#" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+              </div>
+            </div>
+          
+        </div>
+    </div>
+  </div>
+  <div id="nexmoe-pendant">
+    <div class="nexmoe-drawer mdui-drawer nexmoe-pd" id="drawer">
+        
+            <div class="nexmoe-pd-item">
+                <div class="clock">
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="memory"></div>
+        <div class="needle" id="hours"></div>
+        <div class="needle" id="minutes"></div>
+        <div class="needle" id="seconds"></div>
+        <div class="clock_logo">
+
+        </div>
+
+    </div>
+<style>
+    .clock {
+        background-color: #ffffff;
+        width: 70vw;
+        height: 70vw;
+        max-width: 70vh;
+        max-height: 70vh;
+        border: solid 2.8vw #242424;
+        position: relative;
+        overflow: hidden;
+        border-radius: 50%;
+        box-sizing: border-box;
+        box-shadow: 0 1.4vw 2.8vw rgba(0, 0, 0, 0.8);
+        zoom:0.2
+    }
+
+    .memory {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    .memory:nth-child(1) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(0deg) translateY(-520%);
+    }
+
+    .memory:nth-child(2) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(6deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(3) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(12deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(4) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(18deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(5) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(24deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(6) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(30deg) translateY(-520%);
+    }
+
+    .memory:nth-child(7) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(36deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(8) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(42deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(9) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(48deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(10) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(54deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(11) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(60deg) translateY(-520%);
+    }
+
+    .memory:nth-child(12) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(66deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(13) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(72deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(14) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(78deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(15) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(84deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(16) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(90deg) translateY(-520%);
+    }
+
+    .memory:nth-child(17) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(96deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(18) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(102deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(19) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(108deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(20) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(114deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(21) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(120deg) translateY(-520%);
+    }
+
+    .memory:nth-child(22) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(126deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(23) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(132deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(24) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(138deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(25) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(144deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(26) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(150deg) translateY(-520%);
+    }
+
+    .memory:nth-child(27) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(156deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(28) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(162deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(29) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(168deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(30) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(174deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(31) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(180deg) translateY(-520%);
+    }
+
+    .memory:nth-child(32) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(186deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(33) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(192deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(34) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(198deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(35) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(204deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(36) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(210deg) translateY(-520%);
+    }
+
+    .memory:nth-child(37) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(216deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(38) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(222deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(39) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(228deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(40) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(234deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(41) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(240deg) translateY(-520%);
+    }
+
+    .memory:nth-child(42) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(246deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(43) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(252deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(44) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(258deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(45) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(264deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(46) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(270deg) translateY(-520%);
+    }
+
+    .memory:nth-child(47) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(276deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(48) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(282deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(49) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(288deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(50) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(294deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(51) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(300deg) translateY(-520%);
+    }
+
+    .memory:nth-child(52) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(306deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(53) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(312deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(54) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(318deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(55) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(324deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(56) {
+        background-color: #424242;
+        width: 2%;
+        height: 8%;
+        transform: translate(-50%, -50%) rotate(330deg) translateY(-520%);
+    }
+
+    .memory:nth-child(57) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(336deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(58) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(342deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(59) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(348deg) translateY(-1461%);
+    }
+
+    .memory:nth-child(60) {
+        background-color: #949494;
+        width: 1%;
+        height: 3%;
+        transform: translate(-50%, -50%) rotate(354deg) translateY(-1461%);
+    }
+
+    .needle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    .needle#hours {
+        background-color: #1f1f1f;
+        width: 4%;
+        height: 30%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#hours.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#hours:after {
+        content: '';
+        background-color: #1f1f1f;
+        width: 4vw;
+        height: 4vw;
+        max-width: 4vh;
+        max-height: 4vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .needle#minutes {
+        background-color: #1f1f1f;
+        width: 2%;
+        height: 45%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#minutes.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#minutes:after {
+        content: '';
+        background-color: #1f1f1f;
+        width: 4vw;
+        height: 4vw;
+        max-width: 4vh;
+        max-height: 4vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .needle#seconds {
+        background-color: #cb2f2f;
+        width: 1%;
+        height: 50%;
+        transform-origin: center 75%;
+        transform: translate(-50%, -75%);
+    }
+
+    .needle#seconds.moving {
+        transition: transform 150ms ease-out;
+    }
+
+    .needle#seconds:after {
+        content: '';
+        background-color: #cb2f2f;
+        width: 2.5vw;
+        height: 2.5vw;
+        max-width: 2.5vh;
+        max-height: 2.5vh;
+        display: block;
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .clock_logo{
+        width: 10vw;
+        height: 10vw;
+        max-width: 10vh;
+        max-height: 10vh;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    @media (min-width: 100vh) {
+        .clock {
+            border: solid 2.8vh #242424;
+            box-shadow: 0 1.4vh 2.8vh rgba(0, 0, 0, 0.8);
+        }
+    }
+
+</style>
+
+
+
+
+
+            </div>
+        
+            <div class="nexmoe-pd-item">
+                <div class="qweather" >
+    <div id="he-plugin-standard"></div>
+    <div class="qweather-logo">
+
+    </div>
+
+</div>
+<style>
+    .qweather{
+        position: relative;
+    }
+    .qweather-logo{
+        position: absolute;
+        right: 0;
+        top: -15px;
+        width: 40px;
+        height: 40px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+</style>
+<script>
+  WIDGET = {
+    "CONFIG": {
+      "layout": "2",
+      "width": "260",
+      "height": "220",
+      "background": "5",
+      "dataColor": "e67249",
+      "borderRadius": "15",
+      "key": "f74d1e1690e6432d801e97fa2f05a162"
+    }
+  }
+</script>
+<script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
+
+            </div>
+        
+</div>
+<style>
+    .nexmoe-pd {
+        left: auto;
+        top: 40px;
+        right: 0;
+    }
+    .nexmoe-pd-item{
+       display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+</style>
+
+  </div>
+  <script src="https://lib.baomitu.com/lazysizes/5.1.0/lazysizes.min.js"></script>
+<script src="https://lib.baomitu.com/highlight.js/10.0.0/highlight.min.js"></script>
+<script src="https://lib.baomitu.com/mdui/0.4.3/js/mdui.min.js"></script>
+
+<script>
+	hljs.initHighlightingOnLoad();
+</script>
+
+<script src="https://lib.baomitu.com/jquery/3.5.1/jquery.slim.min.js"></script>
+<script src="/lib/fancybox/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/app.js?v=1682237265590"></script>
+
+<script src="https://lib.baomitu.com/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+  
+
+
+
+
+
+<!-- hexo injector body_end start -->
+<script src="/js/clock.js"></script>
+
+<script src="https://lib.baomitu.com/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+<script src="/lib/codeBlock/codeBlockFuction.js"></script>
+
+<script src="/lib/codeBlock/codeLang.js"></script>
+
+<script src="/lib/codeBlock/codeCopy.js"></script>
+
+<script src="/lib/codeBlock/codeShrink.js"></script>
+
+<link rel="stylesheet" href="/lib/codeBlock/matery.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<script src="/js/search.js"></script>
+
+<script src="/js/webapp.js"></script>
+<!-- hexo injector body_end end --><script src="/live2D/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2D/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":true,"model":{"jsonPath":"/live2D/assets/xiaomai.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
+
+<script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/5e784416.js","daovoice")</script>
+<script>
+  daovoice('init', {
+    app_id: "5e784416"
+  });
+  daovoice('update');
+</script>
+
